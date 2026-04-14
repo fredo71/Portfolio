@@ -1,0 +1,163 @@
+# Portfolio Interactif C# - Règles Cursor
+
+## Contexte
+Portfolio web C# full-stack : CV interactif + infrastructure extensible pour futurs projets.
+
+## Stack
+- Frontend: Blazor WebAssembly, HTML/CSS
+- Backend: ASP.NET Core 8, EF Core
+- DB: PostgreSQL 15
+- DevOps: Docker, GitHub Actions, Prometheus/Grafana
+- Hosting: Fly.io (frontend) + Oracle Cloud (backend)
+
+## Architecture
+```
+CV.WebUI (Blazor) → CV.API (ASP.NET) → PostgreSQL
+                           ↓
+                    Prometheus/Grafana
+```
+
+Couches: Domain → Application → Infrastructure → API/WebUI
+
+## Règles de Code C#
+
+### Conventions
+- PascalCase: classes, méthodes, propriétés
+- camelCase: paramètres, variables
+- _camelCase: champs privés
+- Interfaces: préfixe `I`
+- Async: suffixe `Async`
+
+### Patterns
+- Repository Pattern pour accès données
+- Dependency Injection partout
+- JAMAIS de `new` pour les services (toujours DI)
+
+### Blazor
+- Données CV **en dur** dans les composants (pas de JSON)
+- Composants réutilisables avec `[Parameter]`
+- Pas de code métier dans les composants (juste UI)
+
+### API
+- Controllers légers (déléguer la logique)
+- Toujours valider les entrées
+- Health checks obligatoires
+
+### Base de Données
+- EF Core avec migrations
+- JAMAIS de SQL brut
+- Configurations dans classes séparées
+
+## Organisation Fichiers
+
+### Frontend (CV.WebUI)
+```
+Pages/          # Index.razor, CV.razor, Projects.razor, Contact.razor
+Components/CV/  # CVHeader.razor, ExperienceItem.razor, SkillBar.razor...
+wwwroot/        # css/, images/, files/
+```
+
+### Backend (CV.API)
+```
+Controllers/    # HealthController.cs, ContactController.cs
+Middleware/     # ExceptionHandlingMiddleware.cs
+```
+
+### Domain
+```
+Entities/       # ContactMessage.cs (minimal pour l'instant)
+```
+
+### Infrastructure
+```
+Data/           # ApplicationDbContext.cs
+```
+
+## Commandes Fréquentes
+
+```bash
+# Build
+dotnet build
+
+# Run
+dotnet run --project src/CV.API
+dotnet run --project src/CV.WebUI
+
+# Migrations
+dotnet ef migrations add NomMigration --project src/CV.Infrastructure --startup-project src/CV.API
+dotnet ef database update --project src/CV.Infrastructure --startup-project src/CV.API
+
+# Docker
+docker-compose up -d
+docker-compose down
+```
+
+## Ne Jamais Faire
+- ❌ Ajouter de la logique métier dans les controllers
+- ❌ Utiliser `new` pour instancier des services
+- ❌ Stocker les secrets dans le code
+- ❌ Mélanger les responsabilités des couches
+- ❌ Oublier les `async/await` pour les I/O
+- ❌ Copier-coller du code (créer des composants/méthodes)
+
+## Toujours Faire
+- ✅ Valider les entrées utilisateur
+- ✅ Logger les erreurs
+- ✅ Utiliser `using` pour IDisposable
+- ✅ Faire des composants Blazor réutilisables
+- ✅ Tester le code généré
+- ✅ Commenter le code complexe uniquement
+
+## Format Code
+- 4 espaces d'indentation (C#)
+- 2 espaces (JSON, YAML)
+- Accolades sur nouvelle ligne (C#)
+- UTF-8 encoding
+
+## Structure Composant Blazor Type
+```razor
+<div class="component-name">
+    <!-- HTML -->
+</div>
+
+@code {
+    [Parameter] public string PropName { get; set; } = "";
+    
+    protected override async Task OnInitializedAsync()
+    {
+        // Init
+    }
+}
+```
+
+## Structure Controller Type
+```csharp
+[ApiController]
+[Route("api/[controller]")]
+public class NomController : ControllerBase
+{
+    private readonly IService _service;
+    private readonly ILogger<NomController> _logger;
+    
+    public NomController(IService service, ILogger<NomController> logger)
+    {
+        _service = service;
+        _logger = logger;
+    }
+    
+    [HttpGet]
+    public async Task<IActionResult> Get()
+    {
+        var result = await _service.GetAsync();
+        return Ok(result);
+    }
+}
+```
+
+## Priorités
+1. Code qui fonctionne
+2. Code lisible et simple
+3. Code performant
+4. Code optimisé
+
+En cas de doute : KISS (Keep It Simple, Stupid)
