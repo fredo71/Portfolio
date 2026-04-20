@@ -160,3 +160,114 @@ main[b-xn2l5aia1e] {
         overflow-y: auto;
     }
 }
+/* /Pages/Cv.razor.rz.scp.css */
+.profile-photo[b-2p4anmevd2] {
+        border-radius: 50%;
+        /* Cercle */
+        object-fit: cover;
+        /* Recadre sans déformer */
+        padding: 30px;
+        width: 100%;
+        aspect-ratio: 1 / 1;
+
+        object-position: center top;
+        /* pan to face if needed */
+        object-view-box: inset(20%)
+    }
+
+    .center[b-2p4anmevd2] {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .cv-layout[b-2p4anmevd2] {
+        min-height: 100vh;
+        max-width: 1050px;
+        display: flex;
+        font-family: 'Lato', sans-serif;
+    }
+
+    .skill-grid[b-2p4anmevd2] {
+        display: grid;
+        grid-template-columns: auto auto;
+        align-items: center;
+        gap: 6px 16px;
+    }
+
+    .left-padding[b-2p4anmevd2]{
+        padding-left: 20px;
+    }
+
+    main[b-2p4anmevd2] {
+        background-color: #ededed;
+        margin-left: 20px;
+    }
+
+    main h2[b-2p4anmevd2]::after {
+        content: '';
+        display: block;
+        width: 90%;
+        height: 2px;
+        background-color: #000000;
+        margin-top: 6px;
+        margin-bottom: 6px;
+    }
+
+    .bottom-margin[b-2p4anmevd2] {
+        margin-bottom: 30px;
+    }
+
+    .date[b-2p4anmevd2] {
+        font-weight: bold;
+        font-size: 28px;
+    }
+
+
+    .skill-collum[b-2p4anmevd2] {
+        display: flex;
+        justify-content: space-between;
+        max-width: 80%;
+    }
+
+    aside[b-2p4anmevd2] {
+        background-color: #323b4c;
+        max-width: 35%;
+        color: white;
+        padding: 5px;
+    }
+
+    p[b-2p4anmevd2],
+    ul[b-2p4anmevd2],
+    li[b-2p4anmevd2] {
+        font-size: 22px;
+        margin: 0px;
+
+    }
+
+    aside h2[b-2p4anmevd2]::after {
+        content: '';
+        display: block;
+        width: 90%;
+        height: 2px;
+        background-color: #ffffff;
+        margin-top: 6px;
+        margin-bottom: 6px;
+    }
+
+    h1[b-2p4anmevd2] {
+        margin-top: 50px;
+        font-size: 60px;
+    }
+
+    h2[b-2p4anmevd2] {
+        font-size: 40px;
+        font-weight: bold;
+        margin-top: 35px;
+    }
+
+    h3[b-2p4anmevd2] {
+        margin-top: 5px;
+        margin-bottom: 10px;
+        font-size: 30px;
+    }

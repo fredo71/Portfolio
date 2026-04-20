@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ZzxfGSylxZQ=",
+  "dgSpecHash": "51NicVUn5nDWSHYLj97nDaJl9cywmiv0kwcHoPP3Z1SPDRSaabMzIY5p0pJ7NYPbdnnuRgjM76ONv/oqonhFeQ==",
   "success": true,
-  "projectFilePath": "c:\\Users\\thefr\\OneDrive\\Documents\\web_CV\\Portfolio\\Portfolio.csproj",
+  "projectFilePath": "C:\\Users\\thefr\\OneDrive\\Documents\\web_CV\\Portfolio\\Portfolio.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\thefr\\.nuget\\packages\\microsoft.aspnetcore.authorization\\8.0.6\\microsoft.aspnetcore.authorization.8.0.6.nupkg.sha512",
     "C:\\Users\\thefr\\.nuget\\packages\\microsoft.aspnetcore.components\\8.0.6\\microsoft.aspnetcore.components.8.0.6.nupkg.sha512",

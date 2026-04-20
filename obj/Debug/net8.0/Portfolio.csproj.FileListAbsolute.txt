@@ -1030,3 +1030,4 @@ C:\Users\thefr\OneDrive\Documents\web_CV\Portfolio\obj\Debug\net8.0\Portfolio.dl
 C:\Users\thefr\OneDrive\Documents\web_CV\Portfolio\obj\Debug\net8.0\refint\Portfolio.dll
 C:\Users\thefr\OneDrive\Documents\web_CV\Portfolio\obj\Debug\net8.0\Portfolio.pdb
 C:\Users\thefr\OneDrive\Documents\web_CV\Portfolio\obj\Debug\net8.0\ref\Portfolio.dll
+C:\Users\thefr\OneDrive\Documents\web_CV\Portfolio\obj\Debug\net8.0\scopedcss\Pages\Cv.razor.rz.scp.css

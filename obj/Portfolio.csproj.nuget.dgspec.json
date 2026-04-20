@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Users\\thefr\\OneDrive\\Documents\\web_CV\\Portfolio\\Portfolio.csproj": {}
+    "C:\\Users\\thefr\\OneDrive\\Documents\\web_CV\\Portfolio\\Portfolio.csproj": {}
   },
   "projects": {
-    "c:\\Users\\thefr\\OneDrive\\Documents\\web_CV\\Portfolio\\Portfolio.csproj": {
+    "C:\\Users\\thefr\\OneDrive\\Documents\\web_CV\\Portfolio\\Portfolio.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\thefr\\OneDrive\\Documents\\web_CV\\Portfolio\\Portfolio.csproj",
+        "projectUniqueName": "C:\\Users\\thefr\\OneDrive\\Documents\\web_CV\\Portfolio\\Portfolio.csproj",
         "projectName": "Portfolio",
-        "projectPath": "c:\\Users\\thefr\\OneDrive\\Documents\\web_CV\\Portfolio\\Portfolio.csproj",
+        "projectPath": "C:\\Users\\thefr\\OneDrive\\Documents\\web_CV\\Portfolio\\Portfolio.csproj",
         "packagesPath": "C:\\Users\\thefr\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\thefr\\OneDrive\\Documents\\web_CV\\Portfolio\\obj\\",
+        "outputPath": "C:\\Users\\thefr\\OneDrive\\Documents\\web_CV\\Portfolio\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
