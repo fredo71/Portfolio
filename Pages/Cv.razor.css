@@ -1,0 +1,110 @@
+.profile-photo {
+        border-radius: 50%;
+        /* Cercle */
+        object-fit: cover;
+        /* Recadre sans déformer */
+        padding: 30px;
+        width: 100%;
+        aspect-ratio: 1 / 1;
+
+        object-position: center top;
+        /* pan to face if needed */
+        object-view-box: inset(20%)
+    }
+
+    .center {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .cv-layout {
+        min-height: 100vh;
+        max-width: 1050px;
+        display: flex;
+        font-family: 'Lato', sans-serif;
+    }
+
+    .skill-grid {
+        display: grid;
+        grid-template-columns: auto auto;
+        align-items: center;
+        gap: 6px 16px;
+    }
+
+    .left-padding{
+        padding-left: 20px;
+    }
+
+    main {
+        background-color: #ededed;
+        margin-left: 20px;
+    }
+
+    main h2::after {
+        content: '';
+        display: block;
+        width: 90%;
+        height: 2px;
+        background-color: #000000;
+        margin-top: 6px;
+        margin-bottom: 6px;
+    }
+
+    .bottom-margin {
+        margin-bottom: 30px;
+    }
+
+    .date {
+        font-weight: bold;
+        font-size: 28px;
+    }
+
+
+    .skill-collum {
+        display: flex;
+        justify-content: space-between;
+        max-width: 80%;
+    }
+
+    aside {
+        background-color: #323b4c;
+        max-width: 35%;
+        color: white;
+        padding: 5px;
+    }
+
+    p,
+    ul,
+    li {
+        font-size: 22px;
+        margin: 0px;
+
+    }
+
+    aside h2::after {
+        content: '';
+        display: block;
+        width: 90%;
+        height: 2px;
+        background-color: #ffffff;
+        margin-top: 6px;
+        margin-bottom: 6px;
+    }
+
+    h1 {
+        margin-top: 50px;
+        font-size: 60px;
+    }
+
+    h2 {
+        font-size: 40px;
+        font-weight: bold;
+        margin-top: 35px;
+    }
+
+    h3 {
+        margin-top: 5px;
+        margin-bottom: 10px;
+        font-size: 30px;
+    }
