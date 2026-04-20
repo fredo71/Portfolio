@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\thefr\\OneDrive\\Documents\\web_CV\\Portfolio\\Portfolio.csproj": {}
+    "c:\\Users\\thefr\\OneDrive\\Documents\\web_CV\\Portfolio\\Portfolio.csproj": {}
   },
   "projects": {
-    "C:\\Users\\thefr\\OneDrive\\Documents\\web_CV\\Portfolio\\Portfolio.csproj": {
+    "c:\\Users\\thefr\\OneDrive\\Documents\\web_CV\\Portfolio\\Portfolio.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\thefr\\OneDrive\\Documents\\web_CV\\Portfolio\\Portfolio.csproj",
+        "projectUniqueName": "c:\\Users\\thefr\\OneDrive\\Documents\\web_CV\\Portfolio\\Portfolio.csproj",
         "projectName": "Portfolio",
-        "projectPath": "C:\\Users\\thefr\\OneDrive\\Documents\\web_CV\\Portfolio\\Portfolio.csproj",
+        "projectPath": "c:\\Users\\thefr\\OneDrive\\Documents\\web_CV\\Portfolio\\Portfolio.csproj",
         "packagesPath": "C:\\Users\\thefr\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\thefr\\OneDrive\\Documents\\web_CV\\Portfolio\\obj\\",
+        "outputPath": "c:\\Users\\thefr\\OneDrive\\Documents\\web_CV\\Portfolio\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -48,6 +48,29 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.Components.WebAssembly": {
+              "target": "Package",
+              "version": "[8.0.6, )"
+            },
+            "Microsoft.AspNetCore.Components.WebAssembly.DevServer": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.6, )"
+            },
+            "Microsoft.NET.ILLink.Tasks": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.6, )",
+              "autoReferenced": true
+            },
+            "Microsoft.NET.Sdk.WebAssembly.Pack": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.6, )",
+              "autoReferenced": true
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -59,15 +82,23 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.NETCore.App.Runtime.Mono.browser-wasm",
+              "version": "[8.0.6, 8.0.6]"
+            }
+          ],
           "frameworkReferences": {
-            "Microsoft.AspNetCore.App": {
-              "privateAssets": "none"
-            },
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.206/PortableRuntimeIdentifierGraph.json"
+        }
+      },
+      "runtimes": {
+        "browser-wasm": {
+          "#import": []
         }
       }
     }
