@@ -38,7 +38,7 @@
 
     main {
         background-color: #ededed;
-        margin-left: 20px;
+        padding-left: 20px;
     }
 
     main h2::after {
