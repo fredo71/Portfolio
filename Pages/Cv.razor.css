@@ -108,3 +108,46 @@
         margin-bottom: 10px;
         font-size: 30px;
     }
+
+@media (max-width: 640px) {
+    .cv-layout {
+        flex-direction: column;
+        max-width: 100%;
+    }
+
+    aside {
+        max-width: 100%;
+    }
+
+    .profile-photo {
+        width: 50%;
+        padding: 15px;
+    }
+
+    .skill-collum {
+        flex-direction: column;
+        max-width: 100%;
+    }
+
+    h1 {
+        font-size: 32px;
+        margin-top: 20px;
+    }
+
+    h2 {
+        font-size: 22px;
+        margin-top: 16px;
+    }
+
+    h3 {
+        font-size: 18px;
+    }
+
+    p, ul, li {
+        font-size: 15px;
+    }
+
+    .date {
+        font-size: 17px;
+    }
+}
