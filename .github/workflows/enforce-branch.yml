@@ -1,15 +1,10 @@
 name: Enforce develop to master
 
 on:
-  push:
-    branches-ignore:
-      - master
   pull_request:
-    types: [opened, synchronize, reopened, closed]
-    branches-ignore:
+    branches:
       - master
-  workflow_dispatch:
-      
+
 jobs:
   check-source-branch:
     runs-on: ubuntu-latest
