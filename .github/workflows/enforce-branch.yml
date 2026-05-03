@@ -1,5 +1,9 @@
 name: Enforce develop to master
 
+on:
+  pull_request:
+      types: [opened, synchronize, reopened, closed]
+      
 jobs:
   check-source-branch:
     runs-on: ubuntu-latest
