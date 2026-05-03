@@ -1,8 +1,14 @@
 name: Enforce develop to master
 
 on:
+  push:
+    branches-ignore:
+      - master
   pull_request:
-      types: [opened, synchronize, reopened, closed]
+    types: [opened, synchronize, reopened, closed]
+    branches-ignore:
+      - master
+  workflow_dispatch:
       
 jobs:
   check-source-branch:
