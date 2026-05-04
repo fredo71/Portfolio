@@ -30,6 +30,8 @@
         grid-template-columns: auto auto;
         align-items: center;
         gap: 6px 16px;
+        padding-left: 20px;
+
     }
 
     .left-padding{
@@ -60,11 +62,13 @@
         font-size: 28px;
     }
 
-
     .skill-collum {
-        display: flex;
-        justify-content: space-between;
+        display: grid;
+        grid-template-columns: auto auto auto auto;
+        align-items: center;
         max-width: 80%;
+        gap: 6px 24px;
+
     }
 
     aside {
@@ -72,6 +76,8 @@
         max-width: 35%;
         color: white;
         padding: 5px;
+        padding-bottom: 20px;
+
     }
 
     p,
@@ -108,3 +114,51 @@
         margin-bottom: 10px;
         font-size: 30px;
     }
+
+@media (max-width: 640px) {
+    .cv-layout {
+        flex-direction: column;
+        max-width: 100%;
+    }
+
+    aside {
+        max-width: 100%;
+        padding-bottom: 20px;
+    }
+
+    .skill-collum {
+        display: grid;
+        grid-template-columns: auto auto;
+        align-items: center;
+        gap: 6px 24px;
+        max-width: 100%;
+    }
+
+    h1 {
+        font-size: 32px;
+        margin-top: 20px;
+    }
+
+    h2 {
+        font-size: 22px;
+        margin-top: 16px;
+    }
+
+    h3 {
+        font-size: 18px;
+    }
+
+    p, ul, li {
+        font-size: 15px;
+    }
+
+    .date {
+        font-size: 17px;
+    }
+
+    main {
+        background-color: #ededed;
+        padding-left: 20px;
+        padding-bottom: 20px;
+    }
+}
