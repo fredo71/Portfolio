@@ -1,5 +1,5 @@
 
-<div class="imageCardBackround">
+<div class="imageCardBackround" @onclick=@OnClick>
     <img Src=@Src alt=@Alt>
     <div class="text-box">
         <p>@Caption</p>
@@ -11,4 +11,6 @@
     [Parameter] public string Src { get; set; }
     [Parameter] public string Alt { get; set; } = "";
     [Parameter] public string Caption { get; set; }
+    [Parameter] public Action OnClick { get; set; } = () => { };
+
 }

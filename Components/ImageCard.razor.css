@@ -26,3 +26,10 @@ p {
     font-size: 10cqw;
     text-align: center;
 }
+
+.imageCardBackround:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+    filter: brightness(1.1);
+    background-color: red;
+}
