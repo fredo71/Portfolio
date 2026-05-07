@@ -1,0 +1,14 @@
+
+<div class="imageCardBackround">
+    <img Src=@Src alt=@Alt>
+    <div class="text-box">
+        <p>@Caption</p>
+    </div>
+</div>
+
+@code
+{
+    [Parameter] public string Src { get; set; }
+    [Parameter] public string Alt { get; set; } = "";
+    [Parameter] public string Caption { get; set; }
+}
