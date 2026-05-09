@@ -4,9 +4,16 @@
     align-items: center;
     height: 100%;
     padding: 0 ;
-    background-color: rgb(7, 5, 118) ;
+    background-image: linear-gradient( 90deg , #4286f4 ,#373B44   ) ;
     width: 100%;
     height: max(10vh,50px);
+}
+
+.border-linked {
+    border: 2px solid black;
+    display: flex;
+    height: 100%;
+    
 }
 
 .button-linked{
@@ -17,7 +24,7 @@
     align-items: center;
     justify-content: center;
     font-size: 2cqw;
-    color: green;
+    color: #ffffff;
 }
 
 .button-linked a {
