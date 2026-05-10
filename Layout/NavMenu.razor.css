@@ -34,6 +34,12 @@
     height: 100%;             /* fills the whole button — makes all space clickable */
 }
 
+i{
+    font-size: 2rem;
+    padding: 0.5rem;
+    width: 100%;
+    height: 100%;  
+}
 
 .button-linked:hover
 {
