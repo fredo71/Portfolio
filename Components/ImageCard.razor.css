@@ -5,6 +5,7 @@
     aspect-ratio: 1;
     width: 100%;
     background-color:var(--backgrounds-light);
+    position: relative;   
 }
 
 img {
@@ -23,23 +24,56 @@ img {
     justify-content: center;
 }
 
-.imageCardBackround:hover {
-    filter: brightness(1.1);
-    background-color: var(--hover);
+.imageCardBackround:hover img{
+    scale: 1.01;
+    transform-origin: bottom center;
+}   
+
+.imageCardBackround::before {
+    content: "";
+    position: absolute;
+    padding: 2px;
+    inset: 0;  
+    background: linear-gradient(to right, var(--primary), var(--secondary));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box,
+                  linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+}
+
+.imageCardBackround:hover::before {
+    opacity: 1;
+    transition: opacity 0.3s ease;
 }
 
 span {
     font-size: 8cqw;
     text-align: center;
-    color: var(--text-primary);}
+    color: var(--text-primary);
 
-span::after {
-    height: 2px;
-    background: linear-gradient(to right, var(--primary), var(--secondary));
-    content: "";
-    display: block; 
-    margin: 0px;
-    position: relative;
-    top: -2cqw;
+    padding: 4px 10px;
+    border-radius: 999px;
+    position: relative;        /* anchor for ::before */
+    display: inline-block;
 }
 
+
+span::before {
+    content: "";
+    position: absolute;        /* takes it out of the flow */
+    inset: 0;
+    border-radius: 999px;
+    padding: 2px;              /* border thickness */
+    background: linear-gradient(to right, var(--primary), var(--secondary));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, 
+                  linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+}
+
+.imageCardBackround:hover span::before {
+    transition: opacity 0.3s ease;
+
+}
