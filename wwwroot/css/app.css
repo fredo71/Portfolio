@@ -8,8 +8,8 @@
   --hover-text : rgba(255, 64, 129, 1); 
 
   /* Backgrounds */
-  --backgrounds-dark: rgba(26, 26, 39, 1);            /* Fond principal sombre */
-  --backgrounds-light: rgb(45, 45, 88);         /* Cartes/surfaces */
+  --backgrounds-dark: rgb(1, 1, 45);            /* Fond principal sombre */
+  --backgrounds-light:  rgb(42, 42, 90);         /* Cartes/surfaces */
   
   /* Textes */
   --text-primary: rgba(255, 255, 255, 0.75);
