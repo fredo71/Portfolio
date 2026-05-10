@@ -54,26 +54,5 @@ span {
 
     padding: 4px 10px;
     border-radius: 999px;
-    position: relative;        /* anchor for ::before */
     display: inline-block;
-}
-
-
-span::before {
-    content: "";
-    position: absolute;        /* takes it out of the flow */
-    inset: 0;
-    border-radius: 999px;
-    padding: 2px;              /* border thickness */
-    background: linear-gradient(to right, var(--primary), var(--secondary));
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, 
-                  linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    opacity: 0;
-}
-
-.imageCardBackround:hover span::before {
-    transition: opacity 0.3s ease;
-
 }
