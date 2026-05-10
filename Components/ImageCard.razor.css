@@ -1,10 +1,10 @@
 .imageCardBackround {
-    background-color: grey;
     container-type: inline-size;
     display: flex;
     flex-direction: column;
     aspect-ratio: 1;
     width: 100%;
+    background-color:var(--backgrounds-light);
 }
 
 img {
@@ -12,6 +12,8 @@ img {
     width: 100%;
     min-height: 0;
     object-fit: cover;
+    padding: 20px;
+    padding-bottom: 0px;
 }
 
 .text-box {
@@ -21,15 +23,23 @@ img {
     justify-content: center;
 }
 
-p {
-    margin: 0;
-    font-size: 10cqw;
-    text-align: center;
+.imageCardBackround:hover {
+    filter: brightness(1.1);
+    background-color: var(--hover);
 }
 
-.imageCardBackround:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
-    filter: brightness(1.1);
-    background-color: red;
+span {
+    font-size: 8cqw;
+    text-align: center;
+    color: var(--text-primary);}
+
+span::after {
+    height: 2px;
+    background: linear-gradient(to right, var(--primary), var(--secondary));
+    content: "";
+    display: block; 
+    margin: 0px;
+    position: relative;
+  top: -5px;
 }
+

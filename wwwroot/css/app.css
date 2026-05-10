@@ -4,9 +4,12 @@
   --secondary: rgba(255, 64, 129, 1);     /* Rose/Magenta */
   --accent: rgba(30, 200, 165, 0.2);        /* Turquoise */
   
+  --hover: rgba(0, 255, 204, 0.54);
+  --hover-text : rgba(255, 64, 129, 1); 
+
   /* Backgrounds */
   --backgrounds-dark: rgba(26, 26, 39, 1);            /* Fond principal sombre */
-  --backgrounds-surface: rgba(20, 20, 31, 1);         /* Cartes/surfaces */
+  --backgrounds-light: rgb(45, 45, 88);         /* Cartes/surfaces */
   
   /* Textes */
   --text-primary: rgba(255, 255, 255, 0.75);

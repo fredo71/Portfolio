@@ -4,7 +4,7 @@
     align-items: center;
     height: 100%;
     padding: 0 ;
-    background-image: linear-gradient( 0 , var(--backgrounds-surface) , var(--primary)   ) ;
+    background-color: var(--backgrounds-light) ;
     width: 100%;
     height: max(10vh,50px);
 }
@@ -37,5 +37,5 @@
 
 .button-linked:hover
 {
-    background-color: var(--accent);
+    background-color: var(--hover);
 }
