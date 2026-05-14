@@ -1,31 +1,13 @@
 @page "/"
 @inject NavigationManager Nav
 
-
 <PageTitle>Home</PageTitle>
 
 <main>
     <div class="ImageCardGrid">
-        <a href="/Cv">
-            <ImageCard Src="images/about me.jpg" Alt="Photo Frédéric Larue" Caption="About Me" />
-        </a>
-        <a href="/Cv">
-            <ImageCard Src="images/code.jpg" Alt="Photo Frédéric Larue" Caption="CV"/>
-        </a>
-        <a href="/Cv">
-            <ImageCard Src="images/game.png" Alt="Photo Frédéric Larue" Caption="Game Project"/>
-        </a>
-        <a href="/Cv">
-            <ImageCard Src="images/blog.jpg" Alt="Photo Frédéric Larue" Caption="blogs"/>
-        </a>
+        <ImageCard Src="images/about me.jpg" Alt="About Me" Caption="About Me" OnClick='() => Nav.NavigateTo("/Cv")' />
+        <ImageCard Src="images/code.jpg" Alt="CV" Caption="CV" OnClick='() => Nav.NavigateTo("/Cv")' />
+        <ImageCard Src="images/game.png" Alt="Game Project" Caption="Game Project" OnClick='() => Nav.NavigateTo("/Cv")' />
+        <ImageCard Src="images/blog.jpg" Alt="Blogs" Caption="Blogs" OnClick='() => Nav.NavigateTo("/Cv")' />
     </div>
 </main>
-
-@code
-{
-    public void ToCV()
-    {
-        Console.WriteLine("clicked");
-        Nav.NavigateTo("/Cv");
-    }
-}
