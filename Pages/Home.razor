@@ -1,7 +1,13 @@
 @page "/"
+@inject NavigationManager Nav
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
-
-Welcome to your new app.
+<main>
+    <div class="ImageCardGrid">
+        <ImageCard Src="images/about me.jpg" Alt="About Me" Caption="About Me" OnClick='() => Nav.NavigateTo("/About Me")' />
+        <ImageCard Src="images/code.jpg" Alt="CV" Caption="CV" OnClick='() => Nav.NavigateTo("/Cv")' />
+        <ImageCard Src="images/game.jpg" Alt="Game Project" Caption="Game Project" OnClick='() => Nav.NavigateTo("/Game")' />
+        <ImageCard Src="images/blog.jpg" Alt="Blogs" Caption="Blogs" OnClick='() => Nav.NavigateTo("/Blog")' />
+    </div>
+</main>
