@@ -1,0 +1,115 @@
+@page "/AboutMe"
+
+<main>
+
+    <section class="tile-centered">
+        <h1>Frédéric Larue</h1>
+        <h2>Ingénieur logiciel Dev Ops</h2>
+        <p>Développeur passionné basé à Troyes, à la recherche d'un poste en ingénierie logicielle.<br>Formé en DevOps
+            et en développement full stack.</p>
+            <div class="hero-actions">
+                <a href="https://github.com/fredo71" target="_blank" class="svg-gradiant maximize-icon">
+                    <i class="bi bi-github "></i>
+                </a>
+                <button class="btn-styled" onClick="document.getElementById('Project').scrollIntoView();" >
+                    View Project
+                </button>
+                <button class="btn-styled" onClick="document.getElementById('skills').scrollIntoView();">
+                    View Skills
+                </button>
+            </div>
+        </section>
+
+        <section class="tile-centered-width" id = "skills">
+            <h2>My Skills</h2>
+            <h3>The tools i know how to use.</h3>
+
+            <div class="flex-box-vertical">
+                <div class="simple-border">
+                    <h2>
+                        <i class="bi bi-terminal "></i>
+                        DevOps
+                    </h2>
+                    <SkillBar Label="GitLab" Level="95" />
+                    <SkillBar Label="Docker" Level="90" />
+                    <SkillBar Label="CI/CD" Level="83" />
+                    <SkillBar Label="Azure" Level="80" />
+                    <SkillBar Label="Kubernete" Level="75" />
+                </div>
+                
+                <div class="simple-border">
+                    <h2>
+                        <i class="bi bi-code-slash "></i>
+                        web devellopement
+                    </h2>
+                    <SkillBar Label="C# Scripting" Level="98" />
+                    <SkillBar Label="HTML" Level="95" />
+                    <SkillBar Label="Razor" Level="86" />
+                    <SkillBar Label="CSS" Level="80" />
+                    <SkillBar Label="SQL" Level="75" />
+                </div>
+
+                <div class="simple-border">
+                    <h2>
+                        <i class="bi bi-code-slash "></i>
+                        game devellopement
+                    </h2>
+                    <SkillBar Label="Unity Engine" Level="95" />
+                    <SkillBar Label="unity C# Scripting" Level="93" />
+                    <SkillBar Label="HLSL / Shaders" Level="90" />
+                    <SkillBar Label="Mesh Generation" Level="85" />
+                    <SkillBar Label="Job System / ECS" Level="70" />
+                </div>
+            </div>
+        </section>
+
+        <section class="tile-centered-width" id="Project">
+            <h2>Projects</h2>
+            <h3>A few things I've built.</h3>
+            <div class="flex-box-vertical">
+                <ProjectCard
+                    Title="Unity Game"
+                    Description="A game built in Unity with custom shaders, mesh generation, and multithreading."
+                    ImageUrl="images/game.jpg"
+                    Link="https://github.com/fredo71"
+                    Tags='new List<string> { "Unity", "C#", "HLSL" , "Job System"}' />
+                <ProjectCard
+                    Title="This Portfolio"
+                    Description="A personal portfolio built with Blazor WebAssembly and CSS."
+                    ImageUrl="images/code.jpg"
+                    Link="https://github.com/fredo71"
+                    Tags='new List<string> { "Blazor", "C#", "CSS" , "HTML" }' />
+                <ProjectCard
+                    Title="Work at Davey Bickford"
+                    Description="Asset management software built in Python and Django."
+                    ImageUrl="images/compagny logo.png"
+                    Link="https://github.com/fredo71"
+                    Tags='new List<string> { "Python", "Django", "CSS" , "HTML" }' />
+            </div>
+        </section>
+
+        <section class="tile-centered contact">
+            <h2>Contact</h2>
+            <h3>Feel free to reach out.</h3>
+            <div class="contact-links">
+                <a href="mailto:frederic.larue17@gmail.com" class="contact-item">
+                    <i class="bi bi-envelope "></i>
+                    <span>frederic.larue17@gmail.com</span>
+                </a>
+                <a href="tel:0788320148" class="contact-item">
+                    <i class="bi bi-telephone "></i>
+                    <span>07 88 32 01 48</span>
+                </a>
+                <a href="https://www.linkedin.com/in/frédéric-larue-55a41428b" target="_blank" class="contact-item">
+                    <i class="bi bi-linkedin "></i>
+                    <span>LinkedIn</span>
+                </a>
+                <a href="https://github.com/fredo71" target="_blank" class="contact-item">
+                    <i class="bi bi-github "></i>
+                    <span>GitHub</span>
+                </a>
+            </div>
+        </section>
+
+
+    </main>

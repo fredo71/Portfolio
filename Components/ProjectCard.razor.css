@@ -1,0 +1,51 @@
+.project-card {
+    display: flex;
+    flex-direction: column;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    overflow: hidden;
+    width: 25vw;
+    background:
+        linear-gradient(var(--backgrounds-light), var(--backgrounds-light)) padding-box,
+        linear-gradient(to bottom, var(--primary), var(--secondary)) border-box;
+}
+
+.project-thumbnail {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+}
+
+.project-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem;
+    flex: 1;
+}
+
+.project-info h3 {
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.project-info p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    flex: 1;
+    margin: 0;
+}
+
+.project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.tag {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    border: 1px solid var(--primary);
+    color: var(--primary);
+}
