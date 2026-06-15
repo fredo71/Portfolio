@@ -1,3 +1,7 @@
+html {
+    font-size: 16px;
+}
+
 :root {
   /* Couleurs principales */
   --primary: rgba(119, 107, 231, 1);      /* Violet/Bleu */
