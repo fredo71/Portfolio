@@ -1,0 +1,16 @@
+@using Components
+
+<div class="skill-bar">
+    <div class="skill-row">
+        <span class="skill-label">@Label</span>
+        <span class="skill-percent">@Level%</span>
+    </div>
+    <div class="skill-track">
+        <div class="skill-fill" style="width: @(Level)%"></div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public string Label { get; set; } = "";
+    [Parameter] public int Level { get; set; } = 0;
+}
