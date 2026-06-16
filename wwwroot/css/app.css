@@ -1,3 +1,30 @@
+html {
+    font-size: 16px;
+}
+
+:root {
+  /* Couleurs principales */
+  --primary: rgba(119, 107, 231, 1);      /* Violet/Bleu */
+  --secondary: rgba(255, 64, 129, 1);     /* Rose/Magenta */
+  --accent: rgba(30, 200, 165, 0.2);        /* Turquoise */
+  
+  --hover: rgba(0, 255, 204, 0.54);
+  --hover-text : rgba(255, 64, 129, 1); 
+
+  /* Backgrounds */
+  --backgrounds-dark: rgb(1, 1, 45);            /* Fond principal sombre */
+  --backgrounds-light:  rgb(42, 42, 90);         /* Cartes/surfaces */
+  
+  /* Textes */
+  --text-primary: rgba(255, 255, 255, 0.75);
+  --text-secondary: rgba(255, 255, 255, 0.50);
+  
+  /* Contexte */
+  --success: rgba(11, 186, 131, 1);
+  --warning: rgba(255, 168, 0, 1);
+  --error: rgba(246, 78, 98, 1);
+}
+
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
@@ -100,4 +127,43 @@ a, .btn-link {
 
 code {
     color: #c02d76;
+}
+
+
+
+.svg-gradiant:hover {
+    background: linear-gradient(to right, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.btn-styled {
+    padding: 8px 20px;
+    border-radius: 999px;
+    border: 2px solid var(--backgrounds-light);
+    background-color: var(--backgrounds-dark);
+    color: var(--text-primary);
+    cursor: pointer;
+    position: relative;
+    transition: border-color 0.3s ease;
+}
+
+.btn-styled::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 999px;
+    padding: 2px;
+    background: linear-gradient(to right, var(--primary), var(--secondary));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box,
+                  linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.btn-styled:hover::before {
+    opacity: 1;
 }

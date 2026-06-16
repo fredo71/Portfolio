@@ -1,0 +1,22 @@
+<div class="project-card">
+    <img src="@ImageUrl" alt="@Title" class="project-thumbnail" />
+    <div class="project-info">
+        <h3>@Title</h3>
+        <p>@Description</p>
+        <div class="project-tags">
+            @foreach (var tag in Tags)
+            {
+                <span class="tag">@tag</span>
+            }
+        </div>
+        <a href="@Link" target="_blank" class="btn-styled">View</a>
+    </div>
+</div>
+
+@code {
+    [Parameter] public string Title { get; set; } = "";
+    [Parameter] public string Description { get; set; } = "";
+    [Parameter] public string ImageUrl { get; set; } = "";
+    [Parameter] public string Link { get; set; } = "#";
+    [Parameter] public List<string> Tags { get; set; } = new();
+}
