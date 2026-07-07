@@ -102,6 +102,74 @@ section{
     background-clip: text;
 }
 
+.timeline {
+    display: flex;
+    flex-direction: column;
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: left;
+}
+
+.timeline-item {
+    display: flex;
+    flex-direction: row;
+    gap: 1.5rem;
+    position: relative;
+}
+
+.timeline-dot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.timeline-dot::before {
+    content: "";
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: linear-gradient(to bottom, var(--primary), var(--secondary));
+    margin-top: 4px;
+    flex-shrink: 0;
+}
+
+.timeline-dot::after {
+    content: "";
+    width: 2px;
+    flex: 1;
+    background: linear-gradient(to bottom, var(--primary), var(--secondary));
+    opacity: 0.3;
+    margin-top: 6px;
+}
+
+.timeline-item:last-child .timeline-dot::after {
+    display: none;
+}
+
+.timeline-body {
+    padding-bottom: 2rem;
+}
+
+.education-date {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--primary);
+    margin-bottom: 0.3rem;
+}
+
+.education-title {
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    margin: 0 0 0.2rem 0;
+}
+
+.education-school {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    margin: 0;
+}
+
 .simple-border {
     text-align: left;
     border: 2px solid transparent;

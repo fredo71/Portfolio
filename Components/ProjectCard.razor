@@ -9,7 +9,14 @@
                 <span class="tag">@tag</span>
             }
         </div>
-        <a href="@Link" target="_blank" class="btn-styled">View</a>
+        @if (IsPrivate)
+        {
+            <span class="private-badge"><i class="bi bi-lock-fill"></i> Private</span>
+        }
+        else
+        {
+            <a href="@Link" target="_blank" class="btn-styled">@LinkLabel</a>
+        }
     </div>
 </div>
 
@@ -18,5 +25,7 @@
     [Parameter] public string Description { get; set; } = "";
     [Parameter] public string ImageUrl { get; set; } = "";
     [Parameter] public string Link { get; set; } = "#";
+    [Parameter] public string LinkLabel { get; set; } = "View";
     [Parameter] public List<string> Tags { get; set; } = new();
+    [Parameter] public bool IsPrivate { get; set; } = false;
 }

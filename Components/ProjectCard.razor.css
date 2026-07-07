@@ -49,3 +49,15 @@
     border: 1px solid var(--primary);
     color: var(--primary);
 }
+
+.private-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.8rem;
+    padding: 6px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--text-secondary);
+    color: var(--text-secondary);
+    width: fit-content;
+}
