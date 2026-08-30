@@ -1,0 +1,30 @@
+.stat {
+    flex: 1 1 150px;
+    min-width: 140px;
+    padding: 1.1rem 1.25rem;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+/* Proportional figures on stat values - never tabular at display size. */
+.stat-value {
+    font-size: 1.9rem;
+    font-weight: 600;
+    line-height: 1.1;
+    color: var(--text-primary);
+}
+
+.stat-unit {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-left: 3px;
+}
+
+.stat-label {
+    margin-top: 0.4rem;
+    font-size: 0.82rem;
+    line-height: 1.4;
+    color: var(--text-secondary);
+}

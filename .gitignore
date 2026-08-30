@@ -19,3 +19,5 @@ packages/
 
 # Blazor
 wwwroot/css/bootstrap/
+
+*.md

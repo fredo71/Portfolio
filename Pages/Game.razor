@@ -1,0 +1,285 @@
+@page "/Game"
+
+<main>
+
+    <div class="hero tile-centered">
+        <h1>Hex Strategy Game</h1>
+        <p class="hero-sub">A Civilization-inspired strategy game built from scratch in Unity.</p>
+        <div class="hero-actions">
+            <a href="https://github.com/fredo71" target="_blank" class="btn-styled">
+                <i class="bi bi-github"></i> GitHub
+            </a>
+            <span class="wip-badge">Work in Progress</span>
+        </div>
+    </div>
+
+    @* ───────────────────────── §1 — What is this? ───────────────────────── *@
+    <section class="section">
+        <div class="overview">
+            <video class="game-screenshot"
+                   src="video/hexmap-generation.mp4"
+                   poster="video/hexmap-generation.jpg"
+                   autoplay muted loop playsinline preload="metadata"
+                   aria-label="Hex terrain filling in region by region as the world is generated">
+            </video>
+            <div class="overview-text">
+                <h2>What is this?</h2>
+                <p>
+                    <strong>A hexagonal world, procedurally generated, at a size you set.</strong>
+                    Nothing is built before it is needed: the ground nearest you appears first, and the
+                    rest fills in behind it while you are already moving. From a cold start the whole map
+                    is finished in about four seconds.
+                </p>
+            </div>
+        </div>
+
+        <div class="kpi-row">
+            <StatTile Value="@TotalHexTiles" Label="hex tiles in the world" />
+            <StatTile Value="@PctFramesBelow30Overview" Unit="%" Label="of frames below 30 fps" />
+            <StatTile Value="@AvgFpsOverview" Unit="fps" Label="average across the whole run" />
+            <StatTile Value="@TimeToFirstHex" Unit="s" Label="before the first hex is on screen" />
+            <StatTile Value="@TreeCountWorld" Label="trees and foliage placed across the map" />
+        </div>
+
+        <div class="method">
+            <h3>How this was measured</h3>
+            <p>
+                One 60-second capture. The game starts cold, generates the world, then flies a camera
+                along a fixed waypoint path that repeats every 20 seconds so the same ground
+                comes round a little over twice.
+                <span class="rig">
+                    Recorded on a GTX 1650 Ti laptop GPU with an i5-10300H, at 1920&times;1080
+                    fullscreen, vsync off, no frame cap, from a development build in Unity 6000.5.7f1.
+                </span>
+            </p>
+
+            <RunTimeline Title="The whole run, frame by frame"
+                         Note="Every frame of the capture as frames per second. The shaded band spans the worst and best frame in each column, so no single spike is sampled away." />
+        </div>
+    </section>
+
+    @* ───────────────────────── §2 — Building the world ───────────────────────── *@
+    <section class="section">
+        <div class="section-head tile-centered">
+            <h2>Building the world</h2>
+            <h3>What it costs to generate 225 chunks while the game keeps rendering.</h3>
+        </div>
+
+        <p class="section-note">
+            Chunks are meshed on a pool of background worker threads, so the main thread barely notices
+            225 of them building at once &mdash; frame rate holds steady while the world fills in.
+        </p>
+
+        <div class="kpi-row kpi-row--compact">
+            <StatTile Value="@BuildTime" Unit="s" Label="to fill the whole map from cold" />
+            <StatTile Value="@PctFramesBelow30Build" Unit="%" Label="of frames below 30 fps while building" />
+        </div>
+
+        <div class="chart-grid">
+            <LineChart Title="Hexes finished over time"
+                       Note="Cumulative hex tiles finished, from a cold start to the whole map."
+                       Values="HexesFinishedOverTime"
+                       Unit="hexes"
+                       XAxisLabel="second"
+                       XAxisLabelPlural="seconds"
+                       XTitle="seconds since generation started" />
+            <LineChart Title="Frame rate while building"
+                       Note="Frames per second across the same window."
+                       Values="FpsOverTimeBuild"
+                       Unit="fps"
+                       XAxisLabel="second"
+                       XAxisLabelPlural="seconds"
+                       Thresholds="FpsThresholds" />
+        </div>
+
+        <p class="section-note">
+            Memory for the map is reserved once, up front, so nothing grows while chunks are still
+            being built.
+        </p>
+
+        <div class="kpi-row kpi-row--compact">
+            <StatTile Value="@AvgRamPctBudget" Unit="%" Label="of the memory budget, on average while building" />
+            <StatTile Value="@MaxRamPctBudget" Unit="%" Label="of the memory budget, at peak while building" />
+        </div>
+
+        <div class="chart-wrap">
+            <LineChart Title="Memory (RAM) used while building"
+                       Note="Percentage of the stated memory budget, sampled every frame."
+                       Values="RamPctOverTime"
+                       Unit="%"
+                       XAxisLabel="second"
+                       XAxisLabelPlural="seconds" />
+        </div>
+    </section>
+
+    @* ───────────────────────── §3 — Once it is built ───────────────────────── *@
+    <section class="section">
+        <div class="section-head tile-centered">
+            <h2>Once it is built</h2>
+            <h3>49 seconds of flying over the finished map.</h3>
+        </div>
+
+        <p class="section-note">
+            Every tile on the map casts a shadow, not just the ones near the camera &mdash; but what
+            actually matters is how many of those shadows are live on screen at once.
+        </p>
+
+        <div class="kpi-row kpi-row--compact">
+            <StatTile Value="@ShadowsOnScreen" Label="hexes casting a live shadow on screen at once" />
+        </div>
+
+        <div class="asset-placeholder" role="img" aria-label="Placeholder for the shadows video">
+            Video &mdash; shadows moving across the finished map, camera fixed. Pending capture.
+        </div>
+
+        <p class="section-note">
+            Detail drops off gradually with distance instead of popping in, so nothing changes abruptly
+            as it leaves view.
+        </p>
+
+        <div class="kpi-row kpi-row--compact">
+            <StatTile Value="@DrawDistanceHexes" Label="hexes visible before elements are culled" />
+            <StatTile Value="@BiggestTrianglePctOfTile" Unit="%" Label="of a hex tile&rsquo;s area &mdash; the largest triangle, worst case" />
+        </div>
+
+        <div class="asset-placeholder" role="img" aria-label="Placeholder for the triangle-colored terrain screenshot">
+            Screenshot &mdash; terrain with each triangle rendered a different color. Pending capture.
+        </div>
+
+        <p class="section-note">
+            All of that stays inside the video-memory budget, even with the whole map&rsquo;s shadows and
+            detail live at once.
+        </p>
+
+        <div class="kpi-row kpi-row--compact">
+            <StatTile Value="@MaxGpuPctBudget" Unit="%" Label="of the video-memory budget, at peak" />
+            <StatTile Value="@AvgGpuPctBudget" Unit="%" Label="of the video-memory budget, on average" />
+        </div>
+
+        <div class="chart-wrap">
+            <LineChart Title="GPU memory used"
+                       Note="Percentage of the video-memory budget, sampled every frame."
+                       Values="GpuOverTime"
+                       Unit="%"
+                       XAxisLabel="second"
+                       XAxisLabelPlural="seconds" />
+        </div>
+
+        <p class="section-note">
+            None of it costs frame rate &mdash; the map holds comfortably above 30 fps once everything
+            is built.
+        </p>
+
+        <div class="kpi-row kpi-row--compact">
+            <StatTile Value="@AvgFpsBuilt" Unit="fps" Label="average frame rate, whole map drawn" />
+        </div>
+
+        <div class="chart-wrap">
+            <LineChart Title="Frame rate, once the map is built"
+                       Note="Frames per second across the 49-second flythrough."
+                       Values="FpsOverTimeBuilt"
+                       Unit="fps"
+                       XAxisLabel="second"
+                       XAxisLabelPlural="seconds"
+                       Thresholds="FpsThresholds" />
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="features tile-centered-width">
+            <h2>Under the hood</h2>
+            <h3>The systems behind the game.</h3>
+        </div>
+
+        <div class="feature-cards">
+            <div class="feature-card">
+                <h3>Coordinate System</h3>
+                <p>
+                    Each tile has a position on a <span class="code-inline">2D offset grid</span> that maps
+                    directly to a location in the world. Finding the six neighbors of any tile is done by
+                    checking whether the tile is on an even or odd row, which shifts the neighboring columns
+                    by half a step. To convert a click in the world back to a tile, the position is projected
+                    into <span class="code-inline">cube coordinate space</span> where the three axes always
+                    sum to zero, then rounded to the nearest valid tile.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <h3>Burst Job System</h3>
+                <p>
+                    Building the map mesh happens entirely off the main thread so the game never freezes
+                    during generation. The main thread hands each chunk to a
+                    <span class="code-inline">thread pool</span> of workers, each of which launches three
+                    <span class="code-inline">Burst-compiled</span> Unity Jobs in parallel: one computes
+                    vertex positions, one texture coordinates, and one lighting normals. Mesh data lives in
+                    <span class="code-inline">unmanaged NativeArrays</span> rather than on the managed heap.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <h3>Decorator System</h3>
+                <p>
+                    Trees and foliage are rendered using <span class="code-inline">GPU instancing</span> via
+                    Unity&rsquo;s <span class="code-inline">DrawMeshInstanced</span>, sending thousands of
+                    positions to the GPU in a single draw call without creating any objects in the scene.
+                    Close to the camera, full 3D meshes are used. Further away they switch to flat
+                    <span class="code-inline">impostor billboards</span> that look similar but are far
+                    cheaper to render. As the camera approaches, more instances gradually appear by
+                    <span class="code-inline">density band</span>.
+                </p>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+@code {
+    // ------------------------------------------------------------------------------------
+    // PLACEHOLDER DATA. Every value below stands in for a number that will eventually be
+    // computed automatically from perf_A_*.csv / performance_summary.csv. This pass is
+    // about the page's layout and visual language only — swap the literals here once the
+    // real computation exists; nothing else on the page needs to change.
+    // ------------------------------------------------------------------------------------
+
+    // §1 — What is this?
+    const string TotalHexTiles = "9,450";
+    const string PctFramesBelow30Overview = "0.2";
+    const string AvgFpsOverview = "68";
+    const string TimeToFirstHex = "2.1";
+    const string TreeCountWorld = "42k";
+
+    // §2 — Building the world
+    const string AvgRamPctBudget = "0.7";
+    const string MaxRamPctBudget = "0.7";
+    const string BuildTime = "4.0";
+    const string PctFramesBelow30Build = "3.0";
+
+    static readonly double[] HexesFinishedOverTime =
+    [ 0, 8, 22, 41, 65, 93, 120, 145, 168, 186, 200, 210, 217, 221, 223, 224, 225, 225, 225, 225 ];
+
+    static readonly double[] RamPctOverTime =
+    [ 0.65, 0.68, 0.70, 0.71, 0.69, 0.70, 0.72, 0.70, 0.69, 0.71, 0.70, 0.70, 0.69, 0.71, 0.70, 0.70, 0.69, 0.70, 0.71, 0.70 ];
+
+    static readonly double[] FpsOverTimeBuild =
+    [ 38, 42, 45, 50, 55, 58, 62, 65, 68, 70, 72, 74, 75, 76, 77, 77, 76, 77, 77, 78 ];
+
+    static readonly LineChart.Threshold[] FpsThresholds =
+    [
+        new(30, "30 fps"),
+        new(60, "60 fps"),
+    ];
+
+    // §3 — Once it is built
+    const string MaxGpuPctBudget = "38";
+    const string AvgGpuPctBudget = "29";
+    const string DrawDistanceHexes = "1,680";
+    const string BiggestTrianglePctOfTile = "2.5";
+    const string ShadowsOnScreen = "1,470";
+    const string AvgFpsBuilt = "63";
+
+    static readonly double[] FpsOverTimeBuilt =
+    [ 64, 61, 66, 63, 65, 62, 67, 64, 63, 66, 65, 61, 64, 66, 63, 65, 64, 62, 66, 65 ];
+
+    static readonly double[] GpuOverTime =
+    [ 9, 11, 13, 15, 18, 20, 22, 24, 26, 27, 29, 30, 31, 32, 33, 34, 34, 35, 35, 35 ];
+}
