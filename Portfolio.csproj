@@ -11,4 +11,12 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.6" PrivateAssets="all" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- tools/GameStatsGen is a separate, standalone console project (see its own .csproj) -->
+    <!-- and must not be swept up by this project's default recursive globs. -->
+    <Compile Remove="tools\**\*.cs" />
+    <Content Remove="tools\**" />
+    <None Remove="tools\**" />
+  </ItemGroup>
+
 </Project>

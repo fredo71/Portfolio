@@ -1,4 +1,10 @@
 main {
+    /* One content column and one gutter for the whole page. Every block below
+       sizes off these instead of carrying its own max-width. */
+    --measure: 1040px;      /* charts, tiles, media, headings */
+    --measure-text: 68ch;   /* prose, so lines stay readable inside the column */
+    --gutter: 2rem;
+
     background-color: var(--backgrounds-dark);
     padding-top: 100px;
     display: flex;
@@ -23,10 +29,12 @@ p {
 }
 
 /* ── HERO ── */
-.tile-centered {
+/* The page's one deliberately symmetrical moment; everything after it is
+   left-aligned to the column edge. */
+.hero {
     max-width: 800px;
     margin: 0 auto;
-    padding: 0 2rem;
+    padding: 0 var(--gutter);
     text-align: center;
 }
 
@@ -51,48 +59,143 @@ p {
     border: 1px solid var(--warning);
 }
 
+/* ── SECTIONS ── */
+/* The column is established once, here. Children fill it and are left-aligned,
+   so a single left edge runs the length of the page. */
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+    max-width: var(--measure);
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 var(--gutter);
+}
+
+.section-head h3 {
+    margin-bottom: 0;
+}
+
+.section-note {
+    max-width: var(--measure-text);
+    margin: 0;
+    font-size: 0.92rem;
+}
+
 /* ── OVERVIEW ── */
 .overview {
-    display: flex;
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
     align-items: center;
-    justify-content: center;
-    gap: 4rem;
-    padding: 0 6rem;
+    gap: 3rem;
 }
 
 .game-screenshot {
-    width: 50%;
-    max-width: 560px;
+    width: 100%;
     border-radius: 8px;
     border: 2px solid transparent;
-    flex-shrink: 0;
     background:
         linear-gradient(var(--backgrounds-dark), var(--backgrounds-dark)) padding-box,
         linear-gradient(to bottom right, var(--primary), var(--secondary)) border-box;
 }
 
+video.game-screenshot {
+    display: block;
+    object-fit: cover;
+    background-color: var(--backgrounds-dark);
+}
+
 .overview-text {
-    max-width: 480px;
+    max-width: var(--measure-text);
 }
 
 .overview-text h2 {
     margin-bottom: 1rem;
 }
 
-/* ── FEATURE CARDS ── */
-.tile-centered-width {
-    text-align: center;
-    margin: 0 auto;
-    padding: 0 2rem;
+/* ── METHOD ── */
+.method {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
 }
 
-.feature-cards {
+.method h3 {
+    color: var(--text-primary);
+    font-size: 1rem;
+    margin: 0;
+}
+
+.method > p {
+    margin: 0;
+    max-width: var(--measure-text);
+    font-size: 0.92rem;
+}
+
+/* Rig detail: folded into the method paragraph, but still visually secondary. */
+.rig {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.78rem;
+    line-height: 1.7;
+    opacity: 0.72;
+}
+
+/* ── DATA LAYOUT ── */
+.kpi-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+}
+
+/* A smaller cluster of tiles sitting right under the text they back up —
+   left at their natural width instead of stretching to fill the row. */
+.kpi-row--compact {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 220px));
+    justify-content: start;
+}
+
+.chart-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 3rem;
+}
+
+/* Stands in for media that hasn't been captured yet, so the layout can still be judged. */
+.asset-placeholder {
     display: flex;
-    flex-direction: row;
-    gap: 2rem;
+    align-items: center;
     justify-content: center;
-    flex-wrap: wrap;
+    text-align: center;
+    min-height: 280px;
+    width: 100%;
+    padding: 2rem;
+    border-radius: 8px;
+    border: 2px dashed var(--primary);
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    opacity: 0.85;
+}
+
+/* Captured video/screenshot assets, styled to match .game-screenshot's gradient border. */
+.asset-media {
+    display: block;
+    width: 100%;
+    border-radius: 8px;
+    border: 2px solid transparent;
+    background:
+        linear-gradient(var(--backgrounds-dark), var(--backgrounds-dark)) padding-box,
+        linear-gradient(to bottom right, var(--primary), var(--secondary)) border-box;
+    object-fit: cover;
+}
+
+/* ── UNDER THE HOOD ── */
+/* Plain surfaces: the gradient border is reserved for headline data now, so
+   these read as supporting prose rather than out-shouting the numbers. */
+.feature-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
     margin-top: 1rem;
 }
 
@@ -101,17 +204,10 @@ p {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.75rem;
-    width: 260px;
     padding: 1.5rem;
-    border: 2px solid transparent;
+    border: 1px solid rgba(255, 255, 255, 0.10);
     border-radius: 8px;
-    background:
-        linear-gradient(var(--backgrounds-light), var(--backgrounds-light)) padding-box,
-        linear-gradient(to bottom, var(--primary), var(--secondary)) border-box;
-}
-
-.feature-icon {
-    font-size: 2rem;
+    background-color: var(--backgrounds-light);
 }
 
 .feature-card h3 {
@@ -128,198 +224,30 @@ p {
     margin: 0;
 }
 
-/* ── DETAIL SECTIONS ── */
-.detail-section {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    gap: 4rem;
-    padding: 0 6rem;
-}
-
-.detail-section--reversed {
-    flex-direction: row-reverse;
-}
-
-.detail-image {
-    width: 45%;
-    max-width: 480px;
-    border-radius: 8px;
-    border: 2px solid transparent;
-    flex-shrink: 0;
-    background:
-        linear-gradient(var(--backgrounds-dark), var(--backgrounds-dark)) padding-box,
-        linear-gradient(to bottom right, var(--primary), var(--secondary)) border-box;
-}
-
-.detail-text {
-    max-width: 420px;
-}
-
-.detail-text h2 {
-    margin-bottom: 1rem;
-}
-
 .code-inline {
     font-family: monospace;
     font-size: 0.85em;
     color: var(--primary);
-    background-color: var(--backgrounds-light);
+    background-color: rgba(0, 0, 0, 0.25);
     padding: 1px 6px;
     border-radius: 4px;
 }
 
-/* ── VIDEO IN IMAGE SLOTS ── */
-video.game-screenshot,
-video.detail-image {
-    display: block;
-    object-fit: cover;
-    background-color: var(--backgrounds-dark);
-}
-
-/* ── SECTIONS ── */
-.section {
-    display: flex;
-    flex-direction: column;
-    gap: 2.5rem;
-}
-
-.section-head {
-    text-align: center;
-}
-
-.section-head h3 {
-    margin-bottom: 0;
-}
-
-.section-note {
-    max-width: 780px;
-    margin: 0 auto;
-    padding: 0 2rem;
-    font-size: 0.92rem;
-}
-
-/* ── METHOD ── */
-.method {
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-    max-width: 1040px;
-    width: 100%;
-    margin: 0 auto;
-    padding: 0 2rem;
-}
-
-.method h3 {
-    color: var(--text-primary);
-    font-size: 1rem;
-    margin: 0;
-}
-
-.method > p {
-    margin: 0;
-    max-width: 68ch;
-    font-size: 0.92rem;
-}
-
-/* Rig detail: folded into the method paragraph, but still visually secondary. */
-.rig {
-    display: block;
-    margin-top: 0.5rem;
-    font-size: 0.78rem;
-    line-height: 1.7;
-    opacity: 0.72;
-}
-
-/* ── DATA LAYOUT ── */
-.kpi-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 1rem;
-    max-width: 1040px;
-    width: 100%;
-    margin: 0 auto;
-    padding: 0 2rem;
-}
-
-/* A smaller cluster of tiles sitting right under the text they back up —
-   left at their natural width instead of stretching to fill the row. */
-.kpi-row--compact {
-    grid-template-columns: repeat(auto-fit, minmax(140px, 200px));
-    justify-content: center;
-}
-
-.chart-wrap {
-    max-width: 1040px;
-    width: 100%;
-    margin: 0 auto;
-    padding: 0 2rem;
-}
-
-.chart-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-    gap: 3rem;
-    max-width: 1040px;
-    width: 100%;
-    margin: 0 auto;
-    padding: 0 2rem;
-}
-
-/* ── VIDEO / SCREENSHOT SLOTS ── */
-.section-video {
-    display: block;
-    width: 100%;
-    max-width: 900px;
-    margin: 0 auto;
-    border-radius: 8px;
-    border: 2px solid transparent;
-    background:
-        linear-gradient(var(--backgrounds-dark), var(--backgrounds-dark)) padding-box,
-        linear-gradient(to bottom right, var(--primary), var(--secondary)) border-box;
-}
-
-/* Stands in for media that hasn't been captured yet, so the layout can still be judged. */
-.asset-placeholder {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    min-height: 280px;
-    max-width: 900px;
-    width: 100%;
-    margin: 0 auto;
-    padding: 2rem;
-    border-radius: 8px;
-    border: 2px dashed var(--primary);
-    color: var(--text-secondary);
-    font-size: 0.85rem;
-    opacity: 0.85;
-}
-
-.caption {
-    max-width: 640px;
-    margin: 0 auto;
-    padding: 0 2rem;
-    text-align: center;
-    font-size: 0.88rem;
-}
-
-/* ── UNDER THE HOOD ── */
-.feature-card {
-    width: 320px;
-}
-
+/* ── RESPONSIVE ── */
 @media (max-width: 900px) {
-    .overview,
-    .detail-section {
-        flex-direction: column;
-        padding: 0 2rem;
+    .overview {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    main {
+        --gutter: 1.25rem;
+        gap: 5rem;
+        padding-bottom: 5rem;
     }
 
-    .game-screenshot,
-    .detail-image {
-        width: 100%;
+    .chart-grid {
+        gap: 2rem;
     }
 }

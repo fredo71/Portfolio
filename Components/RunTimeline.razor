@@ -86,58 +86,51 @@
 
     [Parameter] public string Title { get; set; } = "The whole run";
     [Parameter] public string? Note { get; set; }
+    [Parameter, EditorRequired] public double[] ElapsedS { get; set; } = [];
+    [Parameter, EditorRequired] public double[] FpsPerFrame { get; set; } = [];
+    [Parameter, EditorRequired] public Phase[] Phases { get; set; } = [];
 
-    const double Duration = 60;      // seconds of capture
+    const double Duration = 60;      // seconds of capture, fixed by the capture protocol
     const double AxisMax = 90;       // fps
     const int Columns = 220;         // one envelope pair per pixel column
 
     static readonly double[] Ticks = [0, 30, 60, 90];
 
-    static readonly Phase[] Phases =
-    [
-        new("scene load", 0, 8.3),
-        new("world fills in", 8.3, 4.0, Highlight: true),
-        new("free flight", 12.3, 47.7),
-    ];
+    double[] _lo = new double[Columns];
+    double[] _hi = new double[Columns];
+    double[] _mid = new double[Columns];
 
-    // PLACEHOLDER SHAPE. Deterministic stand-in for the real capture so the layout can be
-    // judged before the data exists. Replace these three arrays with per-column min/max/mean
-    // read from the run CSV; nothing else in this component needs to change.
-    static readonly double[] Lo = new double[Columns];
-    static readonly double[] Hi = new double[Columns];
-    static readonly double[] Mid = new double[Columns];
-
-    static RunTimeline()
+    protected override void OnParametersSet()
     {
-        var rng = new Random(7);
-        for (var i = 0; i < Columns; i++)
+        for (var c = 0; c < Columns; c++)
         {
-            var t = i / (double)(Columns - 1) * Duration;
-            double lo, hi;
+            var t0 = c / (double)Columns * Duration;
+            var t1 = c == Columns - 1 ? Duration : (c + 1) / (double)Columns * Duration;
 
-            if (t < 8.3)
+            double lo = 0, hi = 0, sum = 0;
+            var count = 0;
+            for (var i = 0; i < ElapsedS.Length; i++)
             {
-                // nothing is being drawn yet
-                lo = 0.1; hi = 0.6;
-            }
-            else if (t < 12.3)
-            {
-                // the queue catching up: wide, ragged, dipping hard
-                var k = (t - 8.3) / 4.0;                      // 0 -> 1 across the phase
-                lo = 6 + 34 * k + rng.NextDouble() * 12;
-                hi = 62 + 30 * (1 - k) + rng.NextDouble() * 10;
-            }
-            else
-            {
-                // settled: narrow band with the occasional single-frame dip
-                lo = 54 + rng.NextDouble() * 6;
-                hi = 68 + rng.NextDouble() * 7;
-                if (rng.NextDouble() < 0.06) lo -= 8 + rng.NextDouble() * 6;
+                var inBucket = c == Columns - 1
+                    ? ElapsedS[i] >= t0 && ElapsedS[i] <= t1
+                    : ElapsedS[i] >= t0 && ElapsedS[i] < t1;
+                if (!inBucket) continue;
+
+                var fps = FpsPerFrame[i];
+                if (count == 0) { lo = fps; hi = fps; } else { lo = Math.Min(lo, fps); hi = Math.Max(hi, fps); }
+                sum += fps;
+                count++;
             }
 
-            Lo[i] = Math.Clamp(lo, 0, AxisMax);
-            Hi[i] = Math.Clamp(hi, 0, AxisMax);
-            Mid[i] = (Lo[i] + Hi[i]) / 2;
+            if (count == 0)
+            {
+                lo = c > 0 ? _lo[c - 1] : 0;
+                hi = c > 0 ? _hi[c - 1] : 0;
+            }
+
+            _lo[c] = Math.Clamp(lo, 0, AxisMax);
+            _hi[c] = Math.Clamp(hi, 0, AxisMax);
+            _mid[c] = count == 0 ? (_lo[c] + _hi[c]) / 2 : Math.Clamp(sum / count, 0, AxisMax);
         }
     }
 
@@ -154,33 +147,33 @@
     static double Y(double fps) => 220 - Math.Clamp(fps / AxisMax, 0, 1) * 220;
 
     // Upper edge left-to-right, lower edge back again: the band between best and worst.
-    static string EnvelopePath()
+    string EnvelopePath()
     {
         var sb = new System.Text.StringBuilder();
         for (var i = 0; i < Columns; i++)
-            sb.Append(i == 0 ? 'M' : 'L').Append(N(X(i))).Append(' ').Append(N(Y(Hi[i]))).Append(' ');
+            sb.Append(i == 0 ? 'M' : 'L').Append(N(X(i))).Append(' ').Append(N(Y(_hi[i]))).Append(' ');
         for (var i = Columns - 1; i >= 0; i--)
-            sb.Append('L').Append(N(X(i))).Append(' ').Append(N(Y(Lo[i]))).Append(' ');
+            sb.Append('L').Append(N(X(i))).Append(' ').Append(N(Y(_lo[i]))).Append(' ');
         return sb.Append('Z').ToString();
     }
 
-    static string MeanPath()
+    string MeanPath()
     {
         var sb = new System.Text.StringBuilder();
         for (var i = 0; i < Columns; i++)
-            sb.Append(i == 0 ? 'M' : 'L').Append(N(X(i))).Append(' ').Append(N(Y(Mid[i]))).Append(' ');
+            sb.Append(i == 0 ? 'M' : 'L').Append(N(X(i))).Append(' ').Append(N(Y(_mid[i]))).Append(' ');
         return sb.ToString().TrimEnd();
     }
 
-    static (double Lowest, double Typical) StatsFor(Phase p)
+    (double Lowest, double Typical) StatsFor(Phase p)
     {
         double lowest = AxisMax, sum = 0; var n = 0;
         for (var i = 0; i < Columns; i++)
         {
             var t = i / (double)(Columns - 1) * Duration;
             if (t < p.Start || t > p.Start + p.Length) continue;
-            lowest = Math.Min(lowest, Lo[i]);
-            sum += Mid[i];
+            lowest = Math.Min(lowest, _lo[i]);
+            sum += _mid[i];
             n++;
         }
         return n == 0 ? (0, 0) : (lowest, sum / n);

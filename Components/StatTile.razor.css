@@ -1,10 +1,11 @@
+/* Data carries the visual weight on this page: a real surface, not a hairline
+   on the page background. Every tile is weighted the same — emphasis is the
+   section prose's job, not the tile's. */
 .stat {
-    flex: 1 1 150px;
-    min-width: 140px;
-    padding: 1.1rem 1.25rem;
-    border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.10);
-    background-color: rgba(255, 255, 255, 0.02);
+    padding: 1.25rem 1.35rem;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background-color: var(--backgrounds-light);
 }
 
 /* Proportional figures on stat values - never tabular at display size. */

@@ -37,7 +37,7 @@ figcaption {
     position: absolute;
     right: 0;
     transform: translateY(50%);
-    font-size: 0.7rem;
+    font-size: 0.9rem;
     font-variant-numeric: tabular-nums;
     color: var(--text-secondary);
 }
@@ -93,7 +93,7 @@ svg {
     position: absolute;
     right: 0;
     bottom: 3px;
-    font-size: 0.66rem;
+    font-size: 0.82rem;
     color: var(--text-secondary);
     white-space: nowrap;
 }
@@ -127,7 +127,10 @@ svg {
     flex-direction: column;
     gap: 1px;
     flex-basis: 0;
-    min-width: 0;
+    /* A floor, not just 0: a very short phase (real captures can be well under the
+       ~7% this was tuned for) must still fit one word per wrapped line, not one
+       letter per line. */
+    min-width: 4rem;
     padding: 0.45rem 0.5rem;
     border-radius: 5px;
     border-top: 2px solid rgba(255, 255, 255, 0.14);
@@ -140,21 +143,21 @@ svg {
 
 /* The narrow phase is ~7% of the row, so names wrap rather than truncate. */
 .phase-name {
-    font-size: 0.72rem;
+    font-size: 0.82rem;
     line-height: 1.25;
     color: var(--text-secondary);
     overflow-wrap: break-word;
 }
 
 .phase-time {
-    font-size: 0.9rem;
+    font-size: 1.05rem;
     font-weight: 600;
     color: var(--text-primary);
     font-variant-numeric: tabular-nums;
 }
 .axis-title {
     margin: 0.5rem 0 0 44px;
-    font-size: 0.75rem;
+    font-size: 0.85rem;
     color: var(--text-secondary);
 }
 
