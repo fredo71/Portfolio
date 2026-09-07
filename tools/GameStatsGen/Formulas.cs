@@ -121,8 +121,10 @@ public sealed class Formulas
 
     public string AvgGpuPctBudget() => N0(Mean(_built.Select(GpuPct)));
 
+    // The whole run, not just the built phase: the chart is read against the
+    // build, so the build has to be inside it.
     public double[] GpuOverTime() =>
-        Downsampling.BucketMean(_built, TBuild, 60, ChartPoints, GpuPct);
+        Downsampling.BucketMean(_whole, 0, 60, ChartPoints, GpuPct);
 
     public string AvgFpsBuilt() => N0(1000.0 / Mean(_built.Select(r => r.FrameTimeMs)));
 

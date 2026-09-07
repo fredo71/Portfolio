@@ -53,6 +53,11 @@ public static class CodeGenerator
         sb.AppendLine("        new(60, \"60 fps\"),");
         sb.AppendLine("    ];");
         sb.AppendLine();
+        sb.AppendLine("    static readonly LineChart.Marker[] BuildCompleteMarker =");
+        sb.AppendLine("    [");
+        sb.AppendLine($"        new({f.TBuild.ToString("0.###", CultureInfo.InvariantCulture)}, \"world complete\"),");
+        sb.AppendLine("    ];");
+        sb.AppendLine();
 
         sb.AppendLine("    // §3 — Once it is built");
         Const(sb, "MaxGpuPctBudget", f.MaxGpuPctBudget());

@@ -1,5 +1,17 @@
-<div class="project-card">
-    <img src="@ImageUrl" alt="@Title" class="project-thumbnail" />
+<div class="project-card @(Featured ? "featured" : "")">
+    @if (Featured)
+    {
+        <span class="featured-badge">Projet phare</span>
+    }
+    @if (!string.IsNullOrEmpty(VideoUrl))
+    {
+        <video class="project-thumbnail" src="@VideoUrl" poster="@ImageUrl"
+               autoplay muted loop playsinline preload="metadata"></video>
+    }
+    else
+    {
+        <img src="@ImageUrl" alt="@Title" class="project-thumbnail" />
+    }
     <div class="project-info">
         <h3>@Title</h3>
         <p>@Description</p>
@@ -15,7 +27,13 @@
         }
         else
         {
-            <a href="@Link" target="_blank" class="btn-styled">@LinkLabel</a>
+            <a href="@Link" target="_blank" class="btn-styled @(Featured ? "btn-featured" : "")">
+                @LinkLabel
+                @if (Featured)
+                {
+                    <i class="bi bi-arrow-right"></i>
+                }
+            </a>
         }
     </div>
 </div>
@@ -28,4 +46,6 @@
     [Parameter] public string LinkLabel { get; set; } = "View";
     [Parameter] public List<string> Tags { get; set; } = new();
     [Parameter] public bool IsPrivate { get; set; } = false;
+    [Parameter] public string VideoUrl { get; set; } = "";
+    [Parameter] public bool Featured { get; set; } = false;
 }

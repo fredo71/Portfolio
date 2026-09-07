@@ -1,234 +1,455 @@
 @page "/Game"
 
 <main>
-
-    <div class="hero">
-        <h1>Hex Strategy Game</h1>
-        <p class="hero-sub">A Civilization-inspired strategy game built from scratch in Unity.</p>
-        <div class="hero-actions">
-            <a href="https://github.com/fredo71" target="_blank" class="btn-styled">
-                <i class="bi bi-github"></i> GitHub
-            </a>
-            <span class="wip-badge">Work in Progress</span>
-        </div>
-    </div>
-
-    @* ───────────────────────── §1 — What is this? ───────────────────────── *@
+    @* ───────────────────────── Title ───────────────────────── *@
     <section class="section">
+        <div class="hero">
+            <h1>Hex Strategy Game</h1>
+            <p class="hero-sub">Procedural hexagonal world engine &mdash; Unity, C#</p>
+            <div class="hero-actions">
+                <a href="https://github.com/fredo71/unity-hex-terrain-renderer" target="_blank" class="btn-styled">
+                    <i class="bi bi-github"></i> GitHub
+                </a>
+            </div>
+        </div>
+    </section>
+
+    @* ───────────────────────── What it is, then the figures ───────────────────────── *@ 
+    <section class="section section-card">
+        @* Explanation beside its footage. The three step cards below stack instead,
+           because there the claim has to be read before the evidence means anything. *@
+           
         <div class="overview">
-            <video class="game-screenshot"
-                   src="video/hexmap-generation.mp4"
-                   poster="video/hexmap-generation.jpg"
-                   autoplay muted loop playsinline preload="metadata"
-                   aria-label="Hex terrain filling in region by region as the world is generated">
-            </video>
             <div class="overview-text">
                 <h2>What is this?</h2>
                 <p>
-                    <strong>A hexagonal world, procedurally generated, at a size you set.</strong>
+                    <strong>A hexagonal world, generated procedurally, at whatever size you choose.</strong>
                     Nothing is built before it is needed: the ground nearest you appears first, and the
-                    rest fills in behind it while you are already moving. From a cold start the whole map
-                    is finished in about four seconds.
+                    rest fills in behind while you are already moving. From a cold start, the whole map
+                    is finished in @BuildTime seconds.
+                </p>
+                <p>
+                    What is finished is the engine underneath: the world itself, and everything
+                    needed to generate and draw it at this size. Building it out into a full
+                    strategy game is the work ahead.
                 </p>
             </div>
+
+            <figure class="overview-figure">
+                <video class="asset-media"
+                       src="video/hexmap-flythrough.mp4"
+                       poster="video/hexmap-flythrough.jpg"
+                       autoplay muted loop playsinline preload="metadata"
+                       aria-label="Camera flying over the finished hexagonal map">
+                </video>
+                <figcaption>A camera pass over a finished world.</figcaption>
+            </figure>
         </div>
 
+        @* The numbers, as numbers — kept out of the title so they read as
+           measurements rather than as a slogan. *@
         <div class="kpi-row">
             <StatTile Value="@TotalHexTiles" Label="hex tiles in the world" />
-            <StatTile Value="@PctFramesBelow30Overview" Unit="%" Label="of frames below 30 fps" />
+            <StatTile Value="@BuildTime" Unit="s" Label="to fill the whole map from cold" />
             <StatTile Value="@AvgFpsOverview" Unit="fps" Label="average across the whole run" />
-            <StatTile Value="@TimeToFirstHex" Unit="s" Label="before the first hex is on screen" />
             <StatTile Value="@TreeCountWorld" Label="trees and foliage placed across the map" />
         </div>
 
-        <div class="method">
-            <h3>How this was measured</h3>
-            <p>
-                One 60-second capture. The game starts cold, generates the world, then flies a camera
-                along a fixed waypoint path that repeats every 20 seconds so the same ground
-                comes round a little over twice.
-                <span class="rig">
-                    Recorded on a GTX 1650 Ti laptop GPU with an i5-10300H, at 1920&times;1080
-                    fullscreen, vsync off, no frame cap, from a development build in Unity 6000.5.7f1.
-                </span>
+        <div class="problem">
+            <div class="problem-label">The problem I started from</div>
+            <p class="problem-quote">
+                &ldquo;My first version blocked the main thread at launch. The game was unplayable
+                before it had even begun.&rdquo;
             </p>
+        </div>
 
-            <RunTimeline Title="The whole run, frame by frame"
-                         Note="Every frame of the capture as frames per second. The shaded band spans the worst and best frame in each column, so no single spike is sampled away."
-                         ElapsedS="RunTimelineElapsedS"
-                         FpsPerFrame="RunTimelineFps"
-                         Phases="RunTimelinePhases" />
+        <div class="media-pair">
+            <figure class="media-frame">
+                <img class="asset-media"
+                     src="video/hexmap-flythrough.jpg"
+                     alt="Aerial view of the whole finished hexagonal world under low light" />
+                <figcaption>
+                    The complete world, @TotalHexTiles tiles, after @BuildTime seconds of generation.
+                </figcaption>
+            </figure>
+            <figure class="media-frame">
+                <img class="asset-media"
+                     src="images/hexmap-closeup.png"
+                     alt="Ground-level view of the terrain: low-poly trees receding toward distant hills and a river" />
+                <figcaption>
+                    At ground level: @TreeCountWorld trees and foliage placed across the map.
+                </figcaption>
+            </figure>
         </div>
     </section>
 
-    @* ───────────────────────── §2 — Building the world ───────────────────────── *@
+    @* ───────────────────────── 01 · 02 · 03 — one claim, one proof ───────────────────────── *@
     <section class="section">
-        <div class="section-head">
-            <h2>Building the world</h2>
-            <h3>What it costs to generate 225 chunks while the game keeps rendering.</h3>
+        <div class="steps">
+
+            @* ── 01 — generation ── *@
+            <div class="step">
+                <div class="step-eyebrow">01 &mdash; generation</div>
+                <h2 class="step-claim">
+                    The world is cut into chunks, meshed on worker threads while the player is
+                    already moving.
+                </h2>
+
+                <div class="step-body">
+                    <p>
+                        Meshing @TotalHexTiles tiles on the main thread means the thread that draws
+                        frames spends its time computing them instead: the world still arrives, but
+                        at 14 fps and three times slower. I cut the map into chunks, queued
+                        them, and let a pool of worker threads drain the queue in the background. The
+                        main thread does nothing but collect finished chunks and display them &mdash;
+                        which leaves it the time it needs to keep drawing frames.
+                    </p>
+                    <p>
+                        The first tile reaches the screen after @TimeToFirstHex seconds from a cold
+                        start, scene load included, and the player can move while the rest of the
+                        world is still being built behind them.
+                    </p>
+                </div>
+
+                <div class="step-evidence">
+                    @* "before" figures come from capture 2026-09-07_175219, the same build with
+                       the worker pool removed. They are literals because GameStatsGen generates
+                       from one capture at a time and has no comparison-capture support yet. *@
+                    <div class="evidence-panel evidence-panel--wide">
+                        <div class="panel-label">average frame rate while the world builds</div>
+
+                        <div class="compare-row">
+                            <span class="compare-name">before</span>
+                            <div class="compare-track"><div class="compare-fill compare-fill--before" style="width: 20%"></div></div>
+                            <span class="compare-value">14 fps</span>
+                        </div>
+                        <div class="compare-row">
+                            <span class="compare-name">after</span>
+                            <div class="compare-track"><div class="compare-fill compare-fill--after" style="width: 100%"></div></div>
+                            <span class="compare-value">69 fps</span>
+                        </div>
+
+                        <div class="panel-label panel-label--spaced">before the first hex is on screen</div>
+
+                        <div class="compare-row">
+                            <span class="compare-name">before</span>
+                            <div class="compare-track"><div class="compare-fill compare-fill--before" style="width: 100%"></div></div>
+                            <span class="compare-value">10.7 s</span>
+                        </div>
+                        <div class="compare-row">
+                            <span class="compare-name">after</span>
+                            <div class="compare-track"><div class="compare-fill compare-fill--after" style="width: 66%"></div></div>
+                            <span class="compare-value">@TimeToFirstHex s</span>
+                        </div>
+
+                        <p class="figure-note">
+                            Both measured from the first hex appearing to the map being complete, so the
+                            cold-start frames before anything renders are excluded from either side.
+                        </p>
+                    </div>
+
+                    @* The whole run rather than just the build: the claim is that building
+                       costs almost nothing, and that is only visible against the rest. *@
+                    <div class="evidence-panel evidence-panel--full">
+                        <RunTimeline Title="The build barely registers against the rest of the run"
+                                     Note=@($"Every frame of the capture as frames per second. The world fills in during the highlighted band — {PctFramesBelow30Build} % of frames there fall below 30 fps. The shaded band spans the worst and best frame in each column, so no single spike is sampled away.")
+                                     ElapsedS="RunTimelineElapsedS"
+                                     FpsPerFrame="RunTimelineFps"
+                                     Phases="RunTimelinePhases" />
+                    </div>
+                </div>
+            </div>
+
+            @* ── 02 — meshing ── *@
+            <div class="step">
+                <div class="step-eyebrow">02 &mdash; meshing</div>
+                <h2 class="step-claim">
+                    The terrain changes resolution continuously, with nothing popping on screen.
+                </h2>
+
+                <div class="step-body">
+                    <p>
+                        Distant terrain does not need as many triangles as the ground under your feet.
+                        Every chunk is meshed at several levels of detail &mdash; the same ground,
+                        subdivided finely close to the camera and coarsely far from it, so triangles
+                        are spent only where they can actually be seen.
+                    </p>
+                </div>
+
+                <div class="step-evidence">
+                    <div class="evidence-panel evidence-panel--full">
+                        <div class="lod-figure">
+                            <figure class="lod-hex">
+                                <svg viewBox="0 0 100 100" aria-hidden="true">
+                                    <path class="lod-hex-grid" d="M50 50L96 50M61.5 50L55.75 59.96M73 50L61.5 69.92M84.5 50L67.25 79.88M84.5 50L90.25 59.96M73 50L84.5 69.92M61.5 50L78.75 79.88M67.25 79.88L78.75 79.88M61.5 69.92L84.5 69.92M55.75 59.96L90.25 59.96M50 50L73 89.84M55.75 59.96L44.25 59.96M61.5 69.92L38.5 69.92M67.25 79.88L32.75 79.88M67.25 79.88L61.5 89.84M61.5 69.92L50 89.84M55.75 59.96L38.5 89.84M32.75 79.88L38.5 89.84M38.5 69.92L50 89.84M44.25 59.96L61.5 89.84M50 50L27 89.84M44.25 59.96L38.5 50M38.5 69.92L27 50M32.75 79.88L15.5 50M32.75 79.88L21.25 79.88M38.5 69.92L15.5 69.92M44.25 59.96L9.75 59.96M15.5 50L9.75 59.96M27 50L15.5 69.92M38.5 50L21.25 79.88M50 50L4 50M38.5 50L44.25 40.04M27 50L38.5 30.08M15.5 50L32.75 20.12M15.5 50L9.75 40.04M27 50L15.5 30.08M38.5 50L21.25 20.12M32.75 20.12L21.25 20.12M38.5 30.08L15.5 30.08M44.25 40.04L9.75 40.04M50 50L27 10.16M44.25 40.04L55.75 40.04M38.5 30.08L61.5 30.08M32.75 20.12L67.25 20.12M32.75 20.12L38.5 10.16M38.5 30.08L50 10.16M44.25 40.04L61.5 10.16M67.25 20.12L61.5 10.16M61.5 30.08L50 10.16M55.75 40.04L38.5 10.16M50 50L73 10.16M55.75 40.04L61.5 50M61.5 30.08L73 50M67.25 20.12L84.5 50M67.25 20.12L78.75 20.12M61.5 30.08L84.5 30.08M55.75 40.04L90.25 40.04M84.5 50L90.25 40.04M73 50L84.5 30.08M61.5 50L78.75 20.12" />
+                                    <path class="lod-hex-edge" d="M96 50L73 89.84L27 89.84L4 50L27 10.16L73 10.16Z" />
+                                </svg>
+                                <figcaption>LOD 1 &mdash; nearest</figcaption>
+                            </figure>
+
+                            <figure class="lod-hex">
+                                <svg viewBox="0 0 100 100" aria-hidden="true">
+                                    <path class="lod-hex-grid" d="M50 50L96 50M73 50L61.5 69.92M73 50L84.5 69.92M61.5 69.92L84.5 69.92M50 50L73 89.84M61.5 69.92L38.5 69.92M61.5 69.92L50 89.84M38.5 69.92L50 89.84M50 50L27 89.84M38.5 69.92L27 50M38.5 69.92L15.5 69.92M27 50L15.5 69.92M50 50L4 50M27 50L38.5 30.08M27 50L15.5 30.08M38.5 30.08L15.5 30.08M50 50L27 10.16M38.5 30.08L61.5 30.08M38.5 30.08L50 10.16M61.5 30.08L50 10.16M50 50L73 10.16M61.5 30.08L73 50M61.5 30.08L84.5 30.08M73 50L84.5 30.08" />
+                                    <path class="lod-hex-edge" d="M96 50L73 89.84L27 89.84L4 50L27 10.16L73 10.16Z" />
+                                </svg>
+                                <figcaption>LOD 3</figcaption>
+                            </figure>
+
+                            <figure class="lod-hex">
+                                <svg viewBox="0 0 100 100" aria-hidden="true">
+                                    <path class="lod-hex-grid" d="M50 50L96 50M50 50L73 89.84M50 50L27 89.84M50 50L4 50M50 50L27 10.16M50 50L73 10.16" />
+                                    <path class="lod-hex-edge" d="M96 50L73 89.84L27 89.84L4 50L27 10.16L73 10.16Z" />
+                                </svg>
+                                <figcaption>LOD 5 &mdash; furthest</figcaption>
+                            </figure>
+                        </div>
+                        <div class="panel-label">
+                            The same ground at three of the five levels: 6,720, 1,270 and 756 triangles
+                            per chunk. Further from the camera, fewer triangles describe the same relief.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-body">
+                    <p>
+                        The saving is real, but changing level naively introduces a defect of its own.
+                        A chunk's geometry changes all at once, the relief jumps, and the eye catches
+                        it immediately &mdash; the effect usually called popping.
+                    </p>
+                    <p>
+                        Geomorphing removes the jump. Rather than switching hard from one mesh to the
+                        next, the vertices of the two levels are driven toward each other as camera
+                        distance changes, and the swap happens only once the two shapes already match.
+                    </p>
+                </div>
+
+                <div class="step-evidence">
+                    <div class="evidence-panel evidence-panel--full">
+                        <video class="asset-media"
+                               src="video/geomorphing.mp4"
+                               poster="video/geomorphing.jpg"
+                               autoplay muted loop playsinline preload="metadata"
+                               aria-label="The coarse terrain mesh, tinted red, rising through the detailed mesh until the two match">
+                        </video>
+                        <div class="panel-label">
+                            Swapping one mesh for another makes the relief jump. Geomorphing pushes the
+                            two into each other until they match, and swaps only at that point &mdash; so
+                            there is nothing left to see. The coarse mesh is painted red here to make the
+                            movement visible; in play it is smaller, quicker and unnoticeable.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @* ── 03 — shadows ── *@
+            <div class="step">
+                <div class="step-eyebrow">03 &mdash; shadows</div>
+                <h2 class="step-claim">
+                    Every tile on the map casts a shadow, @TreeCountWorld trees included, in
+                    @MaxGpuPctBudget % of the video-memory budget.
+                </h2>
+
+                <div class="step-body">
+                    <p>
+                        Making every object on a map this size cast a shadow is normally out of budget:
+                        @TreeCountWorld trees means @TreeCountWorld more objects to rasterise from the
+                        light&rsquo;s point of view, every frame. So I stopped doing it every frame. The
+                        map is photographed from the sun&rsquo;s point of view one chunk at a time
+                        &mdash; never more than one photograph per frame &mdash; and each photograph
+                        is cached.
+                    </p>
+                    <p>
+                        Between them, a shading pixel marches a short ray through the cached depth
+                        toward wherever the sun is now, correcting the cached shadow for however far
+                        the sun has moved since it was taken. Near the camera Unity&rsquo;s own
+                        real-time shadows still do the work; the cache takes over further out, where it
+                        costs a ray march against a texture instead of a second pass over the
+                        map&rsquo;s geometry.
+                    </p>
+                    <p>
+                        The cache is a photograph, so it only knows what the sun could see when it was
+                        taken: a tree standing behind another at bake time casts nothing until the next
+                        photograph catches it.
+                    </p>
+                    <p>
+                        The result: the entire map is shaded, vegetation included, and all of it fits
+                        inside @MaxGpuPctBudget % of available video memory.
+                    </p>
+                </div>
+
+                @* The pair needs the width — at a third of the row the difference between
+                   them is too small to see, which is the only thing they are here to show. *@
+                <div class="step-evidence">
+                    <div class="evidence-panel">
+                        <img class="asset-media"
+                             src="images/hexmap-shadows-off.jpg"
+                             alt="The map with shadow casting disabled: flat, evenly lit terrain" />
+                        <div class="panel-label">
+                            Without shadows: the relief reads flat and the trees float.
+                        </div>
+                    </div>
+
+                    <div class="evidence-panel">
+                        <img class="asset-media"
+                             src="images/hexmap-shadows-on.jpg"
+                             alt="The same terrain with shadow casting enabled: hills and tree clusters cast onto the ground" />
+                        <div class="panel-label">
+                            With shadows: the hills take shape and the trees sit on the ground.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-evidence">
+                    <div class="evidence-panel evidence-panel--wide">
+                        <video class="asset-media"
+                               src="video/hexmap-shadows.mp4"
+                               poster="video/hexmap-shadows.jpg"
+                               autoplay muted loop playsinline preload="metadata"
+                               aria-label="Shadows sweeping across the finished map as the sun moves, camera fixed">
+                        </video>
+                        <div class="panel-label">
+                            The camera is fixed; the sun is not. Each chunk is re-photographed on its
+                            own schedule, more often the closer it is to the camera.
+                        </div>
+                    </div>
+
+                    <div class="evidence-panel evidence-panel--figure">
+                        <div class="panel-figure">@MaxGpuPctBudget %</div>
+                        <div class="panel-label">of the video-memory budget, at peak</div>
+                    </div>
+
+                    <div class="evidence-panel evidence-panel--full">
+                        <LineChart Title=@($"Video memory peaks at {MaxGpuPctBudget} % of budget, shadows included")
+                                   Note="Percentage of the video-memory budget across the whole run, generation included."
+                                   Values="GpuOverTime"
+                                   Unit="%"
+                                   XEnd="60"
+                                   Markers="BuildCompleteMarker"
+                                   XAxisLabel="second"
+                                   XAxisLabelPlural="seconds" />
+                    </div>
+                </div>
+            </div>
+
         </div>
-
-        <p class="section-note">
-            Chunks are meshed on a pool of background worker threads, so the main thread barely notices
-            225 of them building at once &mdash; frame rate holds steady while the world fills in.
-        </p>
-
-        <div class="kpi-row kpi-row--compact">
-            <StatTile Value="@BuildTime" Unit="s" Label="to fill the whole map from cold" />
-            <StatTile Value="@PctFramesBelow30Build" Unit="%" Label="of frames below 30 fps while building" />
-        </div>
-
-        <div class="chart-grid">
-            <LineChart Title="Hexes finished over time"
-                       Note="Cumulative hex tiles finished, from a cold start to the whole map."
-                       Values="HexesFinishedOverTime"
-                       Unit="hexes"
-                       XAxisLabel="second"
-                       XAxisLabelPlural="seconds"
-                       XTitle="seconds since generation started" />
-            <LineChart Title="Frame rate while building"
-                       Note="Frames per second across the same window."
-                       Values="FpsOverTimeBuild"
-                       Unit="fps"
-                       XAxisLabel="second"
-                       XAxisLabelPlural="seconds"
-                       Thresholds="FpsThresholds" />
-        </div>
-
-        <p class="section-note">
-            Memory for the map is reserved once, up front, so nothing grows while chunks are still
-            being built.
-        </p>
-
-        <div class="kpi-row kpi-row--compact">
-            <StatTile Value="@AvgRamPctBudget" Unit="%" Label="of the memory budget, on average while building" />
-            <StatTile Value="@MaxRamPctBudget" Unit="%" Label="of the memory budget, at peak while building" />
-        </div>
-
-        <LineChart Title="Memory (RAM) used while building"
-                   Note="Percentage of the stated memory budget, sampled every frame."
-                   Values="RamPctOverTime"
-                   Unit="%"
-                   XAxisLabel="second"
-                   XAxisLabelPlural="seconds" />
     </section>
 
-    @* ───────────────────────── §3 — Once it is built ───────────────────────── *@
-    <section class="section">
-        <div class="section-head">
-            <h2>Once it is built</h2>
-            <h3>49 seconds of flying over the finished map.</h3>
+    @* ───────────────────────── The way out ───────────────────────── *@
+    <section class="section section-card">
+
+        <div class="outro">
+            <div class="outro-title">This site is a project too</div>
+            <div class="outro-stack">Blazor, ASP.NET, CI/CD, CSS</div>
         </div>
 
-        <p class="section-note">
-            Every tile on the map casts a shadow, not just the ones near the camera &mdash; but what
-            actually matters is how many of those shadows are live on screen at once.
-        </p>
-
-        <div class="kpi-row kpi-row--compact">
-            <StatTile Value="@ShadowsOnScreen" Label="hexes casting a live shadow on screen at once" />
+        <div class="tech-row">
+            <span class="tech-tag">Unity</span>
+            <span class="tech-tag">C#</span>
+            <span class="tech-tag">Burst / Jobs</span>
+            <a href="https://github.com/fredo71/unity-hex-terrain-renderer" target="_blank" class="tech-link">
+                <i class="bi bi-github"></i> read the code
+            </a>
         </div>
 
-        <video class="asset-media"
-               src="video/hexmap-shadows.mp4"
-               poster="video/hexmap-shadows.jpg"
-               autoplay muted loop playsinline preload="metadata"
-               aria-label="Shadows sweeping across the finished map, camera fixed">
-        </video>
-
-        <p class="section-note">
-            Detail drops off gradually with distance instead of popping in, so nothing changes abruptly
-            as it leaves view.
-        </p>
-
-        <div class="kpi-row kpi-row--compact">
-            <StatTile Value="@DrawDistanceHexes" Label="hexes visible before elements are culled" />
-            <StatTile Value="@BiggestTrianglePctOfScreen" Unit="%" Label="of the screen &mdash; the largest triangle, worst case" />
-        </div>
-
-        <img class="asset-media"
-             src="images/hexmap-triangles.png"
-             alt="Finished terrain with each triangle rendered a distinct flat color" />
-
-        <p class="section-note">
-            All of that stays inside the video-memory budget, even with the whole map&rsquo;s shadows and
-            detail live at once.
-        </p>
-
-        <div class="kpi-row kpi-row--compact">
-            <StatTile Value="@MaxGpuPctBudget" Unit="%" Label="of the video-memory budget, at peak" />
-            <StatTile Value="@AvgGpuPctBudget" Unit="%" Label="of the video-memory budget, on average" />
-        </div>
-
-        <LineChart Title="GPU memory used"
-                   Note="Percentage of the video-memory budget, sampled every frame."
-                   Values="GpuOverTime"
-                   Unit="%"
-                   XAxisLabel="second"
-                   XAxisLabelPlural="seconds" />
-
-        <p class="section-note">
-            None of it costs frame rate &mdash; the map holds comfortably above 30 fps once everything
-            is built.
-        </p>
-
-        <div class="kpi-row kpi-row--compact">
-            <StatTile Value="@AvgFpsBuilt" Unit="fps" Label="average frame rate, whole map drawn" />
-        </div>
-
-        <LineChart Title="Frame rate, once the map is built"
-                   Note="Frames per second across the 49-second flythrough."
-                   Values="FpsOverTimeBuilt"
-                   Unit="fps"
-                   XAxisLabel="second"
-                   XAxisLabelPlural="seconds"
-                   Thresholds="FpsThresholds" />
     </section>
 
+    @* ───────────────────────── Everything that backs the claims above ───────────────────────── *@
     <section class="section">
-        <div class="section-head">
-            <h2>Under the hood</h2>
-            <h3>The systems behind the game.</h3>
-        </div>
+        <details class="appendix">
+            <summary>The measurements in detail</summary>
 
-        <div class="feature-cards">
-            <div class="feature-card">
-                <h3>Coordinate System</h3>
-                <p>
-                    Each tile has a position on a <span class="code-inline">2D offset grid</span> that maps
-                    directly to a location in the world. Finding the six neighbors of any tile is done by
-                    checking whether the tile is on an even or odd row, which shifts the neighboring columns
-                    by half a step. To convert a click in the world back to a tile, the position is projected
-                    into <span class="code-inline">cube coordinate space</span> where the three axes always
-                    sum to zero, then rounded to the nearest valid tile.
-                </p>
-            </div>
+            <div class="appendix-body">
 
-            <div class="feature-card">
-                <h3>Burst Job System</h3>
-                <p>
-                    Building the map mesh happens entirely off the main thread so the game never freezes
-                    during generation. The main thread hands each chunk to a
-                    <span class="code-inline">thread pool</span> of workers, each of which launches three
-                    <span class="code-inline">Burst-compiled</span> Unity Jobs in parallel: one computes
-                    vertex positions, one texture coordinates, and one lighting normals. Mesh data lives in
-                    <span class="code-inline">unmanaged NativeArrays</span> rather than on the managed heap.
-                </p>
-            </div>
+                <div class="appendix-block">
+                    <h3>How this was measured</h3>
+                    <p class="section-note">
+                        One 60-second capture. The game starts cold, generates the world, then flies a
+                        camera along a fixed waypoint path that repeats every 20 seconds so the same
+                        ground comes round a little over twice.
+                        <span class="rig">
+                            Recorded on a GTX 1650 Ti laptop GPU with an i5-10300H, at 1920&times;1080
+                            fullscreen, vsync off, no frame cap, from a development build in Unity 6000.5.7f1.
+                        </span>
+                    </p>
 
-            <div class="feature-card">
-                <h3>Decorator System</h3>
-                <p>
-                    Trees and foliage are rendered using <span class="code-inline">GPU instancing</span> via
-                    Unity&rsquo;s <span class="code-inline">DrawMeshInstanced</span>, sending thousands of
-                    positions to the GPU in a single draw call without creating any objects in the scene.
-                    Close to the camera, full 3D meshes are used. Further away they switch to flat
-                    <span class="code-inline">impostor billboards</span> that look similar but are far
-                    cheaper to render. As the camera approaches, more instances gradually appear by
-                    <span class="code-inline">density band</span>.
-                </p>
+                    <div class="kpi-row">
+                        <StatTile Value="@TotalHexTiles" Label="hex tiles in the world" />
+                        <StatTile Value="@PctFramesBelow30Overview" Unit="%" Label="of frames below 30 fps" />
+                        <StatTile Value="@PctFramesBelow30Build" Unit="%" Label="of frames below 30 fps while building" />
+                        <StatTile Value="@AvgFpsOverview" Unit="fps" Label="average across the whole run" />
+                        <StatTile Value="@TimeToFirstHex" Unit="s" Label="before the first hex is on screen" />
+                        <StatTile Value="@TreeCountWorld" Label="trees and foliage placed across the map" />
+                    </div>
+                </div>
+
+                <div class="appendix-block">
+                    <h3>Once it is built</h3>
+                    <p class="section-note">
+                        Every tile on the map casts a shadow, not just the ones near the camera.
+                        Detail then drops off gradually with distance instead of popping in, so nothing
+                        changes abruptly as it leaves view.
+                    </p>
+
+                    <div class="kpi-row kpi-row--compact">
+                        <StatTile Value="@DrawDistanceHexes" Label="hexes visible before elements are culled" />
+                        <StatTile Value="@BiggestTrianglePctOfScreen" Unit="%" Label="of the screen &mdash; the largest triangle, worst case" />
+                    </div>
+
+                    <figure class="media-frame">
+                        <img class="asset-media"
+                             src="images/hexmap-triangles.png"
+                             alt="Finished terrain with each triangle rendered a distinct flat color" />
+                        <figcaption>
+                            @BiggestTrianglePctOfScreen % of the screen &mdash; the largest
+                            triangle, worst case
+                        </figcaption>
+                    </figure>
+
+                    <p class="section-note">
+                        All of that stays inside the video-memory budget, even with the whole map&rsquo;s
+                        shadows and detail live at once &mdash; and none of it costs frame rate.
+                    </p>
+
+                    <div class="kpi-row kpi-row--compact">
+                        <StatTile Value="@MaxGpuPctBudget" Unit="%" Label="of the video-memory budget, at peak" />
+                        <StatTile Value="@AvgGpuPctBudget" Unit="%" Label="of the video-memory budget, on average" />
+                        <StatTile Value="@AvgFpsBuilt" Unit="fps" Label="average frame rate, whole map drawn" />
+                    </div>
+                </div>
+
+                <div class="appendix-block">
+                    <h3>Under the hood</h3>
+
+                    <div class="feature-cards">
+                        <div class="feature-card">
+                            <h3>Burst Job System</h3>
+                            <p>
+                                Building the map mesh happens entirely off the main thread so the game never freezes
+                                during generation. The main thread hands each chunk to a
+                                <span class="code-inline">thread pool</span> of workers, each of which launches three
+                                <span class="code-inline">Burst-compiled</span> Unity Jobs in parallel: one computes
+                                vertex positions, one texture coordinates, and one lighting normals. Mesh data lives in
+                                <span class="code-inline">unmanaged NativeArrays</span> rather than on the managed heap.
+                            </p>
+                        </div>
+
+                        <div class="feature-card">
+                            <h3>Decorator System</h3>
+                            <p>
+                                Trees and foliage are rendered using <span class="code-inline">GPU instancing</span> via
+                                Unity&rsquo;s <span class="code-inline">DrawMeshInstanced</span>, sending thousands of
+                                positions to the GPU in a single draw call without creating any objects in the scene.
+                                Close to the camera, full 3D meshes are used. Further away they switch to flat
+                                <span class="code-inline">impostor billboards</span> that look similar but are far
+                                cheaper to render. As the camera approaches, more instances gradually appear by
+                                <span class="code-inline">density band</span>.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
             </div>
-        </div>
+        </details>
     </section>
 
 </main>

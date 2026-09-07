@@ -54,10 +54,36 @@ section{
     font-size: 2rem;
 }
 
+.project-showcase {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.project-row {
+    display: flex;
+    gap: 2rem;
+}
+
+.project-row ::deep .project-card {
+    width: auto;
+    flex: 1;
+}
+
+@media (max-width: 800px) {
+    .project-row {
+        flex-direction: column;
+    }
+}
+
 .flex-box-vertical{
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 2rem;
     margin: 30px;
 }
 

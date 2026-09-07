@@ -32,6 +32,14 @@
                 </span>
             }
 
+            @* markers: vertical counterpart to a threshold, for calling out a moment *@
+            @foreach (var m in Markers)
+            {
+                <span class="marker" style="left:@Pct(MarkerFraction(m.X))%">
+                    <span class="marker-label">@m.Label</span>
+                </span>
+            }
+
             @* geometry only - Razor reserves the SVG text element, so every label is HTML *@
             <svg viewBox="0 0 760 200" preserveAspectRatio="none" aria-hidden="true" focusable="false">
                 <path class="area" d="@AreaPath()" />
@@ -56,11 +64,11 @@
                 <span class="band @(flip ? "band--flip" : "")"
                       style="left:@Pct(FX(lo))%;width:@Pct(Math.Max(0.004, FX(hi) - FX(lo)))%"
                       tabindex="0" role="img"
-                      aria-label="@($"{Cap(XAxisLabelPlural)} {XStart + lo} to {XStart + hi}, peak {N1(peak)} {Unit}")">
+                      aria-label="@($"{Cap(XAxisLabelPlural)} {XLabel(lo)} to {XLabel(hi + 1)}, peak {N1(peak)} {Unit}")">
                     <span class="crosshair"></span>
                     <span class="readout">
                         <strong>@N1(peak) @Unit</strong>
-                        <span>@XAxisLabelPlural @(XStart + lo)&ndash;@(XStart + hi)</span>
+                        <span>@XAxisLabelPlural @XLabel(lo)&ndash;@XLabel(hi + 1)</span>
                     </span>
                 </span>
             }
@@ -68,8 +76,8 @@
     </div>
 
     <div class="xaxis">
-        <span>@XAxisLabel @XStart</span>
-        <span>@XAxisLabel @(XStart + Values.Length - 1)</span>
+        <span>@XAxisLabel @XLabel(0)</span>
+        <span>@XAxisLabel @XLabel(Values.Length)</span>
     </div>
     @if (!string.IsNullOrEmpty(XTitle))
     {
@@ -102,18 +110,31 @@
 
 @code {
     public record Threshold(double Value, string Label);
+    public record Marker(double X, string Label);
 
     [Parameter, EditorRequired] public string Title { get; set; } = "";
     [Parameter] public string? Note { get; set; }
     [Parameter, EditorRequired] public double[] Values { get; set; } = [];
     [Parameter] public int XStart { get; set; }
+    /// Real x value the last bucket ends at. Without it the axis falls back to
+    /// counting buckets, which only reads correctly when one bucket is one unit.
+    [Parameter] public double? XEnd { get; set; }
     [Parameter] public string XTitle { get; set; } = "";
     [Parameter] public Threshold[] Thresholds { get; set; } = [];
+    [Parameter] public Marker[] Markers { get; set; } = [];
     [Parameter] public string Unit { get; set; } = "ms";
     [Parameter] public string XAxisLabel { get; set; } = "frame";
     [Parameter] public string XAxisLabelPlural { get; set; } = "frames";
 
     static string Cap(string s) => s.Length == 0 ? s : char.ToUpperInvariant(s[0]) + s[1..];
+
+    string XLabel(int bucketEdge)
+    {
+        var value = XEnd is null
+            ? XStart + Math.Min(bucketEdge, Values.Length - 1)
+            : XStart + (XEnd.Value - XStart) * bucketEdge / Values.Length;
+        return value.ToString("0.#", CultureInfo.InvariantCulture);
+    }
 
     const double VbW = 760, VbH = 200;
     const int BandSize = 5;
@@ -154,6 +175,15 @@
 
     // Fractions of the plot box: 0..1 left to right, 0..1 top to bottom.
     double FX(int i) => Values.Length < 2 ? 0 : (double)i / (Values.Length - 1);
+
+    // Placed against the buckets rather than the raw span, so a marker lands where
+    // the line itself puts that moment.
+    double MarkerFraction(double x)
+    {
+        if (Values.Length < 2) return 0;
+        var bucket = XEnd is null ? x - XStart : (x - XStart) / (XEnd.Value - XStart) * Values.Length;
+        return Math.Clamp(bucket / (Values.Length - 1), 0, 1);
+    }
     double FY(double v) => 1 - Math.Clamp(v / AxisMax(), 0, 1);
 
     string LinePath()

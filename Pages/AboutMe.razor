@@ -66,27 +66,33 @@
         <section class="tile-centered-width" id="Project">
             <h2>Projets</h2>
             <h3>Quelques projets que j'ai réalisés.</h3>
-            <div class="flex-box-vertical">
+
+            <div class="project-showcase">
                 <ProjectCard
-                    Title="Jeu Unity"
+                    Title="Jeu Unity — Moteur de terrain hexagonal"
                     Description="Un jeu développé avec Unity, intégrant des shaders personnalisés, de la génération de maillage et du multithreading."
-                    ImageUrl="images/game.jpg"
+                    ImageUrl="video/hexmap-flythrough.jpg"
+                    VideoUrl="video/hexmap-flythrough.mp4"
                     Link="/Game"
-                    LinkLabel="Voir la page"
+                    LinkLabel="Voir la page complète"
+                    Featured="true"
                     Tags='new List<string> { "Unity", "C#", "HLSL" , "Job System"}' />
-                <ProjectCard
-                    Title="Ce Portfolio"
-                    Description="Un portfolio personnel développé avec Blazor WebAssembly et CSS."
-                    ImageUrl="images/code.jpg"
-                    Link="https://github.com/fredo71/Portfolio"
-                    LinkLabel="Voir sur GitHub"
-                    Tags='new List<string> { "Blazor", "C#", "CSS" , "HTML" }' />
-                <ProjectCard
-                    Title="Travail chez Davey Bickford"
-                    Description="Logiciel de gestion du matériel développé en Python et Django."
-                    ImageUrl="images/company logo.png"
-                    IsPrivate="true"
-                    Tags='new List<string> { "Python", "Django", "CSS" , "HTML" }' />
+
+                <div class="project-row">
+                    <ProjectCard
+                        Title="Ce Portfolio"
+                        Description="Un portfolio personnel développé avec Blazor WebAssembly et CSS."
+                        ImageUrl="images/code.jpg"
+                        Link="https://github.com/fredo71/Portfolio"
+                        LinkLabel="Voir sur GitHub"
+                        Tags='new List<string> { "Blazor", "C#", "CSS" , "HTML" }' />
+                    <ProjectCard
+                        Title="Travail chez Davey Bickford"
+                        Description="Logiciel de gestion du matériel développé en Python et Django."
+                        ImageUrl="images/company logo.png"
+                        IsPrivate="true"
+                        Tags='new List<string> { "Python", "Django", "CSS" , "HTML" }' />
+                </div>
             </div>
         </section>
 

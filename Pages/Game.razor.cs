@@ -49,6 +49,11 @@ public partial class Game
         new(60, "60 fps"),
     ];
 
+    static readonly LineChart.Marker[] BuildCompleteMarker =
+    [
+        new(10.853, "world complete"),
+    ];
+
     // §3 — Once it is built
     const string MaxGpuPctBudget = "14";
     const string AvgGpuPctBudget = "12";
@@ -60,5 +65,5 @@ public partial class Game
     static readonly double[] FpsOverTimeBuilt =
     [ 80.735, 71.755, 68.456, 65.625, 65.121, 64.077, 71.438, 75.831, 76.682, 71.039, 66.004, 62.66, 65.052, 61.762, 69.235, 74.214, 74.487, 70.139, 64.775, 62.815 ];
     static readonly double[] GpuOverTime =
-    [ 10.166, 10.419, 10.617, 10.689, 10.731, 10.757, 11.074, 12.009, 12.167, 12.512, 12.541, 12.589, 12.689, 12.836, 12.977, 13.343, 13.325, 13.335, 13.24, 13.238 ];
+    [ 0, 5.383, 9.082, 9.913, 10.267, 10.611, 10.688, 10.736, 10.821, 11.774, 12.154, 12.521, 12.539, 12.658, 12.797, 12.989, 13.402, 13.295, 13.259, 13.239 ];
 }

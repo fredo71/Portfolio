@@ -82,6 +82,24 @@ svg {
     white-space: nowrap;
 }
 
+/* Vertical counterpart to a threshold: marks a moment rather than a level. */
+.marker {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 0;
+    border-left: 1px dashed rgba(255, 255, 255, 0.30);
+}
+
+.marker-label {
+    position: absolute;
+    top: 2px;
+    left: 6px;
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+}
+
 /* ── DATA ── */
 .area {
     fill: var(--primary);
