@@ -52,17 +52,17 @@
         }
     </div>
 
-    <p class="axis-title">seconds since launch</p>
+    <p class="axis-title">secondes depuis le lancement</p>
 
     <details class="tableview">
-        <summary>Table view</summary>
+        <summary>Vue tableau</summary>
         <table>
             <thead>
                 <tr>
                     <th scope="col">Phase</th>
-                    <th scope="col">Duration</th>
-                    <th scope="col">Lowest</th>
-                    <th scope="col">Typical</th>
+                    <th scope="col">Durée</th>
+                    <th scope="col">Minimum</th>
+                    <th scope="col">Typique</th>
                 </tr>
             </thead>
             <tbody>
@@ -84,7 +84,7 @@
 @code {
     public record Phase(string Name, double Start, double Length, bool Highlight = false);
 
-    [Parameter] public string Title { get; set; } = "The whole run";
+    [Parameter] public string Title { get; set; } = "Toute la session";
     [Parameter] public string? Note { get; set; }
     [Parameter, EditorRequired] public double[] ElapsedS { get; set; } = [];
     [Parameter, EditorRequired] public double[] FpsPerFrame { get; set; } = [];
@@ -184,8 +184,8 @@
         var parts = Phases.Select(p =>
         {
             var (lo, mean) = StatsFor(p);
-            return $"{p.Name}, {N1(p.Length)} seconds, typically {N0(mean)} fps, lowest {N0(lo)} fps";
+            return $"{p.Name}, {N1(p.Length)} secondes, typiquement {N0(mean)} fps, minimum {N0(lo)} fps";
         });
-        return "Frame rate across the whole 60-second run. " + string.Join(". ", parts) + ".";
+        return "Images par seconde sur toute la session de 60 secondes. " + string.Join(". ", parts) + ".";
     }
 }

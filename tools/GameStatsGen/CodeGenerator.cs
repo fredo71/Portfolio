@@ -55,7 +55,7 @@ public static class CodeGenerator
         sb.AppendLine();
         sb.AppendLine("    static readonly LineChart.Marker[] BuildCompleteMarker =");
         sb.AppendLine("    [");
-        sb.AppendLine($"        new({f.TBuild.ToString("0.###", CultureInfo.InvariantCulture)}, \"world complete\"),");
+        sb.AppendLine($"        new({f.TBuild.ToString("0.###", CultureInfo.InvariantCulture)}, \"monde complet\"),");
         sb.AppendLine("    ];");
         sb.AppendLine();
 
@@ -94,9 +94,9 @@ public static class CodeGenerator
 
         sb.AppendLine($"    static readonly RunTimeline.Phase[] {name} =");
         sb.AppendLine("    [");
-        sb.AppendLine($"        new(\"scene load\", 0, {sceneLoad}),");
-        sb.AppendLine($"        new(\"world fills in\", {sceneLoad}, {worldFillsInLength}, Highlight: true),");
-        sb.AppendLine($"        new(\"free flight\", {freeFlightStart}, {freeFlightLength}),");
+        sb.AppendLine($"        new(\"chargement de la scène\", 0, {sceneLoad}),");
+        sb.AppendLine($"        new(\"remplissage du monde\", {sceneLoad}, {worldFillsInLength}, Highlight: true),");
+        sb.AppendLine($"        new(\"vol libre\", {freeFlightStart}, {freeFlightLength}),");
         sb.AppendLine("    ];");
     }
 }

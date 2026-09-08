@@ -64,7 +64,7 @@
                 <span class="band @(flip ? "band--flip" : "")"
                       style="left:@Pct(FX(lo))%;width:@Pct(Math.Max(0.004, FX(hi) - FX(lo)))%"
                       tabindex="0" role="img"
-                      aria-label="@($"{Cap(XAxisLabelPlural)} {XLabel(lo)} to {XLabel(hi + 1)}, peak {N1(peak)} {Unit}")">
+                      aria-label="@($"{Cap(XAxisLabelPlural)} {XLabel(lo)} à {XLabel(hi + 1)}, pic {N1(peak)} {Unit}")">
                     <span class="crosshair"></span>
                     <span class="readout">
                         <strong>@N1(peak) @Unit</strong>
@@ -85,13 +85,13 @@
     }
 
     <details class="tableview">
-        <summary>Table view</summary>
+        <summary>Vue tableau</summary>
         <table>
             <thead>
                 <tr>
                     <th scope="col">@Cap(XAxisLabelPlural)</th>
-                    <th scope="col">Median</th>
-                    <th scope="col">Peak</th>
+                    <th scope="col">Médiane</th>
+                    <th scope="col">Pic</th>
                 </tr>
             </thead>
             <tbody>
@@ -123,8 +123,8 @@
     [Parameter] public Threshold[] Thresholds { get; set; } = [];
     [Parameter] public Marker[] Markers { get; set; } = [];
     [Parameter] public string Unit { get; set; } = "ms";
-    [Parameter] public string XAxisLabel { get; set; } = "frame";
-    [Parameter] public string XAxisLabelPlural { get; set; } = "frames";
+    [Parameter] public string XAxisLabel { get; set; } = "image";
+    [Parameter] public string XAxisLabelPlural { get; set; } = "images";
 
     static string Cap(string s) => s.Length == 0 ? s : char.ToUpperInvariant(s[0]) + s[1..];
 
