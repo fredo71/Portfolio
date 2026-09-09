@@ -117,8 +117,9 @@
                         Mailler @TotalHexTiles tuiles sur le thread principal, c'est demander au thread qui
                         dessine les images de passer son temps à les calculer à la place : le monde arrive
                         quand même, mais à 14 fps et trois fois plus lentement. J'ai découpé la carte en
-                        chunks, mis ces chunks en file, et laissé un pool de threads vider la file en
-                        arrière-plan. Le thread principal ne fait plus que récupérer les chunks terminés et
+                        chunks, mis ces chunks en file, et confié cette file à un thread de fond qui la vide
+                        en distribuant le maillage aux threads de travail du Job System d'Unity.
+                        Le thread principal ne fait plus que récupérer les chunks terminés et
                         les afficher &mdash; ce qui lui laisse le temps qu'il faut pour continuer à dessiner
                         des images.
                     </p>
@@ -459,13 +460,14 @@
                             <p>
                                 La construction du maillage de la carte se fait entièrement hors du thread
                                 principal, pour que le jeu ne se fige jamais pendant la génération. Le thread
-                                principal confie chaque chunk à un <span class="code-inline">thread pool</span>
-                                de workers, dont chacun lance trois Unity Jobs
-                                <span class="code-inline">Burst-compiled</span> en parallèle : un pour les
-                                positions des sommets, un pour les coordonnées de texture, un pour les normales
-                                d'éclairage. Les données de maillage vivent dans des
-                                <span class="code-inline">NativeArrays</span> non managés plutôt que sur le tas
-                                managé.
+                                principal confie les chunks à un unique thread de fond, qui planifie les Unity
+                                Jobs <span class="code-inline">Burst-compiled</span> : pour chaque hexagone, un
+                                premier job calcule les positions des sommets, puis deux autres en dépendent et
+                                s'exécutent en parallèle &mdash; les coordonnées de texture et les normales
+                                d'éclairage. Les hexagones d'un même chunk s'enchaînent les uns après les
+                                autres, mais plusieurs chunks avancent en parallèle. Les données de maillage
+                                vivent dans des <span class="code-inline">NativeArrays</span> non managés
+                                plutôt que sur le tas managé.
                             </p>
                         </div>
 
