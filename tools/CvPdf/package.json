@@ -1,0 +1,14 @@
+{
+  "name": "cv-pdf",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Renders the /Cv page of the portfolio to a static A4 PDF.",
+  "scripts": {
+    "build": "node generate.mjs",
+    "postinstall": "playwright install chromium"
+  },
+  "devDependencies": {
+    "playwright": "^1.47.0"
+  }
+}

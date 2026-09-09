@@ -1,164 +1,414 @@
-.profile-photo {
-        border-radius: 50%;
-        /* Cercle */
-        object-fit: cover;
-        /* Recadre sans déformer */
-        padding: 30px;
-        width: 100%;
-        aspect-ratio: 1 / 1;
+/* The whole CV scales from a single number: --base. Screen and A4 differ only
+   in what that number is, so tuning the PDF to one page is one edit.
 
-        object-position: center top;
-        /* pan to face if needed */
-        object-view-box: inset(20%)
-    }
+   Layout: main column on the left spanning both rows, photo cell and rail
+   stacked in the right column. Photo and rail share the navy, so the dark is
+   a single full-height block down one edge — not a bent shape wrapping two
+   sides — and the reader meets the profile before the sidebar. */
 
-    .center {
-        display: flex;
-        justify-content: center;
-        align-items: center;
+/* The surface the sheet sits on, so the page reads as a document with edges
+   rather than white bleeding into white. Screen only — see the print block,
+   which strips it, or Chromium paints it into the PDF as a grey A4 border. */
+.cv-page {
+    padding: calc(var(--base) * 1.6) calc(var(--base) * 1.2);
+    min-height: calc(100vh - var(--nav-height));
+    /* Grey, not navy. A dark surround pulls the navy rail toward the
+       background, so the page reads as a white column floating in the dark.
+       On grey the sheet and its rail read as one object on a surface, and
+       there is no near-miss hue match to get wrong. */
+    background: #e6e9ee;
+    --base: 15px;
+}
+
+.cv-layout {
+    --base: 15px;
+
+    --navy: #2b3444;
+    --accent: #4f81bd;
+    --accent-ink: #1a5aa8;
+    --ink: #1f2430;
+    --ink-soft: #58606f;
+
+    /* On navy: everything stays light. Hierarchy comes from weight and size,
+       not from dimming the colour — mid-tone blues on navy were unreadable
+       at print size. */
+    --on-navy: #f2f6fc;
+    --on-navy-soft: #d3e0f0;
+    --on-navy-rule: rgba(255, 255, 255, 0.4);
+
+    --gap: calc(var(--base) * 1.7);
+    --pad: calc(var(--base) * 1.5);
+
+    display: grid;
+    grid-template-columns: 1fr 33%;
+    grid-template-rows: auto 1fr;
+
+    max-width: 1050px;
+    margin: 0 auto;
+    background: #ffffff;
+    /* Lifts the sheet off the surface. Two stops — a tight one for the edge,
+       a wide one for the drop — so the white side still has a defined border
+       against grey without needing an outline. */
+    box-shadow: 0 1px 3px rgba(23, 29, 41, 0.12),
+                0 12px 32px rgba(23, 29, 41, 0.16);
+    color: var(--ink);
+    font-family: 'Lato', sans-serif;
+    font-size: var(--base);
+    line-height: 1.45;
+}
+
+.cv-main {
+    grid-column: 1;
+    grid-row: 1 / 3;
+    padding: var(--gap) var(--gap) calc(var(--base) * 1.2);
+}
+
+.cv-photo-cell {
+    grid-column: 2;
+    grid-row: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--gap) var(--pad) calc(var(--base) * 0.6);
+    background: var(--navy);
+}
+
+.cv-rail {
+    grid-column: 2;
+    grid-row: 2;
+    padding: calc(var(--base) * 0.6) var(--pad) calc(var(--base) * 1.2);
+    background: var(--navy);
+    color: var(--on-navy);
+}
+
+.cv-photo {
+    width: min(100%, calc(var(--base) * 10));
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center 20%;
+    border: 3px solid var(--on-navy-rule);
+}
+
+/* Identity ------------------------------------------------------------- */
+
+.cv-identity {
+    padding-bottom: calc(var(--base) * 1.1);
+    margin-bottom: var(--gap);
+    border-bottom: 3px solid var(--navy);
+}
+
+.cv-identity h1 {
+    margin: 0;
+    font-size: calc(var(--base) * 2.7);
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--navy);
+}
+
+.cv-role {
+    margin: calc(var(--base) * 0.1) 0 0;
+    font-size: calc(var(--base) * 1.25);
+    font-weight: 400;
+    color: var(--accent-ink);
+}
+
+.cv-contact {
+    display: flex;
+    flex-wrap: wrap;
+    gap: calc(var(--base) * 0.25) calc(var(--base) * 1.2);
+    margin: calc(var(--base) * 0.8) 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.cv-contact li {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--base) * 0.4);
+    font-size: calc(var(--base) * 0.9);
+}
+
+.cv-contact i {
+    color: var(--accent);
+    font-size: calc(var(--base) * 0.88);
+}
+
+.cv-contact a {
+    color: inherit;
+    text-decoration: none;
+}
+
+/* Web profiles read as buttons — they are what a reader is meant to click. */
+.cv-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: calc(var(--base) * 0.4);
+    margin: calc(var(--base) * 0.6) 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.cv-links a {
+    display: inline-flex;
+    align-items: center;
+    gap: calc(var(--base) * 0.35);
+    padding: calc(var(--base) * 0.2) calc(var(--base) * 0.65);
+    border: 1.5px solid var(--accent-ink);
+    border-radius: 999px;
+    color: var(--accent-ink);
+    font-size: calc(var(--base) * 0.85);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.cv-links i {
+    font-size: calc(var(--base) * 0.9);
+}
+
+/* Rail ----------------------------------------------------------------- */
+
+.cv-rail h2 {
+    color: #ffffff;
+    border-bottom-color: var(--on-navy-rule);
+}
+
+.rail-label {
+    margin: 0;
+    font-size: calc(var(--base) * 0.8);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--on-navy-soft);
+}
+
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: calc(var(--base) * 0.3);
+    margin: calc(var(--base) * 0.35) 0 calc(var(--base) * 0.8);
+    padding: 0;
+    list-style: none;
+}
+
+.tag {
+    padding: calc(var(--base) * 0.12) calc(var(--base) * 0.6);
+    border: 1px solid var(--on-navy-rule);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+    font-size: calc(var(--base) * 0.82);
+    color: var(--on-navy);
+    white-space: nowrap;
+}
+
+.rail-entry + .rail-entry {
+    margin-top: calc(var(--base) * 0.7);
+}
+
+.rail-date {
+    margin: 0;
+    font-size: calc(var(--base) * 0.85);
+    font-weight: 700;
+    color: var(--on-navy-soft);
+}
+
+.rail-title {
+    margin: 0;
+    font-size: calc(var(--base) * 0.95);
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.rail-meta {
+    margin: 0;
+    font-size: calc(var(--base) * 0.88);
+    color: var(--on-navy-soft);
+}
+
+.rail-line {
+    margin: 0 0 calc(var(--base) * 0.25);
+    font-size: calc(var(--base) * 0.95);
+}
+
+.cv-rail strong {
+    color: #ffffff;
+}
+
+/* Main ----------------------------------------------------------------- */
+
+section + section {
+    margin-top: var(--gap);
+}
+
+h2 {
+    margin: 0 0 calc(var(--base) * 0.65);
+    padding-bottom: calc(var(--base) * 0.3);
+    border-bottom: 2px solid var(--accent);
+    font-size: calc(var(--base) * 0.95);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.13em;
+    color: var(--navy);
+}
+
+.profile {
+    margin: 0;
+    color: var(--ink-soft);
+}
+
+.entry + .entry {
+    margin-top: calc(var(--base) * 1.1);
+}
+
+/* Role on the left, dates hard right — the two things a recruiter scans for. */
+.entry-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: calc(var(--base) * 0.8);
+}
+
+.entry h3 {
+    margin: 0;
+    font-size: calc(var(--base) * 1.1);
+    font-weight: 700;
+    color: var(--navy);
+}
+
+.entry-date {
+    flex: none;
+    font-size: var(--base);
+    font-weight: 700;
+    color: var(--accent-ink);
+    white-space: nowrap;
+}
+
+/* The date a reader is actually hunting for: what he is doing now. Filled
+   rather than merely larger, so it is found without being read for. */
+.entry-date.is-current {
+    padding: calc(var(--base) * 0.08) calc(var(--base) * 0.55);
+    border-radius: 999px;
+    background: var(--accent-ink);
+    color: #ffffff;
+}
+
+.entry-meta {
+    margin: calc(var(--base) * 0.1) 0 calc(var(--base) * 0.45);
+    font-size: calc(var(--base) * 0.9);
+    color: var(--ink-soft);
+}
+
+.entry ul {
+    margin: 0;
+    padding-left: calc(var(--base) * 1.1);
+}
+
+.entry li {
+    margin-bottom: calc(var(--base) * 0.2);
+}
+
+/* Underlined, bold and a darker blue so they are unmissable on white. */
+.entry-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: calc(var(--base) * 0.9);
+    margin: 0 0 calc(var(--base) * 0.45);
+}
+
+.entry-link {
+    display: inline-flex;
+    align-items: center;
+    gap: calc(var(--base) * 0.3);
+    color: var(--accent-ink);
+    font-size: calc(var(--base) * 0.92);
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    text-decoration-thickness: 1.5px;
+}
+
+.entry-link i {
+    font-size: calc(var(--base) * 0.85);
+    text-decoration: none;
+}
+
+/* Same treatment as entry-link, but sitting inside a sentence: no icon and no
+   flex box, so it stays on the text baseline and wraps with the line. */
+.text-link {
+    color: var(--accent-ink);
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    text-decoration-thickness: 1.5px;
+}
+
+/* Narrow screens ------------------------------------------------------- */
+
+@media (max-width: 720px) {
+    /* No room to show a surround on a phone — let the sheet go edge to edge. */
+    .cv-page {
+        padding: 0;
+        min-height: 0;
     }
 
     .cv-layout {
-        min-height: 100vh;
-        max-width: 1050px;
-        display: flex;
-        font-family: 'Lato', sans-serif;
+        --base: 14px;
+
+        grid-template-columns: 1fr;
+        grid-template-rows: none;
+        box-shadow: none;
     }
 
-    .skill-grid {
-        display: grid;
-        grid-template-columns: auto auto;
-        align-items: center;
-        gap: 6px 16px;
-        padding-left: 20px;
-
+    /* Explicit placement has to be undone or the single column collapses. */
+    .cv-main,
+    .cv-photo-cell,
+    .cv-rail {
+        grid-column: auto;
+        grid-row: auto;
     }
 
-    .left-padding{
-        padding-left: 20px;
+    /* Photo up top, then the profile, then the rail. */
+    .cv-photo-cell {
+        order: -1;
+        padding: var(--gap) var(--pad);
     }
 
-    main {
-        background-color: #ededed;
-        padding-left: 20px;
+    .cv-rail {
+        padding-top: var(--gap);
+    }
+}
+
+/* A4 — drives both Ctrl+P and the generated PDF ------------------------- */
+
+@media print {
+    /* The surface is a screen affordance. On paper it would print as a grey
+       border around the sheet. */
+    .cv-page {
+        padding: 0;
+        min-height: 0;
+        background: none;
     }
 
-    main h2::after {
-        content: '';
-        display: block;
-        width: 90%;
-        height: 2px;
-        background-color: #000000;
-        margin-top: 6px;
-        margin-bottom: 6px;
-    }
-
-    .bottom-margin {
-        margin-bottom: 30px;
-    }
-
-    .date {
-        font-weight: bold;
-        font-size: 28px;
-    }
-
-    .skill-collum {
-        display: grid;
-        grid-template-columns: auto auto auto auto;
-        align-items: center;
-        max-width: 80%;
-        gap: 6px 24px;
-
-    }
-
-    aside {
-        background-color: #323b4c;
-        max-width: 35%;
-        color: white;
-        padding: 5px;
-        padding-bottom: 20px;
-
-    }
-
-    p,
-    ul,
-    li {
-        font-size: 22px;
-        margin: 0px;
-
-    }
-
-    aside h2::after {
-        content: '';
-        display: block;
-        width: 90%;
-        height: 2px;
-        background-color: #ffffff;
-        margin-top: 6px;
-        margin-bottom: 6px;
-    }
-
-    h1 {
-        margin-top: 50px;
-        font-size: 60px;
-    }
-
-    h2 {
-        font-size: 40px;
-        font-weight: bold;
-        margin-top: 35px;
-    }
-
-    h3 {
-        margin-top: 5px;
-        margin-bottom: 10px;
-        font-size: 30px;
-    }
-
-@media (max-width: 640px) {
     .cv-layout {
-        flex-direction: column;
-        max-width: 100%;
+        --base: 14px;
+
+        box-shadow: none;
+        width: 210mm;
+        /* 296mm, not 297: sub-pixel rounding on an exact-height box tips the
+           render onto a second, empty page. */
+        min-height: 296mm;
+        max-width: none;
+        margin: 0;
     }
 
-    aside {
-        max-width: 100%;
-        padding-bottom: 20px;
+    section,
+    .entry,
+    .rail-entry {
+        break-inside: avoid;
     }
 
-    .skill-collum {
-        display: grid;
-        grid-template-columns: auto auto;
-        align-items: center;
-        gap: 6px 24px;
-        max-width: 100%;
-    }
-
-    h1 {
-        font-size: 32px;
-        margin-top: 20px;
-    }
-
-    h2 {
-        font-size: 22px;
-        margin-top: 16px;
-    }
-
+    h2,
     h3 {
-        font-size: 18px;
-    }
-
-    p, ul, li {
-        font-size: 15px;
-    }
-
-    .date {
-        font-size: 17px;
-    }
-
-    main {
-        background-color: #ededed;
-        padding-left: 20px;
-        padding-bottom: 20px;
+        break-after: avoid;
     }
 }

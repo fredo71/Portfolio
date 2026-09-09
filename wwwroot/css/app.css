@@ -190,3 +190,46 @@ code {
     border: 1px solid var(--primary);
     color: var(--primary);
 }
+
+/* Printing ------------------------------------------------------------- */
+/* Drives Ctrl+P and the PDF built by tools/CvPdf. The page-specific A4
+   layout lives in Pages/Cv.razor.css; this strips the app chrome around it. */
+
+@page {
+    size: A4;
+    margin: 0;
+}
+
+@media print {
+    /* Without this the dark CV sidebar prints as blank white paper. */
+    *,
+    *::before,
+    *::after {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    html,
+    body {
+        margin: 0;
+        padding: 0;
+        background: #fff;
+    }
+
+    .page {
+        min-height: 0;
+    }
+
+    .menu-grid,
+    #blazor-error-ui,
+    .loading-progress,
+    .loading-progress-text {
+        display: none !important;
+    }
+
+    /* Links are dead ink on paper — drop the browser's blue, but leave
+       underlines alone so the CV's reference links still read as links. */
+    a {
+        color: inherit;
+    }
+}
