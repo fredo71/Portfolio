@@ -42,6 +42,28 @@ html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
+/* The dark used to come from each page's own wrapper, so anything they did not
+   cover — the 404, mobile overscroll — showed the browser's white. The print
+   block below puts it back to white for paper. */
+body {
+    background-color: var(--backgrounds-dark);
+    color: var(--text-primary);
+}
+
+/* Readable by screen readers and search engines, invisible on screen. */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+}
+
 h1:focus {
     outline: none;
 }
@@ -181,6 +203,37 @@ code {
 .btn-styled:hover::before {
     opacity: 1;
 }
+/* The 404. Global rather than scoped: it is rendered by App.razor's NotFound,
+   which has no scope id of its own. */
+.not-found {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    min-height: calc(100vh - var(--nav-height));
+    padding: 2rem;
+    text-align: center;
+}
+
+.not-found h1 {
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.not-found p {
+    margin: 0;
+    color: var(--text-secondary);
+}
+
+.not-found-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 0.5rem;
+}
+
 /* Shared tag chip — used by skills, experience and project cards. */
 .pill {
     display: inline-flex;

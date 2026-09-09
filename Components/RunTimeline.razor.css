@@ -147,6 +147,7 @@ svg {
     line-height: 1.25;
     color: var(--text-secondary);
     overflow-wrap: break-word;
+    hyphens: auto;
 }
 
 .phase-time {

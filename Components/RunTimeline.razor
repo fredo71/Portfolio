@@ -139,8 +139,8 @@
         (Math.Clamp(frac, 0, 1) * 100).ToString("0.###", CultureInfo.InvariantCulture);
 
     static string N(double v) => v.ToString("0.##", CultureInfo.InvariantCulture);
-    static string N0(double v) => v.ToString("0", CultureInfo.InvariantCulture);
-    static string N1(double v) => v.ToString("0.0", CultureInfo.InvariantCulture);
+    static string N0(double v) => FrenchNumbers.Format(v, "0");
+    static string N1(double v) => FrenchNumbers.Format(v, "0.0");
     static string Grow(double v) => v.ToString("0.##", CultureInfo.InvariantCulture);
 
     static double X(int i) => i / (double)(Columns - 1) * 1000;

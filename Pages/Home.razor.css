@@ -1,14 +1,10 @@
 .ImageCardGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  grid-gap: 1vW;
-  width: 80vW;
+  grid-gap: 1vw;
+  width: 80vw;
   padding: 20px;
-  justify-self: center;
-}
-
-main{
-    background-color: var(--backgrounds-dark);
+  margin: 0 auto;
 }
 
 @media (max-width: 640px) {

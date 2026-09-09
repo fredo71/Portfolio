@@ -1,4 +1,4 @@
-main {
+.game {
     /* One content column and one gutter for the whole page. Every block below
        sizes off these instead of carrying its own max-width. */
     --measure: 1040px;      /* charts, tiles, media, headings */
@@ -186,6 +186,15 @@ p {
 .media-frame figcaption {
     font-size: 0.8rem;
     color: var(--text-secondary);
+}
+
+/* Hangs off a figcaption to qualify how the clip was cut. Quieter than the caption
+   itself, so the measured numbers stay the thing that gets read first. */
+.caption-note {
+    display: block;
+    margin-top: 0.35rem;
+    font-size: 0.72rem;
+    opacity: 0.8;
 }
 
 /* Video and placeholder sit side by side, so they have to agree on a height. */
@@ -597,7 +606,7 @@ p {
 }
 
 @media (max-width: 640px) {
-    main {
+    .game {
         --gutter: 1.25rem;
         gap: 3.5rem;
         padding-bottom: 5rem;

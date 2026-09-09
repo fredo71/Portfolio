@@ -1,12 +1,15 @@
 @page "/"
-@inject NavigationManager Nav
 
 <PageTitle>Frédéric Larue — Accueil</PageTitle>
 
-<main>
-    <div class="ImageCardGrid">
-        <ImageCard Src="images/about me.jpg" Alt="À propos" Caption="À propos" OnClick='() => Nav.NavigateTo("/AboutMe")' />
-        <ImageCard Src="images/code.jpg" Alt="CV" Caption="CV" OnClick='() => Nav.NavigateTo("/Cv")' />
-        <ImageCard Src="images/game.jpg" Alt="Jeu" Caption="Jeu" OnClick='() => Nav.NavigateTo("/Game")' />
-    </div>
-</main>
+@* The gallery is the whole design here. The heading is visually hidden rather
+   than absent: without it this page has no title text at all, which leaves
+   FocusOnNavigate (App.razor) with nothing to focus and search engines with
+   nothing to index on the site's entry point. *@
+<h1 class="visually-hidden">Frédéric Larue — développeur C# / .NET</h1>
+
+<div class="ImageCardGrid">
+    <ImageCard Src="images/about me.jpg" Caption="À propos" Href="/AboutMe" />
+    <ImageCard Src="images/code.jpg" Caption="CV" Href="/Cv" />
+    <ImageCard Src="images/game.jpg" Caption="Jeu" Href="/Game" />
+</div>

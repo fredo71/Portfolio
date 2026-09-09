@@ -133,7 +133,26 @@ public sealed class Formulas
 
     static double RoundToNearest(double value, double step) => Math.Round(value / step) * step;
 
-    static string N0(double v) => v.ToString("N0", CultureInfo.InvariantCulture);
-    static string N1(double v) => v.ToString("0.0", CultureInfo.InvariantCulture);
-    static string N2(double v) => v.ToString("0.00", CultureInfo.InvariantCulture);
+    // These strings are rendered straight into a French page, so they follow
+    // French convention: comma for the decimal mark, narrow no-break space
+    // (U+202F) for thousands. InvariantCulture was producing "9,450" and "7.1",
+    // which a French reader parses as 9.45 and as a typo.
+    //
+    // Built from the invariant culture with the two separators overridden,
+    // rather than from fr-FR: this project sets InvariantGlobalization, so
+    // GetCultureInfo("fr-FR") throws. Spelling the separators out also pins
+    // them — real fr-FR uses U+00A0 on some runtimes and U+202F on others.
+    static readonly CultureInfo Fr = BuildFrenchNumberFormat();
+
+    static CultureInfo BuildFrenchNumberFormat()
+    {
+        var fr = (CultureInfo)CultureInfo.InvariantCulture.Clone();
+        fr.NumberFormat.NumberGroupSeparator = " ";
+        fr.NumberFormat.NumberDecimalSeparator = ",";
+        return fr;
+    }
+
+    static string N0(double v) => v.ToString("N0", Fr);
+    static string N1(double v) => v.ToString("0.0", Fr);
+    static string N2(double v) => v.ToString("0.00", Fr);
 }

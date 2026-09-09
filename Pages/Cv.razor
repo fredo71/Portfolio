@@ -9,6 +9,16 @@
 
    cv-page is the surface the sheet sits on (screen only, stripped in print). *@
 <div class="cv-page">
+
+@* Screen only — the PDF is what a recruiter actually keeps. Hidden in print,
+   where the page being looked at is already the document. *@
+<div class="cv-toolbar">
+    <a href="/cv-frederic-larue.pdf" download class="btn-styled">
+        <i class="bi bi-download" aria-hidden="true"></i>
+        Télécharger le CV en PDF
+    </a>
+</div>
+
 <div class="cv-layout">
 
     <div class="cv-main">
@@ -31,16 +41,16 @@
             <ul class="cv-links">
                 <li>
                     <a href="https://fredericlarue.com/AboutMe">
-                        <i class="bi bi-globe2" aria-hidden="true"></i>fredericlarue.com</a>
+                        <i class="bi bi-globe2" aria-hidden="true"></i>fredericlarue.com/AboutMe</a>
                 </li>
                 <li>
-                    <a href="https://github.com/fredo71">
+                    <a href="https://github.com/fredo71" target="_blank" rel="noopener noreferrer">
                         <i class="bi bi-github" aria-hidden="true"></i>github.com/fredo71</a>
                 </li>
                 @* Le libellé reste « LinkedIn » : le slug réel se termine par un
                    identifiant machine, illisible et sans intérêt sur un CV. *@
                 <li>
-                    <a href="https://www.linkedin.com/in/fr%C3%A9d%C3%A9ric-larue-55a41428b">
+                    <a href="https://www.linkedin.com/in/fr%C3%A9d%C3%A9ric-larue-55a41428b" target="_blank" rel="noopener noreferrer">
                         <i class="bi bi-linkedin" aria-hidden="true"></i>LinkedIn</a>
                 </li>
             </ul>
@@ -49,8 +59,8 @@
         <section>
             <h2>Profil</h2>
             <p class="profile">
-                Développeur C# / .NET, diplômé d'un master en informatique après trois ans
-                d'alternance et de cycle ingénieur. À l'aise sur le logiciel qui doit tenir
+                Développeur C# / .NET, diplômé d'un master en informatique après deux ans
+                d'alternance et quatre ans de cycle ingénieur. À l'aise sur le logiciel qui doit tenir
                 dans un budget de temps, de mémoire ou de calcul. Je l'ai appris en profilant mon
                 propre moteur de rendu plutôt qu'en devinant. Je recherche un poste de
                 développeur C# en CDI, mobile dans toute la France métropolitaine.
@@ -65,7 +75,7 @@
                     <h3>Développeur informatique (alternance)</h3>
                     <span class="entry-date">2023 – 2025</span>
                 </div>
-                <p class="entry-meta">Davey Bickford · Héry, Bourgogne-Franche-Comté</p>
+                <p class="entry-meta">Davey Bickford Enaex · Héry, Bourgogne-Franche-Comté</p>
                 <ul>
                     <li>Développement en autonomie d'un outil de gestion du matériel en Python.</li>
                     <li>Conteneurisation Docker de l'application et de ses dépendances.</li>
@@ -88,7 +98,7 @@
                 <p class="entry-links">
                     <a class="entry-link" href="/Game">
                         <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>fredericlarue.com/Game</a>
-                    <a class="entry-link" href="https://github.com/fredo71/unity-hex-terrain-renderer">
+                    <a class="entry-link" href="https://github.com/fredo71/unity-hex-terrain-renderer" target="_blank" rel="noopener noreferrer">
                         <i class="bi bi-github" aria-hidden="true"></i>Code source</a>
                 </p>
                 <ul>
@@ -106,8 +116,8 @@
                 <p class="entry-meta">Blazor WebAssembly / C#</p>
                 <p class="entry-links">
                     <a class="entry-link" href="/AboutMe">
-                        <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>fredericlarue.com</a>
-                    <a class="entry-link" href="https://github.com/fredo71/Portfolio">
+                        <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>fredericlarue.com/AboutMe</a>
+                    <a class="entry-link" href="https://github.com/fredo71/Portfolio" target="_blank" rel="noopener noreferrer">
                         <i class="bi bi-github" aria-hidden="true"></i>Code source</a>
                 </p>
                 <ul>
@@ -161,7 +171,7 @@
             <h2>Formation</h2>
             <div class="rail-entry">
                 <p class="rail-date">2023 – 2025</p>
-                <p class="rail-title">Master : Expert en informatique et système d'information</p>
+                <p class="rail-title">Master : Expert en informatique et systèmes d'information</p>
                 <p class="rail-meta">EPSI, Auxerre (en alternance)</p>
             </div>
             <div class="rail-entry">
