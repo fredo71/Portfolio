@@ -19,10 +19,23 @@ html {
   --text-primary: rgba(255, 255, 255, 0.75);
   --text-secondary: rgba(255, 255, 255, 0.50);
   
+  /* Layout */
+  --nav-height: max(10vh, 50px);
+
   /* Contexte */
   --success: rgba(11, 186, 131, 1);
   --warning: rgba(255, 168, 0, 1);
   --error: rgba(246, 78, 98, 1);
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
 }
 
 html, body {
@@ -144,6 +157,7 @@ code {
     border: 2px solid var(--backgrounds-light);
     background-color: var(--backgrounds-dark);
     color: var(--text-primary);
+    text-decoration: none;
     cursor: pointer;
     position: relative;
     transition: border-color 0.3s ease;
@@ -166,4 +180,13 @@ code {
 
 .btn-styled:hover::before {
     opacity: 1;
+}
+/* Shared tag chip — used by skills, experience and project cards. */
+.pill {
+    display: inline-flex;
+    font-size: 0.75rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    border: 1px solid var(--primary);
+    color: var(--primary);
 }

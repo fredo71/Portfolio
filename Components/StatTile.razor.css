@@ -1,0 +1,31 @@
+/* Data carries the visual weight on this page: a real surface, not a hairline
+   on the page background. Every tile is weighted the same — emphasis is the
+   section prose's job, not the tile's. */
+.stat {
+    padding: 1.25rem 1.35rem;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background-color: var(--backgrounds-light);
+}
+
+/* Proportional figures on stat values - never tabular at display size. */
+.stat-value {
+    font-size: 1.9rem;
+    font-weight: 600;
+    line-height: 1.1;
+    color: var(--text-primary);
+}
+
+.stat-unit {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-left: 3px;
+}
+
+.stat-label {
+    margin-top: 0.4rem;
+    font-size: 0.82rem;
+    line-height: 1.4;
+    color: var(--text-secondary);
+}

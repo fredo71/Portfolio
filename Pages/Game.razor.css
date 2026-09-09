@@ -1,0 +1,622 @@
+main {
+    /* One content column and one gutter for the whole page. Every block below
+       sizes off these instead of carrying its own max-width. */
+    --measure: 1040px;      /* charts, tiles, media, headings */
+    --measure-text: 68ch;   /* prose, so lines stay readable inside the column */
+    --gutter: 2rem;
+
+    /* The hairline every panel on the page is drawn with. One value, so the
+       cards cannot drift apart from each other. */
+    --card-line: rgba(255, 255, 255, 0.10);
+
+    background-color: var(--backgrounds-dark);
+    padding-top: 100px;
+    display: flex;
+    flex-direction: column;
+    gap: 5rem;
+    padding-bottom: 8rem;
+}
+
+h1, h2 {
+    color: var(--text-primary);
+}
+
+h3 {
+    color: var(--text-secondary);
+    font-size: 15px;
+    margin-bottom: 1rem;
+}
+
+p {
+    color: var(--text-secondary);
+    line-height: 1.7;
+}
+
+/* ── SECTIONS ── */
+/* The column is established once, here. Children fill it and are left-aligned,
+   so a single left edge runs the length of the page. */
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+    max-width: var(--measure);
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 var(--gutter);
+}
+
+.section-note {
+    max-width: var(--measure-text);
+    margin: 0;
+    font-size: 0.92rem;
+}
+
+/* Opt-in card look for a .section that has no card of its own yet.
+   Add this class alongside .section — it doesn't touch the shared rule,
+   so sections that already have their own cards (steps, tech-row, outro)
+   are unaffected. */
+.section-card {
+    /* Every other card on the page is an inner element, so it sits inside the
+       section's gutter. This one is the section, so it has to inset itself to
+       line up with them. */
+    width: calc(100% - 2 * var(--gutter));
+    max-width: calc(var(--measure) - 2 * var(--gutter));
+    padding: 1.5rem;
+    background-color: var(--backgrounds-light);
+    border: 1px solid var(--card-line);
+    border-radius: 8px;
+}
+
+/* ── TITLE ── */
+/* The page's one deliberately symmetrical moment; everything after it is
+   left-aligned to the column edge. No figures live here — they get their own
+   row below, where they read as measurements instead of as a slogan.
+   Column and gutter come from .section like every other block; only the
+   centring and the text cap belong to the hero itself. */
+.hero {
+    text-align: center;
+    padding: 3rem 2rem;
+    border: 1px solid var(--card-line);
+    border-radius: 8px;
+    background-color: var(--backgrounds-light);
+}
+
+.hero h1 {
+    max-width: 24ch;
+    margin: 0 auto 0.75rem;
+}
+
+.hero-sub {
+    max-width: var(--measure-text);
+    margin: 0 auto 2rem;
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+}
+
+.hero-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+/* ── WHAT IT IS ── */
+/* Explanation beside its footage: there is no argument to sequence yet, so both
+   halves land in one glance. The step cards below stack instead, because there
+   the claim has to be read before the evidence means anything. */
+.overview {
+    display: grid;
+    grid-template-columns: 1fr 1.1fr;
+    align-items: center;
+    gap: 3rem;
+}
+
+.overview-text {
+    max-width: var(--measure-text);
+}
+
+.overview-text h2 {
+    margin: 0 0 1rem;
+    font-size: 1.4rem;
+}
+
+.overview-text p {
+    margin: 0 0 0.75rem;
+}
+
+.overview-text p:last-child {
+    margin-bottom: 0;
+}
+
+.overview-figure {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: 0;
+}
+
+.overview-figure .asset-media {
+    aspect-ratio: 16 / 9;
+}
+
+.overview-figure figcaption {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+}
+
+/* ── THE FAILURE ── */
+/* Deliberately the second thing on the page. Warning-tinted so it reads as the
+   problem, not as a feature. */
+.problem {
+    max-width: var(--measure-text);
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--warning);
+    border-left-width: 3px;
+    border-radius: 8px;
+    background-color: rgba(255, 168, 0, 0.07);
+}
+
+.problem-label {
+    margin-bottom: 0.35rem;
+    font-size: 0.85rem;
+    color: var(--warning);
+}
+
+.problem-quote {
+    margin: 0;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: var(--text-primary);
+}
+
+/* ── MEDIA ── */
+.media-pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.media-frame {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: 0;
+}
+
+.media-frame figcaption {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+/* Video and placeholder sit side by side, so they have to agree on a height. */
+.media-pair .media-frame > :first-child {
+    aspect-ratio: 16 / 9;
+    min-height: 0;
+}
+
+/* Captured video/screenshot assets, framed in the site's gradient border. */
+.asset-media {
+    display: block;
+    width: 100%;
+    border-radius: 8px;
+    border: 2px solid transparent;
+    background:
+        linear-gradient(var(--backgrounds-dark), var(--backgrounds-dark)) padding-box,
+        linear-gradient(to bottom right, var(--primary), var(--secondary)) border-box;
+    object-fit: cover;
+}
+
+/* Stands in for media that hasn't been captured yet, so the layout can still be
+   judged and the gap stays obvious rather than quietly disappearing. */
+.asset-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 280px;
+    width: 100%;
+    padding: 2rem;
+    border-radius: 8px;
+    border: 2px dashed var(--primary);
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    opacity: 0.85;
+}
+
+/* ── THE THREE STEPS ── */
+/* One claim per card, and directly under it the thing that backs the claim. */
+.steps {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.step {
+    padding: 1.5rem;
+    border: 1px solid var(--card-line);
+    border-radius: 8px;
+    background-color: var(--backgrounds-light);
+}
+
+.step-eyebrow {
+    margin-bottom: 0.4rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+}
+
+.step-claim {
+    max-width: var(--measure-text);
+    margin: 0 0 1rem;
+    font-size: 1.15rem;
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+/* The explanation between the claim and its proof. Without it the numbers below
+   are unreadable to anyone who does not already know what is hard here. */
+.step-body {
+    max-width: var(--measure-text);
+    margin-bottom: 1.25rem;
+}
+
+.step-body p {
+    margin: 0 0 0.75rem;
+    font-size: 0.95rem;
+}
+
+.step-body p:last-child {
+    margin-bottom: 0;
+}
+
+.step-evidence {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+/* Two panel rows in a row: the flex gap only separates panels inside one row,
+   so without this the backgrounds of the two rows touch. */
+.step-evidence + .step-evidence {
+    margin-top: 0.75rem;
+}
+
+/* Panels drop back to the page background so they read as insets in the card. */
+.evidence-panel {
+    flex: 1 1 220px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.9rem;
+    border-radius: 6px;
+    background-color: var(--backgrounds-dark);
+}
+
+.evidence-panel--wide {
+    flex: 1.6 1 300px;
+}
+
+.evidence-panel--full {
+    flex: 1 1 100%;
+}
+
+.evidence-panel--figure {
+    justify-content: center;
+}
+
+.evidence-panel .asset-media {
+    aspect-ratio: 16 / 9;
+}
+
+.evidence-panel .asset-placeholder {
+    min-height: 0;
+    aspect-ratio: 16 / 9;
+    padding: 1rem;
+    font-size: 0.8rem;
+}
+
+.panel-label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.panel-figure {
+    font-size: 1.9rem;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--text-primary);
+}
+
+/* ── 01 — the before/after bars ── */
+.compare-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.compare-name {
+    flex-shrink: 0;
+    width: 3.2rem;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.compare-track {
+    flex: 1;
+    height: 9px;
+    border-radius: 2px;
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.compare-fill {
+    height: 100%;
+    border-radius: 2px;
+}
+
+/* Bar lengths are set per row in the markup — they are measurements, not a
+   fixed style. Each labelled group is scaled against its own larger value. */
+.compare-fill--before {
+    background-color: rgba(255, 255, 255, 0.25);
+}
+
+.compare-fill--after {
+    background-color: var(--primary);
+}
+
+.panel-label--spaced {
+    margin-top: 0.75rem;
+}
+
+.compare-value {
+    flex-shrink: 0;
+    width: 3.5rem;
+    text-align: right;
+    font-size: 0.8rem;
+    color: var(--text-primary);
+}
+
+/* An uncaptured figure is marked, never guessed at. */
+.figure-missing {
+    color: var(--warning);
+}
+
+.figure-note {
+    margin: 0;
+    font-size: 0.72rem;
+    opacity: 0.8;
+}
+
+/* ── 02 — the level-of-detail diagram ── */
+.lod-figure {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    padding: 0.5rem 0;
+}
+
+.lod-hex {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    margin: 0;
+    color: var(--primary);
+}
+
+.lod-hex svg {
+    display: block;
+    width: 112px;
+    height: auto;
+}
+
+.lod-hex-edge {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linejoin: round;
+}
+
+.lod-hex-grid {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1;
+    opacity: 0.45;
+}
+
+.lod-hex figcaption {
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    color: var(--text-secondary);
+}
+
+/* Prose returning after a figure — the step card is a plain block, so the
+   spacing has to be stated rather than inherited from a gap. */
+.step-evidence + .step-body {
+    margin-top: 1.25rem;
+}
+
+/* ── THE WAY OUT ── */
+.tech-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.tech-tag {
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    border: 1px solid var(--primary);
+    font-size: 0.75rem;
+    color: var(--primary);
+}
+
+.tech-link {
+    margin-left: auto;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+}
+
+.tech-link:hover {
+    color: var(--primary);
+}
+
+.outro-title {
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.outro-stack {
+    margin-top: 0.2rem;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+/* ── APPENDIX ── */
+/* Every measurement the page used to lead with. Folded away, not deleted:
+   the claims above are only worth as much as what is in here. */
+.appendix {
+    border-top: 1px solid var(--card-line);
+    padding-top: 1.5rem;
+}
+
+.appendix > summary {
+    cursor: pointer;
+    padding: 0.25rem 0;
+    font-size: 1.05rem;
+    color: var(--text-primary);
+}
+
+.appendix > summary:hover {
+    color: var(--primary);
+}
+
+.appendix-body {
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+    margin-top: 2rem;
+}
+
+.appendix-block {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.appendix-block > h3 {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--text-primary);
+}
+
+/* Rig detail: folded into the method paragraph, but still visually secondary. */
+.rig {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.78rem;
+    line-height: 1.7;
+    opacity: 0.72;
+}
+
+.kpi-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+}
+
+/* A smaller cluster of tiles sitting right under the text they back up —
+   left at their natural width instead of stretching to fill the row. */
+.kpi-row--compact {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 220px));
+    justify-content: start;
+}
+
+/* Plain surfaces: the gradient border is reserved for media, so these read as
+   supporting prose rather than out-shouting the numbers. */
+.feature-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+}
+
+.feature-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1.5rem;
+    border: 1px solid var(--card-line);
+    border-radius: 8px;
+    background-color: var(--backgrounds-light);
+}
+
+.feature-card h3 {
+    color: var(--text-primary);
+    font-size: 1rem;
+    margin: 0;
+}
+
+.feature-card p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    flex: 1;
+    text-align: left;
+    margin: 0;
+}
+
+.code-inline {
+    font-family: monospace;
+    font-size: 0.85em;
+    color: var(--primary);
+    background-color: rgba(0, 0, 0, 0.25);
+    padding: 1px 6px;
+    border-radius: 4px;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+    .media-pair {
+        grid-template-columns: 1fr;
+    }
+
+    /* Too narrow for two columns: the copy goes back above its footage. */
+    .overview {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .hero h1 {
+        font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 640px) {
+    main {
+        --gutter: 1.25rem;
+        gap: 3.5rem;
+        padding-bottom: 5rem;
+    }
+
+    .hero {
+        padding: 2rem 1.25rem;
+    }
+
+    .evidence-panel,
+    .evidence-panel--wide {
+        flex-basis: 100%;
+    }
+
+    .tech-link {
+        margin-left: 0;
+    }
+
+    .appendix-body {
+        gap: 3rem;
+    }
+}

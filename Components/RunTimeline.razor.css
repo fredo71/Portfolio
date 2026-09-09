@@ -1,0 +1,198 @@
+.chart {
+    margin: 0;
+    width: 100%;
+}
+
+figcaption {
+    margin-bottom: 1.1rem;
+}
+
+.chart h3 {
+    color: var(--text-primary);
+    font-size: 1rem;
+    margin: 0 0 0.25rem;
+}
+
+.chart-note {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* ── PLOT ── */
+.plot {
+    display: flex;
+    gap: 10px;
+}
+
+.yaxis {
+    position: relative;
+    width: 34px;
+    flex-shrink: 0;
+    height: 210px;
+}
+
+.ytick {
+    position: absolute;
+    right: 0;
+    transform: translateY(50%);
+    font-size: 0.9rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-secondary);
+}
+
+/* The SVG stretches to this box, so percentage overlays line up with the plot. */
+.canvas {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+    height: 210px;
+    overflow: hidden;
+    border-radius: 4px;
+}
+
+svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+/* ── PHASE BANDS ── */
+/* Behind the data, barely there: they locate the reader, they don't compete. */
+.phase-band {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.022);
+}
+
+.phase-band--key {
+    background-color: var(--primary);
+    opacity: 0.09;
+}
+
+.gridline {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.09);
+}
+
+/* Dashed is reserved for a real threshold, never for grid. */
+.threshold {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 0;
+    border-top: 1px dashed rgba(255, 255, 255, 0.30);
+}
+
+.threshold-label {
+    position: absolute;
+    right: 0;
+    bottom: 3px;
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+}
+
+/* ── DATA ── */
+/* Fill spans worst-to-best per column; the stroke is the middle of that band. */
+.envelope {
+    fill: var(--primary);
+    opacity: 0.22;
+}
+
+.line {
+    fill: none;
+    stroke: var(--primary);
+    stroke-width: 1.5;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+}
+
+/* ── PHASE LABELS ── */
+/* Same left offset as the canvas (34px axis + 10px gap) so segments line up with the plot.
+   Gap is kept tiny because every pixel of it steals from the proportions above. */
+.phase-row {
+    display: flex;
+    gap: 2px;
+    margin: 0.5rem 0 0 44px;
+}
+
+.phase {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    flex-basis: 0;
+    /* A floor, not just 0: a very short phase (real captures can be well under the
+       ~7% this was tuned for) must still fit one word per wrapped line, not one
+       letter per line. */
+    min-width: 4rem;
+    padding: 0.45rem 0.5rem;
+    border-radius: 5px;
+    border-top: 2px solid rgba(255, 255, 255, 0.14);
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+.phase--key {
+    border-top-color: var(--primary);
+}
+
+/* The narrow phase is ~7% of the row, so names wrap rather than truncate. */
+.phase-name {
+    font-size: 0.82rem;
+    line-height: 1.25;
+    color: var(--text-secondary);
+    overflow-wrap: break-word;
+}
+
+.phase-time {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    font-variant-numeric: tabular-nums;
+}
+.axis-title {
+    margin: 0.5rem 0 0 44px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+/* ── TABLE VIEW ── */
+.tableview {
+    margin-top: 1rem;
+}
+
+.tableview summary {
+    cursor: pointer;
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+}
+
+.tableview table {
+    margin-top: 0.6rem;
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.78rem;
+}
+
+.tableview th,
+.tableview td {
+    text-align: left;
+    padding: 4px 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--text-secondary);
+}
+
+.tableview th {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.tableview .num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}

@@ -1,13 +1,12 @@
 @page "/"
 @inject NavigationManager Nav
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Frédéric Larue — Accueil</PageTitle>
 
 <main>
     <div class="ImageCardGrid">
-        <ImageCard Src="images/about me.jpg" Alt="About Me" Caption="About Me" OnClick='() => Nav.NavigateTo("/AboutMe")' />
+        <ImageCard Src="images/about me.jpg" Alt="À propos" Caption="À propos" OnClick='() => Nav.NavigateTo("/AboutMe")' />
         <ImageCard Src="images/code.jpg" Alt="CV" Caption="CV" OnClick='() => Nav.NavigateTo("/Cv")' />
-        <ImageCard Src="images/game.jpg" Alt="Game Project" Caption="Game Project" OnClick='() => Nav.NavigateTo("/Game")' />
-        <ImageCard Src="images/blog.jpg" Alt="Blogs" Caption="Blogs" OnClick='() => Nav.NavigateTo("/Blog")' />
+        <ImageCard Src="images/game.jpg" Alt="Jeu" Caption="Jeu" OnClick='() => Nav.NavigateTo("/Game")' />
     </div>
 </main>

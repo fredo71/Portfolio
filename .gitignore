@@ -19,3 +19,7 @@ packages/
 
 # Blazor
 wwwroot/css/bootstrap/
+
+*.md
+
+game-data/*

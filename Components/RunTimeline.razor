@@ -1,0 +1,191 @@
+@using System.Globalization
+
+<figure class="chart">
+    <figcaption>
+        <h3>@Title</h3>
+        @if (!string.IsNullOrEmpty(Note))
+        {
+            <p class="chart-note">@Note</p>
+        }
+    </figcaption>
+
+    <div class="plot">
+        <div class="yaxis">
+            @foreach (var t in Ticks)
+            {
+                <span class="ytick" style="bottom:@Pct(t / AxisMax)%">@N0(t)</span>
+            }
+        </div>
+
+        <div class="canvas" role="img" aria-label="@Summary()">
+            @* phase bands sit behind everything, so the plot never fights them *@
+            @foreach (var p in Phases)
+            {
+                <span class="phase-band @(p.Highlight ? "phase-band--key" : "")"
+                      style="left:@Pct(p.Start / Duration)%;width:@Pct(p.Length / Duration)%"></span>
+            }
+
+            @foreach (var t in Ticks)
+            {
+                <span class="gridline" style="bottom:@Pct(t / AxisMax)%"></span>
+            }
+
+            <span class="threshold" style="bottom:@Pct(30 / AxisMax)%">
+                <span class="threshold-label">30 fps</span>
+            </span>
+
+            @* envelope: worst and best frame in each pixel column, so no spike can be sampled away *@
+            <svg viewBox="0 0 1000 220" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+                <path class="envelope" d="@EnvelopePath()" />
+                <path class="line" d="@MeanPath()" vector-effect="non-scaling-stroke" />
+            </svg>
+        </div>
+    </div>
+
+    <div class="phase-row">
+        @foreach (var p in Phases)
+        {
+            <div class="phase @(p.Highlight ? "phase--key" : "")" style="flex-grow:@Grow(p.Length)">
+                <span class="phase-name">@p.Name</span>
+                <span class="phase-time">@N1(p.Length) s</span>
+            </div>
+        }
+    </div>
+
+    <p class="axis-title">secondes depuis le lancement</p>
+
+    <details class="tableview">
+        <summary>Vue tableau</summary>
+        <table>
+            <thead>
+                <tr>
+                    <th scope="col">Phase</th>
+                    <th scope="col">Durée</th>
+                    <th scope="col">Minimum</th>
+                    <th scope="col">Typique</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var p in Phases)
+                {
+                    var (lo, mean) = StatsFor(p);
+                    <tr>
+                        <td>@p.Name</td>
+                        <td class="num">@N1(p.Length) s</td>
+                        <td class="num">@N0(lo) fps</td>
+                        <td class="num">@N0(mean) fps</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </details>
+</figure>
+
+@code {
+    public record Phase(string Name, double Start, double Length, bool Highlight = false);
+
+    [Parameter] public string Title { get; set; } = "Toute la session";
+    [Parameter] public string? Note { get; set; }
+    [Parameter, EditorRequired] public double[] ElapsedS { get; set; } = [];
+    [Parameter, EditorRequired] public double[] FpsPerFrame { get; set; } = [];
+    [Parameter, EditorRequired] public Phase[] Phases { get; set; } = [];
+
+    const double Duration = 60;      // seconds of capture, fixed by the capture protocol
+    const double AxisMax = 90;       // fps
+    const int Columns = 220;         // one envelope pair per pixel column
+
+    static readonly double[] Ticks = [0, 30, 60, 90];
+
+    double[] _lo = new double[Columns];
+    double[] _hi = new double[Columns];
+    double[] _mid = new double[Columns];
+
+    protected override void OnParametersSet()
+    {
+        for (var c = 0; c < Columns; c++)
+        {
+            var t0 = c / (double)Columns * Duration;
+            var t1 = c == Columns - 1 ? Duration : (c + 1) / (double)Columns * Duration;
+
+            double lo = 0, hi = 0, sum = 0;
+            var count = 0;
+            for (var i = 0; i < ElapsedS.Length; i++)
+            {
+                var inBucket = c == Columns - 1
+                    ? ElapsedS[i] >= t0 && ElapsedS[i] <= t1
+                    : ElapsedS[i] >= t0 && ElapsedS[i] < t1;
+                if (!inBucket) continue;
+
+                var fps = FpsPerFrame[i];
+                if (count == 0) { lo = fps; hi = fps; } else { lo = Math.Min(lo, fps); hi = Math.Max(hi, fps); }
+                sum += fps;
+                count++;
+            }
+
+            if (count == 0)
+            {
+                lo = c > 0 ? _lo[c - 1] : 0;
+                hi = c > 0 ? _hi[c - 1] : 0;
+            }
+
+            _lo[c] = Math.Clamp(lo, 0, AxisMax);
+            _hi[c] = Math.Clamp(hi, 0, AxisMax);
+            _mid[c] = count == 0 ? (_lo[c] + _hi[c]) / 2 : Math.Clamp(sum / count, 0, AxisMax);
+        }
+    }
+
+    // Inline geometry must never pick up a comma decimal separator (fr-FR etc.).
+    static string Pct(double frac) =>
+        (Math.Clamp(frac, 0, 1) * 100).ToString("0.###", CultureInfo.InvariantCulture);
+
+    static string N(double v) => v.ToString("0.##", CultureInfo.InvariantCulture);
+    static string N0(double v) => v.ToString("0", CultureInfo.InvariantCulture);
+    static string N1(double v) => v.ToString("0.0", CultureInfo.InvariantCulture);
+    static string Grow(double v) => v.ToString("0.##", CultureInfo.InvariantCulture);
+
+    static double X(int i) => i / (double)(Columns - 1) * 1000;
+    static double Y(double fps) => 220 - Math.Clamp(fps / AxisMax, 0, 1) * 220;
+
+    // Upper edge left-to-right, lower edge back again: the band between best and worst.
+    string EnvelopePath()
+    {
+        var sb = new System.Text.StringBuilder();
+        for (var i = 0; i < Columns; i++)
+            sb.Append(i == 0 ? 'M' : 'L').Append(N(X(i))).Append(' ').Append(N(Y(_hi[i]))).Append(' ');
+        for (var i = Columns - 1; i >= 0; i--)
+            sb.Append('L').Append(N(X(i))).Append(' ').Append(N(Y(_lo[i]))).Append(' ');
+        return sb.Append('Z').ToString();
+    }
+
+    string MeanPath()
+    {
+        var sb = new System.Text.StringBuilder();
+        for (var i = 0; i < Columns; i++)
+            sb.Append(i == 0 ? 'M' : 'L').Append(N(X(i))).Append(' ').Append(N(Y(_mid[i]))).Append(' ');
+        return sb.ToString().TrimEnd();
+    }
+
+    (double Lowest, double Typical) StatsFor(Phase p)
+    {
+        double lowest = AxisMax, sum = 0; var n = 0;
+        for (var i = 0; i < Columns; i++)
+        {
+            var t = i / (double)(Columns - 1) * Duration;
+            if (t < p.Start || t > p.Start + p.Length) continue;
+            lowest = Math.Min(lowest, _lo[i]);
+            sum += _mid[i];
+            n++;
+        }
+        return n == 0 ? (0, 0) : (lowest, sum / n);
+    }
+
+    string Summary()
+    {
+        var parts = Phases.Select(p =>
+        {
+            var (lo, mean) = StatsFor(p);
+            return $"{p.Name}, {N1(p.Length)} secondes, typiquement {N0(mean)} fps, minimum {N0(lo)} fps";
+        });
+        return "Images par seconde sur toute la session de 60 secondes. " + string.Join(". ", parts) + ".";
+    }
+}

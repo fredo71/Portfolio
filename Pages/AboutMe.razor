@@ -1,115 +1,232 @@
 @page "/AboutMe"
 
-<main>
+<PageTitle>Frédéric Larue — À propos</PageTitle>
 
-    <section class="tile-centered">
-        <h1>Frédéric Larue</h1>
-        <h2>Ingénieur logiciel Dev Ops</h2>
-        <p>Développeur passionné basé à Troyes, à la recherche d'un poste en ingénierie logicielle.<br>Formé en DevOps
-            et en développement full stack.</p>
+<div class="about-page">
+
+    <section class="section">
+        <div class="hero">
+            <h1>Frédéric Larue</h1>
+            <p class="hero-subtitle">Développeur C# .NET</p>
+            <p class="hero-intro">
+                Développeur passionné basé à Troyes, à la recherche d'un poste en ingénierie logicielle.<br>
+                Formé en DevOps et en développement full stack.
+            </p>
             <div class="hero-actions">
-                <a href="https://github.com/fredo71" target="_blank" class="svg-gradiant maximize-icon">
-                    <i class="bi bi-github "></i>
+                <a href="https://github.com/fredo71" target="_blank" rel="noopener noreferrer" aria-label="GitHub" class="svg-gradiant maximize-icon">
+                    <i class="bi bi-github" aria-hidden="true"></i>
                 </a>
-                <button class="btn-styled" onClick="document.getElementById('Project').scrollIntoView();" >
-                    View Project
-                </button>
-                <button class="btn-styled" onClick="document.getElementById('skills').scrollIntoView();">
-                    View Skills
-                </button>
+                <a href="#Project" class="btn-styled">
+                    Voir le projet phare
+                </a>
+                <a href="/Cv" class="btn-styled">
+                    Voir le CV
+                </a>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section class="tile-centered-width" id = "skills">
-            <h2>My Skills</h2>
-            <h3>The tools I know how to use.</h3>
+    <section class="section" id="About">
+        <div class="section-head">
+            <h2>Ce que je cherche</h2>
+            <p class="section-subtitle">Le poste que je vise, et ce que j'apporte.</p>
+        </div>
 
-            <div class="flex-box-vertical">
-                <div class="simple-border">
-                    <h2>
-                        <i class="bi bi-terminal "></i>
-                        DevOps
-                    </h2>
-                    <SkillBar Label="GitLab" Level="95" />
-                    <SkillBar Label="Docker" Level="90" />
-                    <SkillBar Label="CI/CD" Level="83" />
-                    <SkillBar Label="Azure" Level="80" />
-                    <SkillBar Label="Kubernetes" Level="75" />
-                </div>
-                
-                <div class="simple-border">
-                    <h2>
-                        <i class="bi bi-code-slash "></i>
-                        Web Development
-                    </h2>
-                    <SkillBar Label="C# Scripting" Level="98" />
-                    <SkillBar Label="HTML" Level="95" />
-                    <SkillBar Label="Razor" Level="86" />
-                    <SkillBar Label="CSS" Level="80" />
-                    <SkillBar Label="SQL" Level="75" />
-                </div>
+        <div class="bio panel">
+            <img src="images/head shot.jpg" alt="Portrait de Frédéric Larue" class="bio-photo" />
+            <div class="bio-text">
+                <p class="bio-lead">
+                    Un poste de développeur C#, en CDI, disponible immédiatement, mobile dans toute la France
+                    métropolitaine.
+                </p>
+                <p>
+                    Je suis à l'aise avec le logiciel qui doit tenir dans un budget de temps, de mémoire ou de calcul.
+                    Je l'ai appris sur mon moteur de terrain, en profilant plutôt qu'en devinant. C'était du C#, et
+                    c'est là que j'ai vu où il coûte cher quand on ne le surveille pas.
+                </p>
+            </div>
+        </div>
+    </section>
 
-                <div class="simple-border">
-                    <h2>
-                        <i class="bi bi-code-slash "></i>
-                        Game Development
-                    </h2>
-                    <SkillBar Label="Unity Engine" Level="95" />
-                    <SkillBar Label="unity C# Scripting" Level="93" />
-                    <SkillBar Label="HLSL / Shaders" Level="90" />
-                    <SkillBar Label="Mesh Generation" Level="85" />
-                    <SkillBar Label="Job System / ECS" Level="70" />
+    <section class="section" id="Project">
+        <div class="section-head">
+            <h2>Projet phare</h2>
+            <p class="section-subtitle">Le projet qui me représente le mieux aujourd'hui.</p>
+        </div>
+
+        <div class="project-showcase">
+            <ProjectCard
+                Title="Jeu Unity — Moteur de terrain hexagonal"
+                Description="Un jeu développé avec Unity, intégrant des shaders personnalisés, de la génération de maillage et du multithreading."
+                ImageUrl="video/hexmap-flythrough.jpg"
+                VideoUrl="video/hexmap-flythrough.mp4"
+                Link="/Game"
+                LinkLabel="Voir la page complète"
+                Featured="true"
+                Tags='new List<string> { "Unity", "C#", "HLSL" , "Job System"}' />
+        </div>
+    </section>
+
+    <section class="section" id="Experience">
+        <div class="section-head">
+            <h2>Expérience</h2>
+            <p class="section-subtitle">Ce que j'ai construit en conditions réelles.</p>
+        </div>
+
+        <div class="experience-card panel">
+            <div class="experience-header">
+                <h3 class="experience-title">Développeur logiciel — Davey Bickford Enaex</h3>
+                <span class="experience-date">2023 – 2025</span>
+            </div>
+            <p class="experience-meta">Alternance de master · Héry, Bourgogne-Franche-Comté</p>
+            <p class="experience-description">
+                Développement d'un outil interne de gestion du matériel industriel, avec intégration de
+                tests automatisés. Réalisation en autonomie, au contact direct des clients internes et en
+                coordination avec les équipes cybersécurité et infrastructure.
+            </p>
+            <div class="experience-tags">
+                <span class="pill">Python</span>
+                <span class="pill">Django</span>
+                <span class="pill">PostgreSQL</span>
+                <span class="pill">Tests automatisés</span>
+                <span class="pill">Docker</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="skills">
+        <div class="section-head">
+            <h2>Mes compétences</h2>
+            <p class="section-subtitle">Les outils que je maîtrise.</p>
+        </div>
+
+        <div class="skill-grid">
+            <div class="skill-card panel">
+                <h3 class="skill-title">
+                    <i class="bi bi-terminal" aria-hidden="true"></i>
+                    DevOps
+                </h3>
+                <div class="skill-tags">
+                    <span class="pill">GitLab</span>
+                    <span class="pill">Docker</span>
+                    <span class="pill">CI/CD</span>
+                    <span class="pill">Azure</span>
                 </div>
             </div>
-        </section>
 
-        <section class="tile-centered-width" id="Project">
-            <h2>Projects</h2>
-            <h3>A few things I've built.</h3>
-            <div class="flex-box-vertical">
-                <ProjectCard
-                    Title="Unity Game"
-                    Description="A game built in Unity with custom shaders, mesh generation, and multithreading."
-                    ImageUrl="images/game.jpg"
-                    Link="https://github.com/fredo71"
-                    Tags='new List<string> { "Unity", "C#", "HLSL" , "Job System"}' />
-                <ProjectCard
-                    Title="This Portfolio"
-                    Description="A personal portfolio built with Blazor WebAssembly and CSS."
-                    ImageUrl="images/code.jpg"
-                    Link="https://github.com/fredo71"
-                    Tags='new List<string> { "Blazor", "C#", "CSS" , "HTML" }' />
-                <ProjectCard
-                    Title="Work at Davey Bickford"
-                    Description="Asset management software built in Python and Django."
-                    ImageUrl="images/company logo.png"
-                    Link="https://github.com/fredo71"
-                    Tags='new List<string> { "Python", "Django", "CSS" , "HTML" }' />
+            <div class="skill-card panel">
+                <h3 class="skill-title">
+                    <i class="bi bi-code-slash" aria-hidden="true"></i>
+                    Développement web
+                </h3>
+                <div class="skill-tags">
+                    <span class="pill">C# Scripting</span>
+                    <span class="pill">HTML</span>
+                    <span class="pill">Razor</span>
+                    <span class="pill">CSS</span>
+                    <span class="pill">SQL</span>
+                </div>
             </div>
-        </section>
 
-        <section class="tile-centered contact">
+            <div class="skill-card panel">
+                <h3 class="skill-title">
+                    <i class="bi bi-controller" aria-hidden="true"></i>
+                    Développement de jeux
+                </h3>
+                <div class="skill-tags">
+                    <span class="pill">Unity Engine</span>
+                    <span class="pill">Unity C# Scripting</span>
+                    <span class="pill">HLSL / Shaders</span>
+                    <span class="pill">Mesh Generation</span>
+                    <span class="pill">Job System / ECS</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="OtherProjects">
+        <div class="section-head">
+            <h2>Autres projets</h2>
+            <p class="section-subtitle">Ce que je construis à côté.</p>
+        </div>
+
+        <div class="project-grid">
+            <ProjectCard
+                Title="Ce Portfolio"
+                Description="Un portfolio personnel en Blazor WebAssembly, déployé en continu sur Azure Static Web Apps avec deploiment automatique en production et environement de test."
+                ImageUrl="images/code.jpg"
+                Link="https://github.com/fredo71/Portfolio"
+                LinkLabel="Voir sur GitHub"
+                Tags='new List<string> { "Blazor", "C#", "GitHub Actions", "Azure", "CI/CD" }' />
+        </div>
+    </section>
+
+    <section class="section" id="Education">
+        <div class="section-head">
+            <h2>Formation</h2>
+            <p class="section-subtitle">Mon parcours académique.</p>
+        </div>
+
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-body">
+                    <span class="education-date">2023 – 2025</span>
+                    <h3 class="education-title">Master — Expert en informatique et systèmes d'information</h3>
+                    <p class="education-school">EPSI, Auxerre — Alternance</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-body">
+                    <span class="education-date">2021 – 2023</span>
+                    <h3 class="education-title">Ingénieur informatique</h3>
+                    <p class="education-school">EILCO, Calais</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-body">
+                    <span class="education-date">2019 – 2021</span>
+                    <h3 class="education-title">Classe préparatoire MPSI</h3>
+                    <p class="education-school">Lycée Chrétien de Troyes</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-body">
+                    <span class="education-date">2016 – 2019</span>
+                    <h3 class="education-title">Baccalauréat Scientifique — Spécialité Sciences de l'Ingénieur</h3>
+                    <p class="education-school">Lycée des Lombards, Troyes</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="Contact">
+        <div class="section-head">
             <h2>Contact</h2>
-            <h3>Feel free to reach out.</h3>
-            <div class="contact-links">
-                <a href="mailto:frederic.larue17@gmail.com" class="contact-item">
-                    <i class="bi bi-envelope "></i>
-                    <span>frederic.larue17@gmail.com</span>
-                </a>
-                <a href="tel:0788320148" class="contact-item">
-                    <i class="bi bi-telephone "></i>
-                    <span>07 88 32 01 48</span>
-                </a>
-                <a href="https://www.linkedin.com/in/frédéric-larue-55a41428b" target="_blank" class="contact-item">
-                    <i class="bi bi-linkedin "></i>
-                    <span>LinkedIn</span>
-                </a>
-                <a href="https://github.com/fredo71" target="_blank" class="contact-item">
-                    <i class="bi bi-github "></i>
-                    <span>GitHub</span>
-                </a>
-            </div>
-        </section>
+            <p class="section-subtitle">N'hésitez pas à me contacter.</p>
+        </div>
 
+        <div class="contact-links panel">
+            <a href="mailto:frederic.larue17@gmail.com" class="contact-item">
+                <i class="bi bi-envelope" aria-hidden="true"></i>
+                <span>frederic.larue17@gmail.com</span>
+            </a>
+            <a href="tel:+33788320148" class="contact-item">
+                <i class="bi bi-telephone" aria-hidden="true"></i>
+                <span>07 88 32 01 48</span>
+            </a>
+            <a href="https://www.linkedin.com/in/frédéric-larue-55a41428b" target="_blank" rel="noopener noreferrer" class="contact-item">
+                <i class="bi bi-linkedin" aria-hidden="true"></i>
+                <span>LinkedIn</span>
+            </a>
+            <a href="https://github.com/fredo71" target="_blank" rel="noopener noreferrer" class="contact-item">
+                <i class="bi bi-github" aria-hidden="true"></i>
+                <span>GitHub</span>
+            </a>
+        </div>
+    </section>
 
-    </main>
+</div>

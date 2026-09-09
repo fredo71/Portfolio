@@ -1,48 +1,90 @@
-main {
+/* One content column and one gutter for the whole page. Every block below
+   sizes off these instead of carrying its own max-width. */
+.about-page {
+    --measure: 1040px;      /* cards, media, section headings */
+    --measure-text: 68ch;   /* prose and lists, so lines stay readable */
+    --gutter: 2rem;
+
     background-color: var(--backgrounds-dark);
-    padding-top: 100px;
+    display: flex;
+    flex-direction: column;
+    gap: 5rem;
+    padding-top: 4rem;
+    padding-bottom: 8rem;
 }
 
 h1, h2, h3 {
     color: var(--text-primary);
 }
 
-h2 {
-    margin-bottom: 2rem;
-}
-
-h3 {
-    color: var(--text-secondary);
-    font-size: 15px;
-    margin-bottom: 2rem;
-}
-
 p {
     color: var(--text-secondary);
 }
 
-section{
-    min-height: 100vh
+/* ── SECTIONS ── */
+/* The column is established once, here. Children fill it and are left-aligned,
+   so a single left edge runs the length of the page. Width still varies block
+   to block underneath that — what stays constant is the edge and the maximum. */
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+    max-width: var(--measure);
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 var(--gutter);
+    scroll-margin-top: calc(var(--nav-height) + 2rem);
 }
 
-.tile-centered
-{
-    max-width: 800px;
-    text-align: center;
-    margin: 0 auto;  
-}    
+.section-head h2 {
+    margin: 0 0 0.5rem;
+}
 
-.tile-centered-width{
+/* Tagline under a section heading: presentational, so not a heading element. */
+.section-subtitle {
+    max-width: var(--measure-text);
+    margin: 0;
+    font-size: 0.92rem;
+}
+
+/* One surface treatment for the whole page — same radius, same fill, same
+   gradient border — so the panels cannot drift apart from each other.
+   Named .panel, not .card: Bootstrap ships a global .card that forces
+   flex-direction: column and would silently stack any row inside it. */
+.panel {
+    border: 2px solid transparent;
+    border-radius: 8px;
+    background:
+        linear-gradient(var(--backgrounds-light), var(--backgrounds-light)) padding-box,
+        linear-gradient(to bottom, var(--primary), var(--secondary)) border-box;
+}
+
+/* ── HERO ── */
+/* The page's one deliberately symmetrical moment; everything after it is
+   left-aligned to the column edge. */
+.hero {
     text-align: center;
-    margin: 0 auto;  
-    
+}
+
+.hero h1 {
+    margin-bottom: 0.5rem;
+}
+
+.hero-subtitle {
+    color: var(--text-primary);
+    font-size: clamp(1.4rem, 1.325rem + 0.9vw, 2rem);
+    margin-bottom: 1rem;
+}
+
+.hero-intro {
+    max-width: var(--measure-text);
+    margin: 0 auto 2rem;
 }
 
 .hero-actions {
-    display: inline-flex;
+    display: flex;
     align-items: stretch;
     justify-content: center;
-    padding: 0 20px;
     gap: 1rem;
 }
 
@@ -54,25 +96,208 @@ section{
     font-size: 2rem;
 }
 
-.flex-box-vertical{
+/* ── CE QUE JE CHERCHE ── */
+.bio {
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    margin: 30px;
+    align-items: flex-start;
+    gap: 2.5rem;
+    padding: 2rem;
 }
 
-.icon-gradient {
-    background: linear-gradient(to right, var(--primary), var(--secondary));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+/* No gradient border here — the panel around it already carries one. */
+.bio-photo {
+    width: 200px;
+    aspect-ratio: 1;
+    object-fit: cover;
+    flex-shrink: 0;
+    border-radius: 8px;
 }
 
-.contact-links {
+.bio-text {
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
+    gap: 1rem;
+    max-width: var(--measure-text);
+}
+
+.bio-text p {
+    margin: 0;
+    line-height: 1.7;
+}
+
+.bio-lead {
+    color: var(--text-primary);
+    font-size: 1.05rem;
+}
+
+/* ── PROJECTS ── */
+.project-showcase {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+/* One card sits at the column's left edge at a third of the width; a second
+   fills in beside it without the layout needing to change. */
+.project-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+/* ── EXPERIENCE ── */
+.experience-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding: 1.5rem 2rem;
+}
+
+.experience-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.experience-title {
+    color: var(--text-primary);
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.experience-date {
+    color: var(--primary);
+    font-size: 0.85rem;
+    white-space: nowrap;
+}
+
+.experience-meta {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    margin: 0;
+}
+
+.experience-description {
+    max-width: var(--measure-text);
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.7;
+    margin: 0;
+}
+
+.experience-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.4rem;
+}
+
+/* ── SKILLS ── */
+.skill-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 2rem;
+}
+
+.skill-card {
+    padding: 1.25rem;
+}
+
+/* Subordinate to the section's h2, so smaller. */
+.skill-title {
+    display: flex;
     align-items: center;
+    gap: 0.6rem;
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+}
+
+.skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+/* ── EDUCATION ── */
+/* Naturally narrow content, capped at the text measure and left-anchored to the
+   column rather than centred at a width of its own. */
+.timeline {
+    display: flex;
+    flex-direction: column;
+    max-width: var(--measure-text);
+}
+
+.timeline-item {
+    display: flex;
+    flex-direction: row;
+    gap: 1.5rem;
+    position: relative;
+}
+
+.timeline-dot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.timeline-dot::before {
+    content: "";
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: linear-gradient(to bottom, var(--primary), var(--secondary));
+    margin-top: 4px;
+    flex-shrink: 0;
+}
+
+.timeline-dot::after {
+    content: "";
+    width: 2px;
+    flex: 1;
+    background: linear-gradient(to bottom, var(--primary), var(--secondary));
+    opacity: 0.3;
+    margin-top: 6px;
+}
+
+.timeline-item:last-child .timeline-dot::after {
+    display: none;
+}
+
+.timeline-body {
+    padding-bottom: 2rem;
+}
+
+.education-date {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--primary);
+    margin-bottom: 0.3rem;
+}
+
+.education-title {
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    margin: 0 0 0.2rem 0;
+}
+
+.education-school {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    margin: 0;
+}
+
+/* ── CONTACT ── */
+/* A row rather than a stacked ribbon: it fills the column honestly instead of
+   being padded out to a width the content does not have. */
+.contact-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem 2.5rem;
+    padding: 1.5rem 2rem;
 }
 
 .contact-item {
@@ -82,11 +307,6 @@ section{
     color: var(--text-primary);
     text-decoration: none;
     font-size: 1rem;
-    transition: color 0.2s ease;
-}
-
-.contact-item:hover {
-    color: var(--text-primary);
 }
 
 .contact-item i {
@@ -102,14 +322,25 @@ section{
     background-clip: text;
 }
 
-.simple-border {
-    text-align: left;
-    border: 2px solid transparent;
-    border-radius: 4px;
-    width: 30vw;
-    padding: 10px;
-    background:
-        linear-gradient(var(--backgrounds-dark), var(--backgrounds-dark)) padding-box,
-        linear-gradient(to bottom, var(--primary), var(--secondary)) border-box;
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+    /* Too narrow for two columns: the copy goes back under the photo. */
+    .bio {
+        flex-direction: column;
+        gap: 1.75rem;
+    }
 }
 
+@media (max-width: 640px) {
+    .about-page {
+        --gutter: 1.25rem;
+        gap: 3.5rem;
+        padding-bottom: 5rem;
+    }
+
+    .experience-card,
+    .bio,
+    .contact-links {
+        padding: 1.25rem;
+    }
+}
