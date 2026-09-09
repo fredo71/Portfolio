@@ -16,7 +16,10 @@
                 <a href="https://github.com/fredo71" target="_blank" rel="noopener noreferrer" aria-label="GitHub" class="svg-gradiant maximize-icon">
                     <i class="bi bi-github" aria-hidden="true"></i>
                 </a>
-                <a href="#Project" class="btn-styled">
+                @* Chemin complet obligatoire : avec <base href="/"> dans index.html,
+                   un href commençant par « # » se résout sur la base, donc sur
+                   l'accueil, et non sur la page courante. *@
+                <a href="/AboutMe#Project" class="btn-styled">
                     Voir le projet phare
                 </a>
                 <a href="/Cv" class="btn-styled">
