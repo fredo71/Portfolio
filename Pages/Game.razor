@@ -1,0 +1,495 @@
+@page "/Game"
+
+<PageTitle>Frédéric Larue — Jeu</PageTitle>
+
+@* A div, not <main>: MainLayout already provides the page's single main landmark. *@
+<div class="game">
+    @* ───────────────────────── Title ───────────────────────── *@
+    <section class="section">
+        <div class="hero">
+            <h1>Jeu de stratégie hexagonal</h1>
+            <p class="hero-sub">Moteur de monde hexagonal procédural &mdash; Unity, C#</p>
+            <div class="hero-actions">
+                <a href="https://github.com/fredo71/unity-hex-terrain-renderer" target="_blank" rel="noopener noreferrer" class="btn-styled">
+                    <i class="bi bi-github"></i> GitHub
+                </a>
+            </div>
+        </div>
+    </section>
+
+    @* ───────────────────────── What it is, then the figures ───────────────────────── *@ 
+    <section class="section section-card">
+        @* Explanation beside its footage. The three step cards below stack instead,
+           because there the claim has to be read before the evidence means anything. *@
+           
+        <div class="overview">
+            <div class="overview-text">
+                <h2>De quoi s'agit-il&nbsp;?</h2>
+                <p>
+                    <strong>Un monde hexagonal, généré procéduralement, à la taille de votre choix.</strong>
+                    Rien n'est construit avant d'être nécessaire : le terrain le plus proche de vous
+                    apparaît en premier, et le reste se remplit derrière pendant que vous vous déplacez
+                    déjà. À froid, la carte entière est terminée en @BuildTime secondes.
+                </p>
+                <p>
+                    Ce qui est terminé, c'est le moteur en dessous : le monde lui-même, et tout ce qu'il
+                    faut pour le générer et l'afficher à cette échelle. En faire un véritable jeu de
+                    stratégie reste le travail à venir.
+                </p>
+            </div>
+
+            <figure class="overview-figure">
+                <video class="asset-media"
+                       src="video/hexmap-flythrough.mp4"
+                       poster="video/hexmap-flythrough.jpg"
+                       autoplay muted loop playsinline preload="metadata"
+                       aria-label="Caméra survolant la carte hexagonale terminée">
+                </video>
+                <figcaption>Un survol de caméra au-dessus d'un monde terminé.</figcaption>
+            </figure>
+        </div>
+
+        @* The numbers, as numbers — kept out of the title so they read as
+           measurements rather than as a slogan. *@
+        <div class="kpi-row">
+            <StatTile Value="@TotalHexTiles" Label="tuiles hexagonales dans le monde" />
+            <StatTile Value="@BuildTime" Unit="s" Label="pour remplir toute la carte à froid" />
+            <StatTile Value="@AvgFpsOverview" Unit="fps" Label="en moyenne sur toute la session" />
+            <StatTile Value="@TreeCountWorld" Label="arbres et végétation placés sur la carte" />
+        </div>
+
+        <div class="problem">
+            <div class="problem-label">Le problème de départ</div>
+            <p class="problem-quote">
+                &laquo;&nbsp;Ma première version bloquait le thread principal au lancement. Le jeu était
+                injouable avant même d'avoir commencé.&nbsp;&raquo;
+            </p>
+        </div>
+
+        <div class="media-pair">
+            <figure class="media-frame">
+                @* data-src, not src: deferred by wwwroot/js/lazy-video.js like the two lower
+                   clips. This one is only about a screen down, but the observer loads 600px
+                   early, so it is playing by the time it is read. The poster is the clip's
+                   last frame — the finished world — so with JavaScript off this figure still
+                   shows what the still it replaced showed. *@
+                <video class="asset-media"
+                       data-src="video/hexmap-build.mp4"
+                       poster="video/hexmap-build.jpg"
+                       autoplay muted loop playsinline preload="none"
+                       aria-label="Démarrage à froid : l'écran reste noir, puis le terrain proche apparaît et la carte se remplit jusqu'à l'horizon">
+                </video>
+                <figcaption>
+                    Démarrage à froid : le premier hexagone à l'écran après @TimeToFirstHex s, la
+                    carte complète à @BuildTime s.
+                    @* The lead-in is cut from 7 s to 1,6 s, so the caption has to say so —
+                       the numbers just above it are real and must stay checkable. *@
+                    <span class="caption-note">
+                        L'attente initiale est raccourcie ici ; le remplissage est en temps réel.
+                    </span>
+                </figcaption>
+            </figure>
+            <figure class="media-frame">
+                <img class="asset-media"
+                     src="images/hexmap-closeup.png"
+                     alt="Vue au niveau du sol : des arbres low-poly s'éloignant vers des collines et une rivière" />
+                <figcaption>
+                    Au niveau du sol : @TreeCountWorld arbres et éléments de végétation placés sur la carte.
+                </figcaption>
+            </figure>
+        </div>
+    </section>
+
+    @* ───────────────────────── 01 · 02 · 03 — one claim, one proof ───────────────────────── *@
+    <section class="section">
+        <div class="steps">
+
+            @* ── 01 — generation ── *@
+            <div class="step">
+                <div class="step-eyebrow">01 &mdash; génération</div>
+                <h2 class="step-claim">
+                    Le monde est découpé en chunks, maillés par des threads de travail pendant que le joueur
+                    se déplace déjà.
+                </h2>
+
+                <div class="step-body">
+                    <p>
+                        Mailler @TotalHexTiles tuiles sur le thread principal, c'est demander au thread qui
+                        dessine les images de passer son temps à les calculer à la place : le monde arrive
+                        quand même, mais à 14 fps et trois fois plus lentement. J'ai découpé la carte en
+                        chunks, mis ces chunks en file, et confié cette file à un thread de fond qui la vide
+                        en distribuant le maillage aux threads de travail du Job System d'Unity.
+                        Le thread principal ne fait plus que récupérer les chunks terminés et
+                        les afficher &mdash; ce qui lui laisse le temps qu'il faut pour continuer à dessiner
+                        des images.
+                    </p>
+                    <p>
+                        La première tuile atteint l'écran @TimeToFirstHex secondes après un démarrage à
+                        froid, chargement de la scène compris, et le joueur peut se déplacer pendant que le
+                        reste du monde se construit encore derrière lui.
+                    </p>
+                </div>
+
+                <div class="step-evidence">
+                    @* "before" figures come from capture 2026-09-07_175219, the same build with
+                       the worker pool removed. They are literals because GameStatsGen generates
+                       from one capture at a time and has no comparison-capture support yet. *@
+                    <div class="evidence-panel evidence-panel--wide">
+                        <div class="panel-label">images par seconde en moyenne pendant la construction du monde</div>
+
+                        <div class="compare-row">
+                            <span class="compare-name">avant</span>
+                            <div class="compare-track"><div class="compare-fill compare-fill--before" style="width: 20%"></div></div>
+                            <span class="compare-value">14 fps</span>
+                        </div>
+                        <div class="compare-row">
+                            <span class="compare-name">après</span>
+                            <div class="compare-track"><div class="compare-fill compare-fill--after" style="width: 100%"></div></div>
+                            <span class="compare-value">69 fps</span>
+                        </div>
+
+                        <div class="panel-label panel-label--spaced">avant que le premier hexagone soit à l'écran</div>
+
+                        <div class="compare-row">
+                            <span class="compare-name">avant</span>
+                            <div class="compare-track"><div class="compare-fill compare-fill--before" style="width: 100%"></div></div>
+                            <span class="compare-value">10,7 s</span>
+                        </div>
+                        <div class="compare-row">
+                            <span class="compare-name">après</span>
+                            <div class="compare-track"><div class="compare-fill compare-fill--after" style="width: 66%"></div></div>
+                            <span class="compare-value">@TimeToFirstHex s</span>
+                        </div>
+
+                        <p class="figure-note">
+                            Les deux sont mesurés depuis l'apparition du premier hexagone jusqu'à la carte
+                            complète : les images du démarrage à froid, avant que quoi que ce soit ne
+                            s'affiche, sont donc exclues de part et d'autre.
+                        </p>
+                    </div>
+
+                    @* The whole run rather than just the build: the claim is that building
+                       costs almost nothing, and that is only visible against the rest. *@
+                    <div class="evidence-panel evidence-panel--full">
+                        <RunTimeline Title="La construction se remarque à peine sur le reste de la session"
+                                     Note=@($"Chaque image de la capture, en images par seconde. Le monde se remplit pendant la bande mise en évidence — {PctFramesBelow30Build} % des images y passent sous les 30 fps. La zone ombrée couvre la pire et la meilleure image de chaque colonne, pour qu'aucun pic ne disparaisse à l'échantillonnage.")
+                                     ElapsedS="RunTimelineElapsedS"
+                                     FpsPerFrame="RunTimelineFps"
+                                     Phases="RunTimelinePhases" />
+                    </div>
+                </div>
+            </div>
+
+            @* ── 02 — meshing ── *@
+            <div class="step">
+                <div class="step-eyebrow">02 &mdash; maillage</div>
+                <h2 class="step-claim">
+                    Le terrain change de résolution en continu, sans rien qui saute à l'écran.
+                </h2>
+
+                <div class="step-body">
+                    <p>
+                        Le terrain lointain n'a pas besoin d'autant de triangles que le sol sous vos pieds.
+                        Chaque chunk est maillé à plusieurs niveaux de détail &mdash; le même terrain,
+                        subdivisé finement près de la caméra et grossièrement loin d'elle, pour ne dépenser
+                        des triangles que là où ils peuvent réellement être vus.
+                    </p>
+                </div>
+
+                <div class="step-evidence">
+                    <div class="evidence-panel evidence-panel--full">
+                        <div class="lod-figure">
+                            <figure class="lod-hex">
+                                <svg viewBox="0 0 100 100" aria-hidden="true">
+                                    <path class="lod-hex-grid" d="M50 50L96 50M61.5 50L55.75 59.96M73 50L61.5 69.92M84.5 50L67.25 79.88M84.5 50L90.25 59.96M73 50L84.5 69.92M61.5 50L78.75 79.88M67.25 79.88L78.75 79.88M61.5 69.92L84.5 69.92M55.75 59.96L90.25 59.96M50 50L73 89.84M55.75 59.96L44.25 59.96M61.5 69.92L38.5 69.92M67.25 79.88L32.75 79.88M67.25 79.88L61.5 89.84M61.5 69.92L50 89.84M55.75 59.96L38.5 89.84M32.75 79.88L38.5 89.84M38.5 69.92L50 89.84M44.25 59.96L61.5 89.84M50 50L27 89.84M44.25 59.96L38.5 50M38.5 69.92L27 50M32.75 79.88L15.5 50M32.75 79.88L21.25 79.88M38.5 69.92L15.5 69.92M44.25 59.96L9.75 59.96M15.5 50L9.75 59.96M27 50L15.5 69.92M38.5 50L21.25 79.88M50 50L4 50M38.5 50L44.25 40.04M27 50L38.5 30.08M15.5 50L32.75 20.12M15.5 50L9.75 40.04M27 50L15.5 30.08M38.5 50L21.25 20.12M32.75 20.12L21.25 20.12M38.5 30.08L15.5 30.08M44.25 40.04L9.75 40.04M50 50L27 10.16M44.25 40.04L55.75 40.04M38.5 30.08L61.5 30.08M32.75 20.12L67.25 20.12M32.75 20.12L38.5 10.16M38.5 30.08L50 10.16M44.25 40.04L61.5 10.16M67.25 20.12L61.5 10.16M61.5 30.08L50 10.16M55.75 40.04L38.5 10.16M50 50L73 10.16M55.75 40.04L61.5 50M61.5 30.08L73 50M67.25 20.12L84.5 50M67.25 20.12L78.75 20.12M61.5 30.08L84.5 30.08M55.75 40.04L90.25 40.04M84.5 50L90.25 40.04M73 50L84.5 30.08M61.5 50L78.75 20.12" />
+                                    <path class="lod-hex-edge" d="M96 50L73 89.84L27 89.84L4 50L27 10.16L73 10.16Z" />
+                                </svg>
+                                <figcaption>LOD 1 &mdash; le plus proche</figcaption>
+                            </figure>
+
+                            <figure class="lod-hex">
+                                <svg viewBox="0 0 100 100" aria-hidden="true">
+                                    <path class="lod-hex-grid" d="M50 50L96 50M73 50L61.5 69.92M73 50L84.5 69.92M61.5 69.92L84.5 69.92M50 50L73 89.84M61.5 69.92L38.5 69.92M61.5 69.92L50 89.84M38.5 69.92L50 89.84M50 50L27 89.84M38.5 69.92L27 50M38.5 69.92L15.5 69.92M27 50L15.5 69.92M50 50L4 50M27 50L38.5 30.08M27 50L15.5 30.08M38.5 30.08L15.5 30.08M50 50L27 10.16M38.5 30.08L61.5 30.08M38.5 30.08L50 10.16M61.5 30.08L50 10.16M50 50L73 10.16M61.5 30.08L73 50M61.5 30.08L84.5 30.08M73 50L84.5 30.08" />
+                                    <path class="lod-hex-edge" d="M96 50L73 89.84L27 89.84L4 50L27 10.16L73 10.16Z" />
+                                </svg>
+                                <figcaption>LOD 3</figcaption>
+                            </figure>
+
+                            <figure class="lod-hex">
+                                <svg viewBox="0 0 100 100" aria-hidden="true">
+                                    <path class="lod-hex-grid" d="M50 50L96 50M50 50L73 89.84M50 50L27 89.84M50 50L4 50M50 50L27 10.16M50 50L73 10.16" />
+                                    <path class="lod-hex-edge" d="M96 50L73 89.84L27 89.84L4 50L27 10.16L73 10.16Z" />
+                                </svg>
+                                <figcaption>LOD 5 &mdash; le plus lointain</figcaption>
+                            </figure>
+                        </div>
+                        <div class="panel-label">
+                            Le même terrain à trois des cinq niveaux : 6&nbsp;720, 1&nbsp;270 et 756
+                            triangles par chunk. Plus on s'éloigne de la caméra, moins il faut de triangles
+                            pour décrire le même relief.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-body">
+                    <p>
+                        Le gain est réel, mais changer de niveau naïvement introduit un défaut. La géométrie
+                        d'un chunk change d'un coup, le relief saute, et l'œil le remarque immédiatement
+                        &mdash; c'est l'effet qu'on appelle le popping.
+                    </p>
+                    <p>
+                        Le geomorphing supprime ce saut. Plutôt que de basculer brutalement d'un maillage au
+                        suivant, les sommets des deux niveaux sont rapprochés l'un de l'autre à mesure que
+                        la distance à la caméra change, et l'échange n'a lieu qu'une fois les deux formes
+                        déjà confondues.
+                    </p>
+                </div>
+
+                <div class="step-evidence">
+                    <div class="evidence-panel evidence-panel--full">
+                        @* data-src, not src: this clip is ~6 screens down on a phone, so
+                           wwwroot/js/lazy-video.js holds the download until the reader is
+                           near it. The poster carries the frame until then. *@
+                        <video class="asset-media"
+                               data-src="video/geomorphing.mp4"
+                               poster="video/geomorphing.jpg"
+                               autoplay muted loop playsinline preload="none"
+                               aria-label="Le maillage grossier du terrain, teinté en rouge, remontant à travers le maillage détaillé jusqu'à ce que les deux coïncident">
+                        </video>
+                        <div class="panel-label">
+                            Remplacer un maillage par un autre fait sauter le relief. Le geomorphing pousse
+                            les deux l'un dans l'autre jusqu'à ce qu'ils coïncident, et n'échange qu'à ce
+                            moment-là &mdash; il ne reste donc rien à voir. Le maillage grossier est peint
+                            en rouge ici pour rendre le mouvement visible ; en jeu, il est plus petit, plus
+                            rapide et imperceptible.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @* ── 03 — shadows ── *@
+            <div class="step">
+                <div class="step-eyebrow">03 &mdash; ombres</div>
+                <h2 class="step-claim">
+                    Chaque tuile de la carte projette une ombre, les @TreeCountWorld arbres compris, dans
+                    @MaxGpuPctBudget % du budget de mémoire vidéo.
+                </h2>
+
+                <div class="step-body">
+                    <p>
+                        Faire projeter une ombre à chaque objet d'une carte de cette taille est normalement
+                        hors budget : @TreeCountWorld arbres, ce sont @TreeCountWorld objets de plus à
+                        rastériser du point de vue de la lumière, à chaque image. J'ai donc arrêté de le
+                        faire à chaque image. La carte est photographiée du point de vue du soleil, un chunk
+                        à la fois &mdash; jamais plus d'une photographie par image &mdash; et chaque
+                        photographie est mise en cache.
+                    </p>
+                    <p>
+                        Entre deux photographies, chaque pixel ombré fait avancer un court rayon dans la
+                        profondeur mise en cache, en direction de la position actuelle du soleil : l'ombre
+                        du cache est ainsi corrigée de tout ce que le soleil a parcouru depuis la prise.
+                        Près de la caméra, les ombres temps réel d&rsquo;Unity font toujours le travail ; le
+                        cache prend le relais plus loin, où il coûte un ray march contre une texture au lieu
+                        d'une seconde passe sur la géométrie de la carte.
+                    </p>
+                    <p>
+                        Le cache est une photographie : il ne connaît que ce que le soleil pouvait voir au
+                        moment de la prise. Un arbre caché derrière un autre au moment du bake ne projette
+                        rien tant que la photographie suivante ne l'a pas capté.
+                    </p>
+                    <p>
+                        Résultat : la carte entière est ombrée, végétation comprise, et l'ensemble tient
+                        dans @MaxGpuPctBudget % de la mémoire vidéo disponible.
+                    </p>
+                </div>
+
+                @* The pair needs the width — at a third of the row the difference between
+                   them is too small to see, which is the only thing they are here to show. *@
+                <div class="step-evidence">
+                    <div class="evidence-panel">
+                        <img class="asset-media"
+                             src="images/hexmap-shadows-off.jpg"
+                             alt="La carte sans projection d'ombres : un terrain plat, uniformément éclairé" />
+                        <div class="panel-label">
+                            Sans ombres : le relief paraît plat et les arbres flottent.
+                        </div>
+                    </div>
+
+                    <div class="evidence-panel">
+                        <img class="asset-media"
+                             src="images/hexmap-shadows-on.jpg"
+                             alt="Le même terrain avec la projection d'ombres activée : les collines et les bosquets se projettent sur le sol" />
+                        <div class="panel-label">
+                            Avec ombres : les collines prennent forme et les arbres se posent sur le sol.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-evidence">
+                    <div class="evidence-panel evidence-panel--wide">
+                        @* Deferred too — this one sits ~8 screens down. *@
+                        <video class="asset-media"
+                               data-src="video/hexmap-shadows.mp4"
+                               poster="video/hexmap-shadows.jpg"
+                               autoplay muted loop playsinline preload="none"
+                               aria-label="Les ombres balayant la carte terminée à mesure que le soleil se déplace, caméra fixe">
+                        </video>
+                        <div class="panel-label">
+                            La caméra est fixe ; le soleil ne l'est pas. Chaque chunk est rephotographié à
+                            son propre rythme, d'autant plus souvent qu'il est proche de la caméra.
+                        </div>
+                    </div>
+
+                    <div class="evidence-panel evidence-panel--figure">
+                        <div class="panel-figure">@MaxGpuPctBudget %</div>
+                        <div class="panel-label">du budget de mémoire vidéo, au pic</div>
+                    </div>
+
+                    <div class="evidence-panel evidence-panel--full">
+                        <LineChart Title=@($"La mémoire vidéo culmine à {MaxGpuPctBudget} % du budget, ombres comprises")
+                                   Note="Pourcentage du budget de mémoire vidéo sur toute la session, génération comprise."
+                                   Values="GpuOverTime"
+                                   Unit="%"
+                                   XEnd="60"
+                                   Markers="BuildCompleteMarker"
+                                   XAxisLabel="seconde"
+                                   XAxisLabelPlural="secondes" />
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    @* ───────────────────────── The way out ───────────────────────── *@
+    <section class="section section-card">
+
+        <div class="outro">
+            <div class="outro-title">Ce site est aussi un projet</div>
+            <div class="outro-stack">Développé en C#, sans framework JavaScript, et déployé en continu.</div>
+        </div>
+
+        @* These tags describe this site, matching the heading above and the repo
+           the link points at — not the game's Unity stack. *@
+        <div class="tech-row">
+            <span class="tech-tag">Blazor WebAssembly</span>
+            <span class="tech-tag">C#</span>
+            <span class="tech-tag">GitHub Actions</span>
+            <span class="tech-tag">Azure</span>
+            <a href="https://github.com/fredo71/Portfolio" target="_blank" rel="noopener noreferrer" class="tech-link">
+                <i class="bi bi-github"></i> voir le code
+            </a>
+        </div>
+
+    </section>
+
+    @* ───────────────────────── Everything that backs the claims above ───────────────────────── *@
+    <section class="section">
+        <details class="appendix">
+            <summary>Les mesures en détail</summary>
+
+            <div class="appendix-body">
+
+                <div class="appendix-block">
+                    <h3>Comment cela a été mesuré</h3>
+                    <p class="section-note">
+                        Une seule capture de 60 secondes. Le jeu démarre à froid, génère le monde, puis fait
+                        suivre à une caméra un trajet fixe qui se répète toutes les 20 secondes, si bien que
+                        le même terrain repasse un peu plus de deux fois.
+                        <span class="rig">
+                            Enregistré sur un GPU portable GTX 1650 Ti avec un i5-10300H, en 1920&times;1080
+                            plein écran, vsync désactivée, sans limite d'images par seconde, depuis un build
+                            de développement sous Unity 6000.5.7f1.
+                        </span>
+                    </p>
+
+                    <div class="kpi-row">
+                        <StatTile Value="@TotalHexTiles" Label="tuiles hexagonales dans le monde" />
+                        <StatTile Value="@PctFramesBelow30Overview" Unit="%" Label="des images sous les 30 fps" />
+                        <StatTile Value="@PctFramesBelow30Build" Unit="%" Label="des images sous les 30 fps pendant la construction" />
+                        <StatTile Value="@AvgFpsOverview" Unit="fps" Label="en moyenne sur toute la session" />
+                        <StatTile Value="@TimeToFirstHex" Unit="s" Label="avant le premier hexagone à l'écran" />
+                        <StatTile Value="@TreeCountWorld" Label="arbres et végétation placés sur la carte" />
+                    </div>
+                </div>
+
+                <div class="appendix-block">
+                    <h3>Une fois construit</h3>
+                    <p class="section-note">
+                        Chaque tuile de la carte projette une ombre, pas seulement celles proches de la
+                        caméra. Le niveau de détail décroît ensuite progressivement avec la distance au lieu
+                        d'apparaître d'un coup : rien ne change brutalement en sortant du champ.
+                    </p>
+
+                    <div class="kpi-row kpi-row--compact">
+                        <StatTile Value="@DrawDistanceHexes" Label="hexagones visibles avant élimination des éléments" />
+                        @* Entity references are not decoded inside a component parameter —
+                           the em dash has to be the literal character. *@
+                        <StatTile Value="@BiggestTrianglePctOfScreen" Unit="%" Label="de l'écran — le plus grand triangle, dans le pire cas" />
+                    </div>
+
+                    <figure class="media-frame">
+                        <img class="asset-media"
+                             src="images/hexmap-triangles.png"
+                             alt="Terrain terminé, chaque triangle rendu dans une couleur unie distincte" />
+                        <figcaption>
+                            @BiggestTrianglePctOfScreen % de l'écran &mdash; le plus grand triangle, dans le
+                            pire cas
+                        </figcaption>
+                    </figure>
+
+                    <p class="section-note">
+                        Tout cela reste dans le budget de mémoire vidéo, même avec les ombres et le détail
+                        de la carte entière actifs en même temps &mdash; et rien de tout cela ne coûte
+                        d'images par seconde.
+                    </p>
+
+                    <div class="kpi-row kpi-row--compact">
+                        <StatTile Value="@MaxGpuPctBudget" Unit="%" Label="du budget de mémoire vidéo, au pic" />
+                        <StatTile Value="@AvgGpuPctBudget" Unit="%" Label="du budget de mémoire vidéo, en moyenne" />
+                        <StatTile Value="@AvgFpsBuilt" Unit="fps" Label="images par seconde en moyenne, carte entière affichée" />
+                    </div>
+                </div>
+
+                <div class="appendix-block">
+                    <h3>Sous le capot</h3>
+
+                    <div class="feature-cards">
+                        <div class="feature-card">
+                            <h3>Burst Job System</h3>
+                            <p>
+                                La construction du maillage de la carte se fait entièrement hors du thread
+                                principal, pour que le jeu ne se fige jamais pendant la génération. Le thread
+                                principal confie les chunks à un unique thread de fond, qui planifie les Unity
+                                Jobs <span class="code-inline">Burst-compiled</span> : pour chaque hexagone, un
+                                premier job calcule les positions des sommets, puis deux autres en dépendent et
+                                s'exécutent en parallèle &mdash; les coordonnées de texture et les normales
+                                d'éclairage. Les hexagones d'un même chunk s'enchaînent les uns après les
+                                autres, mais plusieurs chunks avancent en parallèle. Les données de maillage
+                                vivent dans des <span class="code-inline">NativeArrays</span> non managés
+                                plutôt que sur le tas managé.
+                            </p>
+                        </div>
+
+                        <div class="feature-card">
+                            <h3>Decorator System</h3>
+                            <p>
+                                Les arbres et la végétation sont rendus par
+                                <span class="code-inline">GPU instancing</span>, via le
+                                <span class="code-inline">DrawMeshInstanced</span> d&rsquo;Unity : des milliers
+                                de positions sont envoyées au GPU en un seul draw call, sans créer le moindre
+                                objet dans la scène. Près de la caméra, ce sont de vrais maillages 3D. Plus
+                                loin, ils basculent vers des <span class="code-inline">impostor billboards</span>
+                                plats, d'aspect semblable mais bien moins coûteux à rendre. À mesure que la
+                                caméra approche, de nouvelles instances apparaissent progressivement, par
+                                <span class="code-inline">density band</span>.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </details>
+    </section>
+
+</div>

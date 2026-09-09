@@ -1,0 +1,219 @@
+@using System.Globalization
+
+<figure class="chart">
+    <figcaption>
+        <h3>@Title</h3>
+        @if (!string.IsNullOrEmpty(Note))
+        {
+            <p class="chart-note">@Note</p>
+        }
+    </figcaption>
+
+    <div class="plot">
+        <div class="yaxis">
+            @foreach (var t in Ticks())
+            {
+                <span class="ytick" style="bottom:@Pct(t / AxisMax())%">@N0(t)</span>
+            }
+        </div>
+
+        <div class="canvas">
+            @* gridlines: hairline, solid, recessive *@
+            @foreach (var t in Ticks())
+            {
+                <span class="gridline" style="bottom:@Pct(t / AxisMax())%"></span>
+            }
+
+            @* thresholds: dashed and directly labelled, so they never read as grid *@
+            @foreach (var th in Thresholds)
+            {
+                <span class="threshold" style="bottom:@Pct(th.Value / AxisMax())%">
+                    <span class="threshold-label">@th.Label</span>
+                </span>
+            }
+
+            @* markers: vertical counterpart to a threshold, for calling out a moment *@
+            @foreach (var m in Markers)
+            {
+                <span class="marker" style="left:@Pct(MarkerFraction(m.X))%">
+                    <span class="marker-label">@m.Label</span>
+                </span>
+            }
+
+            @* geometry only - Razor reserves the SVG text element, so every label is HTML *@
+            <svg viewBox="0 0 760 200" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+                <path class="area" d="@AreaPath()" />
+                <path class="line" d="@LinePath()" vector-effect="non-scaling-stroke" />
+            </svg>
+
+            @* the peak gets the one direct label *@
+            <span class="peak-dot" style="left:@Pct(FX(PeakIndex))%;top:@Pct(FY(Values[PeakIndex]))%"></span>
+            <span class="peak-label" style="left:@Pct(FX(PeakIndex))%;top:@Pct(FY(Values[PeakIndex]))%">
+                @N1(Values[PeakIndex]) @Unit
+            </span>
+
+            @* hover layer: crosshair plus readout, reachable by keyboard *@
+            @for (var b = 0; b < BandCount; b++)
+            {
+                var lo = b * BandSize;
+                var hi = Math.Min(Values.Length, lo + BandSize) - 1;
+                var peak = 0.0;
+                for (var i = lo; i <= hi; i++) { peak = Math.Max(peak, Values[i]); }
+                var flip = FX(lo) > 0.6;
+
+                <span class="band @(flip ? "band--flip" : "")"
+                      style="left:@Pct(FX(lo))%;width:@Pct(Math.Max(0.004, FX(hi) - FX(lo)))%"
+                      tabindex="0" role="img"
+                      aria-label="@($"{Cap(XAxisLabelPlural)} {XLabel(lo)} à {XLabel(hi + 1)}, pic {N1(peak)} {Unit}")">
+                    <span class="crosshair"></span>
+                    <span class="readout">
+                        <strong>@N1(peak) @Unit</strong>
+                        <span>@XAxisLabelPlural @XLabel(lo)&ndash;@XLabel(hi + 1)</span>
+                    </span>
+                </span>
+            }
+        </div>
+    </div>
+
+    <div class="xaxis">
+        <span>@XAxisLabel @XLabel(0)</span>
+        <span>@XAxisLabel @XLabel(Values.Length)</span>
+    </div>
+    @if (!string.IsNullOrEmpty(XTitle))
+    {
+        <p class="axis-title">@XTitle</p>
+    }
+
+    <details class="tableview">
+        <summary>Vue tableau</summary>
+        <table>
+            <thead>
+                <tr>
+                    <th scope="col">@Cap(XAxisLabelPlural)</th>
+                    <th scope="col">Médiane</th>
+                    <th scope="col">Pic</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var row in Blocks())
+                {
+                    <tr>
+                        <td>@row.Range</td>
+                        <td class="num">@row.Median @Unit</td>
+                        <td class="num">@row.Peak @Unit</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </details>
+</figure>
+
+@code {
+    public record Threshold(double Value, string Label);
+    public record Marker(double X, string Label);
+
+    [Parameter, EditorRequired] public string Title { get; set; } = "";
+    [Parameter] public string? Note { get; set; }
+    [Parameter, EditorRequired] public double[] Values { get; set; } = [];
+    [Parameter] public int XStart { get; set; }
+    /// Real x value the last bucket ends at. Without it the axis falls back to
+    /// counting buckets, which only reads correctly when one bucket is one unit.
+    [Parameter] public double? XEnd { get; set; }
+    [Parameter] public string XTitle { get; set; } = "";
+    [Parameter] public Threshold[] Thresholds { get; set; } = [];
+    [Parameter] public Marker[] Markers { get; set; } = [];
+    [Parameter] public string Unit { get; set; } = "ms";
+    [Parameter] public string XAxisLabel { get; set; } = "image";
+    [Parameter] public string XAxisLabelPlural { get; set; } = "images";
+
+    static string Cap(string s) => s.Length == 0 ? s : char.ToUpperInvariant(s[0]) + s[1..];
+
+    string XLabel(int bucketEdge)
+    {
+        var value = XEnd is null
+            ? XStart + Math.Min(bucketEdge, Values.Length - 1)
+            : XStart + (XEnd.Value - XStart) * bucketEdge / Values.Length;
+        return FrenchNumbers.Format(value, "0.#");
+    }
+
+    const double VbW = 760, VbH = 200;
+    const int BandSize = 5;
+
+    int BandCount => (int)Math.Ceiling(Values.Length / (double)BandSize);
+    int PeakIndex => Array.IndexOf(Values, Values.Max());
+
+    // Inline geometry must never pick up a comma decimal separator (fr-FR etc.).
+    static string Pct(double frac) =>
+        (Math.Clamp(frac, 0, 1) * 100).ToString("0.###", CultureInfo.InvariantCulture);
+
+    static string N(double v) => v.ToString("0.##", CultureInfo.InvariantCulture);
+    static string N0(double v) => FrenchNumbers.Format(v, "0");
+    static string N1(double v) => FrenchNumbers.Format(v, "0.0");
+
+    double AxisMax()
+    {
+        var peak = Values.Length == 0 ? 1 : Values.Max();
+        var step = NiceStep(peak / 4);
+        return Math.Ceiling(peak / step) * step;
+    }
+
+    static double NiceStep(double raw)
+    {
+        if (raw <= 0) return 1;
+        var mag = Math.Pow(10, Math.Floor(Math.Log10(raw)));
+        var n = raw / mag;
+        var f = n <= 1 ? 1 : n <= 2 ? 2 : n <= 5 ? 5 : 10;
+        return f * mag;
+    }
+
+    IEnumerable<double> Ticks()
+    {
+        var max = AxisMax();
+        var step = NiceStep(max / 4);
+        for (var t = 0.0; t <= max + 1e-9; t += step) yield return t;
+    }
+
+    // Fractions of the plot box: 0..1 left to right, 0..1 top to bottom.
+    double FX(int i) => Values.Length < 2 ? 0 : (double)i / (Values.Length - 1);
+
+    // Placed against the buckets rather than the raw span, so a marker lands where
+    // the line itself puts that moment.
+    double MarkerFraction(double x)
+    {
+        if (Values.Length < 2) return 0;
+        var bucket = XEnd is null ? x - XStart : (x - XStart) / (XEnd.Value - XStart) * Values.Length;
+        return Math.Clamp(bucket / (Values.Length - 1), 0, 1);
+    }
+    double FY(double v) => 1 - Math.Clamp(v / AxisMax(), 0, 1);
+
+    string LinePath()
+    {
+        var sb = new System.Text.StringBuilder();
+        for (var i = 0; i < Values.Length; i++)
+        {
+            sb.Append(i == 0 ? 'M' : 'L')
+              .Append(N(FX(i) * VbW)).Append(' ')
+              .Append(N(FY(Values[i]) * VbH)).Append(' ');
+        }
+        return sb.ToString().TrimEnd();
+    }
+
+    string AreaPath() =>
+        Values.Length == 0 ? "" : $"{LinePath()} L {N(VbW)} {N(VbH)} L 0 {N(VbH)} Z";
+
+    record Row(string Range, string Median, string Peak);
+
+    IEnumerable<Row> Blocks()
+    {
+        const int size = 25;
+        for (var lo = 0; lo < Values.Length; lo += size)
+        {
+            var hi = Math.Min(Values.Length, lo + size);
+            var slice = Values[lo..hi].OrderBy(v => v).ToArray();
+            yield return new Row(
+                $"{XStart + lo}–{XStart + hi - 1}",
+                N1(slice[slice.Length / 2]),
+                N1(slice[^1]));
+        }
+    }
+}

@@ -19,3 +19,10 @@ packages/
 
 # Blazor
 wwwroot/css/bootstrap/
+
+*.md
+
+game-data/*
+
+# tools/CvPdf
+node_modules/

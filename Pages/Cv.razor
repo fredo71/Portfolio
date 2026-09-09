@@ -1,118 +1,207 @@
 @page "/Cv"
-@using Portfolio.Components
 
-<PageTitle>Cv</PageTitle>
+<PageTitle>CV de Frédéric Larue</PageTitle>
+
+@* Three grid children. The main column spans both rows on the left; the photo
+   cell and the rail stack in the right column and share the navy, so the dark
+   reads as one uninterrupted vertical block rather than a bent shape. Main
+   comes first in source order so the profile is what gets read first.
+
+   cv-page is the surface the sheet sits on (screen only, stripped in print). *@
+<div class="cv-page">
+
+@* Screen only — the PDF is what a recruiter actually keeps. Hidden in print,
+   where the page being looked at is already the document. *@
+<div class="cv-toolbar">
+    <a href="/cv-frederic-larue.pdf" download class="btn-styled">
+        <i class="bi bi-download" aria-hidden="true"></i>
+        Télécharger le CV en PDF
+    </a>
+</div>
 
 <div class="cv-layout">
-    <aside >
-        <section class="center">
-            <img src="images/head shot.jpg" alt="Photo Frederic LARUE"
-                 class="profile-photo">
+
+    <div class="cv-main">
+
+        <header class="cv-identity">
+            <h1>Frédéric Larue</h1>
+            <p class="cv-role">Développeur C# / .NET</p>
+
+            <ul class="cv-contact">
+                <li><i class="bi bi-envelope-fill" aria-hidden="true"></i>
+                    <a href="mailto:frederic.larue17@gmail.com">frederic.larue17@gmail.com</a></li>
+                <li><i class="bi bi-telephone-fill" aria-hidden="true"></i>
+                    07 88 32 01 48</li>
+                <li><i class="bi bi-geo-alt-fill" aria-hidden="true"></i>
+                    10150 Pont-Sainte-Marie</li>
+                <li><i class="bi bi-car-front-fill" aria-hidden="true"></i>
+                    Permis B + véhicule</li>
+            </ul>
+
+            <ul class="cv-links">
+                <li>
+                    <a href="https://fredericlarue.com/AboutMe">
+                        <i class="bi bi-globe2" aria-hidden="true"></i>fredericlarue.com/AboutMe</a>
+                </li>
+                <li>
+                    <a href="https://github.com/fredo71" target="_blank" rel="noopener noreferrer">
+                        <i class="bi bi-github" aria-hidden="true"></i>github.com/fredo71</a>
+                </li>
+                @* Le libellé reste « LinkedIn » : le slug réel se termine par un
+                   identifiant machine, illisible et sans intérêt sur un CV. *@
+                <li>
+                    <a href="https://www.linkedin.com/in/fr%C3%A9d%C3%A9ric-larue-55a41428b" target="_blank" rel="noopener noreferrer">
+                        <i class="bi bi-linkedin" aria-hidden="true"></i>LinkedIn</a>
+                </li>
+            </ul>
+        </header>
+
+        <section>
+            <h2>Profil</h2>
+            <p class="profile">
+                Développeur C# / .NET, diplômé d'un master en informatique après deux ans
+                d'alternance et quatre ans de cycle ingénieur. À l'aise sur le logiciel qui doit tenir
+                dans un budget de temps, de mémoire ou de calcul. Je l'ai appris en profilant mon
+                propre moteur de rendu plutôt qu'en devinant. Je recherche un poste de
+                développeur C# en CDI, mobile dans toute la France métropolitaine.
+            </p>
         </section>
-        <section class="left-padding">
-            <h2>Contact</h2>
-            <p>☎ 07 88 32 01 48 </p>
-            <p>✉ <a href="mailto:frederic.larue17@gmail.com">frederic.larue17@gmail.com</a></p>
-            <p>➣ 10150 Pont-Sainte-Marie</p>
+
+        <section>
+            <h2>Expérience</h2>
+
+            <article class="entry">
+                <div class="entry-head">
+                    <h3>Développeur informatique (alternance)</h3>
+                    <span class="entry-date">2023 – 2025</span>
+                </div>
+                <p class="entry-meta">Davey Bickford Enaex · Héry, Bourgogne-Franche-Comté</p>
+                <ul>
+                    <li>Développement en autonomie d'un outil de gestion du matériel en Python.</li>
+                    <li>Conteneurisation Docker de l'application et de ses dépendances.</li>
+                    <li>Pipelines d'intégration et de déploiement continus sous GitLab CI/CD.</li>
+                    <li>Mise en place de tests automatisés sur le périmètre développé.</li>
+                    <li>Coordination avec les équipes cybersécurité et infrastructure.</li>
+                </ul>
+            </article>
         </section>
-        <section class="left-padding">
-            <h2>formation</h2>
-            <div class="bottom-margin">
-                <p class="date">
-                    2016-2019
+
+        <section>
+            <h2>Projets</h2>
+
+            <article class="entry">
+                <div class="entry-head">
+                    <h3>Moteur de rendu hexagonal procédural</h3>
+                    <span class="entry-date is-current">En cours depuis 2025</span>
+                </div>
+                <p class="entry-meta">Projet à temps plein · Unity / C#</p>
+                <p class="entry-links">
+                    <a class="entry-link" href="/Game">
+                        <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>fredericlarue.com/Game</a>
+                    <a class="entry-link" href="https://github.com/fredo71/unity-hex-terrain-renderer" target="_blank" rel="noopener noreferrer">
+                        <i class="bi bi-github" aria-hidden="true"></i>Code source</a>
                 </p>
-                <p>
-                    Baccalauréat Scientifique - SI Lycée des Lombart à Troyes
+                <ul>
+                    <li>Monde généré procéduralement à la taille voulue, et construit à la demande : le terrain proche s'affiche d'abord, le reste se remplit en arrière-plan.</li>
+                    <li>Tenu à 60&nbsp;fps sur un portable d'entrée de gamme, la contrainte qui a dicté toute l'architecture.</li>
+                    <li>Développé seul en C# sous Unity, avec ses propres outils de mesure : les chiffres annoncés sont relevés, pas estimés. <a class="text-link" href="/Game">Détail des mesures</a>.</li>
+                </ul>
+            </article>
+
+            <article class="entry">
+                <div class="entry-head">
+                    <h3>Portfolio en Blazor WebAssembly</h3>
+                    <span class="entry-date">2026</span>
+                </div>
+                <p class="entry-meta">Blazor WebAssembly / C#</p>
+                <p class="entry-links">
+                    <a class="entry-link" href="/AboutMe">
+                        <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>fredericlarue.com/AboutMe</a>
+                    <a class="entry-link" href="https://github.com/fredo71/Portfolio" target="_blank" rel="noopener noreferrer">
+                        <i class="bi bi-github" aria-hidden="true"></i>Code source</a>
                 </p>
-            </div>
-            <div class="bottom-margin">
-                <p class="date">
-                    2019-2021
-                </p>
-                <p>
-                    Classe préparatoire MPSI Lycée Chrétien de Troyes
-                </p>
-            </div>
-            <div class="bottom-margin">
-                <p class="date">
-                    2021-2023
-                </p>
-                <p >
-                    ingénieur informatique EILCO à Calais
-                </p>
-            </div>
-            <div class="bottom-margin">
-                <p class="date">
-                    2023-2025
-                </p>
-                <p >
-                    master informatique en alternance Expert en informatique et système d'information EPSI à Auxerre
-                </p>
-            </div>
+                <ul>
+                    <li>Application web développée en C# avec Blazor WebAssembly, sans framework JavaScript.</li>
+                    <li>Pipeline CI/CD GitHub Actions avec environnements de staging et de production.</li>
+                    <li>Hébergement et déploiement continu sur Azure Static Web Apps.</li>
+                </ul>
+            </article>
+
         </section>
-        <section class="left-padding">
-            <h2>Centres d'intérêt</h2>
-            <ul>
-                <li>Jeux-video</li>
-                <li>Actualité</li>
-                <li>Histoire</li>
-                <li>Ecriture</li>
+
+    </div>
+
+    <div class="cv-photo-cell">
+        <img src="images/head shot.jpg" alt="Photo de Frédéric Larue" class="cv-photo">
+    </div>
+
+    <aside class="cv-rail">
+
+        <section>
+            <h2>Compétences</h2>
+
+            <p class="rail-label">Langages</p>
+            <ul class="tags">
+                <li class="tag">C#</li>
+                <li class="tag">Python</li>
+                <li class="tag">SQL</li>
+                <li class="tag">HTML / CSS</li>
+            </ul>
+
+            <p class="rail-label">Frameworks</p>
+            <ul class="tags">
+                <li class="tag">.NET</li>
+                <li class="tag">Blazor</li>
+                <li class="tag">Unity</li>
+            </ul>
+
+            <p class="rail-label">Outils &amp; méthodes</p>
+            <ul class="tags">
+                <li class="tag">Docker</li>
+                <li class="tag">GitLab CI/CD</li>
+                <li class="tag">GitHub Actions</li>
+                <li class="tag">Git</li>
+                <li class="tag">Tests automatisés</li>
+                <li class="tag">Azure</li>
+                <li class="tag">Visual Studio</li>
             </ul>
         </section>
-    </aside>
-    <main class="cv-main">
-        <h1>Master en informatique</h1>
-        <p>Frederic larue</p>
+
         <section>
-            <h2>Competence</h2>
-            <div class="skill-collum">
-                    <p>Python</p> <SkillDots Level="5"/>
-                    <p>C#</p> <SkillDots Level="5"/>
-                    <p>CSS</p> <SkillDots Level="3"/>
-                    <p>React</p> <SkillDots Level="1"/>
-                    <p>SQL</p> <SkillDots Level="2"/>
-                    <p>Git</p> <SkillDots Level="4"/>
-                    <p>Scrum</p> <SkillDots Level="3"/>
-                    <p>Gitlab</p> <SkillDots Level="4"/>
-                    <p>Cyber</p> <SkillDots Level="3"/>
-                    <p>Math</p> <SkillDots Level="4"/>
+            <h2>Formation</h2>
+            <div class="rail-entry">
+                <p class="rail-date">2023 – 2025</p>
+                <p class="rail-title">Master : Expert en informatique et systèmes d'information</p>
+                <p class="rail-meta">EPSI, Auxerre (en alternance)</p>
+            </div>
+            <div class="rail-entry">
+                <p class="rail-date">2021 – 2023</p>
+                <p class="rail-title">Cycle ingénieur informatique</p>
+                <p class="rail-meta">EILCO, Calais</p>
+            </div>
+            <div class="rail-entry">
+                <p class="rail-date">2019 – 2021</p>
+                <p class="rail-title">Classe préparatoire MPSI</p>
+                <p class="rail-meta">Lycée Chrestien de Troyes</p>
             </div>
         </section>
+
         <section>
             <h2>Langues</h2>
-            <p>Anglais : toeic niveau c1 et utilisé en entreprise</p>
-            <p>Allemand : niveau courant</p>
+            <p class="rail-line"><strong>Anglais</strong> : TOEIC C1, utilisé en entreprise</p>
+            <p class="rail-line"><strong>Allemand</strong> : courant</p>
         </section>
+
         <section>
-            <h2>Expérience professionnel</h2>
-            <h3>
-                2023-2025 Alternance de master à Davey Bickford
-            </h3>
-            <p>Héry ,Bourgogne-Franche-Comté</p>
-            <p>
-                Contribution au développement d’un outil de gestion du
-                matériel, avec intégration de tests automatisés. Réalisation du
-                développement en autonomie, ainsi que la coordination avec
-                les équipes de cybersécurité et d’infrastructure.
-            </p>
+            <h2>Atouts</h2>
+            <p class="rail-line">Autonomie · Rigueur · Esprit analytique · Logique</p>
         </section>
+
         <section>
-            <h2>Expérience personnel</h2>
-            <h3>2021-2025 Création de jeux-vidéo</h3>
-            <p>
-                Création d’un jeu vidéo personnel, démontrant ma passion
-                pour le développement et renforçant mes compétences en
-                programmation, conception et architecture logicielle.
-            </p>
+            <h2>Centres d'intérêt</h2>
+            <p class="rail-line">Jeux-vidéo de stratégie · Histoire · Écriture · Actualité</p>
         </section>
-        <section>
-            <h2>Compétences personnelle</h2>
-            <ul>
-                <li>Passionné par les nouvelles technologies</li>
-                <li>Serieux</li>
-                <li>Esprit analytique</li>
-                <li>Grande culture generale</li>
-            </ul>
-        </section>
-    </main>
+
+    </aside>
+</div>
 </div>

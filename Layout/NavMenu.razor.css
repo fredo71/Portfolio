@@ -2,11 +2,13 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    height: 100%;
-    padding: 0 ;
-    background-color: var(--backgrounds-light) ;
+    padding: 0;
+    background-color: var(--backgrounds-light);
     width: 100%;
-    height: max(10vh,50px);
+    height: var(--nav-height);
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
 .border-linked {
@@ -14,14 +16,24 @@
     height: 100%;
 }
 
+/* 2cqw had no container to resolve against, so it fell back to the viewport:
+   28.8px at 1440px wide and 7.8px on a phone. A fixed size with one step down
+   for narrow screens keeps the labels readable at both ends. */
 .button-linked{
     padding: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 2cqw;
+    font-size: 1.15rem;
     color: var(--text-primary);
     flex-direction: column;
+}
+
+@media (max-width: 640px) {
+    .button-linked {
+        padding: 10px 8px;
+        font-size: 1rem;
+    }
 }
 
 .button-linked::after{

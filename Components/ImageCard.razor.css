@@ -5,7 +5,20 @@
     aspect-ratio: 1;
     width: 100%;
     background-color:var(--backgrounds-light);
-    position: relative;   
+    position: relative;
+    /* It is an <a> now — drop the link chrome, keep the card look. */
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Keyboard users get the same ring the hover gradient gives the mouse. */
+.imageCardBackround:focus-visible {
+    outline: 3px solid var(--secondary);
+    outline-offset: 3px;
+}
+
+.imageCardBackround:focus-visible::before {
+    opacity: 1;
 }
 
 img {
