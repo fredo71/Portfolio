@@ -16,11 +16,17 @@
                 <a href="https://github.com/fredo71" target="_blank" rel="noopener noreferrer" aria-label="GitHub" class="svg-gradiant maximize-icon">
                     <i class="bi bi-github" aria-hidden="true"></i>
                 </a>
-                <a href="#Project" class="btn-styled">
+                @* Chemin complet obligatoire : avec <base href="/"> dans index.html,
+                   un href commençant par « # » se résout sur la base, donc sur
+                   l'accueil, et non sur la page courante. *@
+                <a href="/AboutMe#Project" class="btn-styled">
                     Voir le projet phare
                 </a>
                 <a href="/Cv" class="btn-styled">
                     Voir le CV
+                </a>
+                <a href="/cv-frederic-larue.pdf" download class="btn-styled">
+                    Télécharger le CV
                 </a>
             </div>
         </div>
@@ -75,7 +81,7 @@
 
         <div class="experience-card panel">
             <div class="experience-header">
-                <h3 class="experience-title">Développeur logiciel — Davey Bickford Enaex</h3>
+                <h3 class="experience-title">Développeur informatique — Davey Bickford Enaex</h3>
                 <span class="experience-date">2023 – 2025</span>
             </div>
             <p class="experience-meta">Alternance de master · Héry, Bourgogne-Franche-Comté</p>
@@ -86,10 +92,9 @@
             </p>
             <div class="experience-tags">
                 <span class="pill">Python</span>
-                <span class="pill">Django</span>
-                <span class="pill">PostgreSQL</span>
-                <span class="pill">Tests automatisés</span>
                 <span class="pill">Docker</span>
+                <span class="pill">GitLab CI/CD</span>
+                <span class="pill">Tests automatisés</span>
             </div>
         </div>
     </section>
@@ -153,7 +158,7 @@
         <div class="project-grid">
             <ProjectCard
                 Title="Ce Portfolio"
-                Description="Un portfolio personnel en Blazor WebAssembly, déployé en continu sur Azure Static Web Apps avec deploiment automatique en production et environement de test."
+                Description="Un portfolio personnel en Blazor WebAssembly, déployé en continu sur Azure Static Web Apps, avec un environnement de test et un déploiement automatique en production."
                 ImageUrl="images/code.jpg"
                 Link="https://github.com/fredo71/Portfolio"
                 LinkLabel="Voir sur GitHub"
@@ -189,7 +194,7 @@
                 <div class="timeline-body">
                     <span class="education-date">2019 – 2021</span>
                     <h3 class="education-title">Classe préparatoire MPSI</h3>
-                    <p class="education-school">Lycée Chrétien de Troyes</p>
+                    <p class="education-school">Lycée Chrestien de Troyes</p>
                 </div>
             </div>
             <div class="timeline-item">
@@ -218,7 +223,7 @@
                 <i class="bi bi-telephone" aria-hidden="true"></i>
                 <span>07 88 32 01 48</span>
             </a>
-            <a href="https://www.linkedin.com/in/frédéric-larue-55a41428b" target="_blank" rel="noopener noreferrer" class="contact-item">
+            <a href="https://www.linkedin.com/in/fr%C3%A9d%C3%A9ric-larue-55a41428b" target="_blank" rel="noopener noreferrer" class="contact-item">
                 <i class="bi bi-linkedin" aria-hidden="true"></i>
                 <span>LinkedIn</span>
             </a>

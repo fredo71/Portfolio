@@ -1,13 +1,16 @@
 @page "/Game"
 
-<main>
+<PageTitle>Frédéric Larue — Jeu</PageTitle>
+
+@* A div, not <main>: MainLayout already provides the page's single main landmark. *@
+<div class="game">
     @* ───────────────────────── Title ───────────────────────── *@
     <section class="section">
         <div class="hero">
             <h1>Jeu de stratégie hexagonal</h1>
             <p class="hero-sub">Moteur de monde hexagonal procédural &mdash; Unity, C#</p>
             <div class="hero-actions">
-                <a href="https://github.com/fredo71/unity-hex-terrain-renderer" target="_blank" class="btn-styled">
+                <a href="https://github.com/fredo71/unity-hex-terrain-renderer" target="_blank" rel="noopener noreferrer" class="btn-styled">
                     <i class="bi bi-github"></i> GitHub
                 </a>
             </div>
@@ -65,11 +68,25 @@
 
         <div class="media-pair">
             <figure class="media-frame">
-                <img class="asset-media"
-                     src="video/hexmap-flythrough.jpg"
-                     alt="Vue aérienne du monde hexagonal terminé, sous une lumière rasante" />
+                @* data-src, not src: deferred by wwwroot/js/lazy-video.js like the two lower
+                   clips. This one is only about a screen down, but the observer loads 600px
+                   early, so it is playing by the time it is read. The poster is the clip's
+                   last frame — the finished world — so with JavaScript off this figure still
+                   shows what the still it replaced showed. *@
+                <video class="asset-media"
+                       data-src="video/hexmap-build.mp4"
+                       poster="video/hexmap-build.jpg"
+                       autoplay muted loop playsinline preload="none"
+                       aria-label="Démarrage à froid : l'écran reste noir, puis le terrain proche apparaît et la carte se remplit jusqu'à l'horizon">
+                </video>
                 <figcaption>
-                    Le monde complet, @TotalHexTiles tuiles, après @BuildTime secondes de génération.
+                    Démarrage à froid : le premier hexagone à l'écran après @TimeToFirstHex s, la
+                    carte complète à @BuildTime s.
+                    @* The lead-in is cut from 7 s to 1,6 s, so the caption has to say so —
+                       the numbers just above it are real and must stay checkable. *@
+                    <span class="caption-note">
+                        L'attente initiale est raccourcie ici ; le remplissage est en temps réel.
+                    </span>
                 </figcaption>
             </figure>
             <figure class="media-frame">
@@ -100,8 +117,9 @@
                         Mailler @TotalHexTiles tuiles sur le thread principal, c'est demander au thread qui
                         dessine les images de passer son temps à les calculer à la place : le monde arrive
                         quand même, mais à 14 fps et trois fois plus lentement. J'ai découpé la carte en
-                        chunks, mis ces chunks en file, et laissé un pool de threads vider la file en
-                        arrière-plan. Le thread principal ne fait plus que récupérer les chunks terminés et
+                        chunks, mis ces chunks en file, et confié cette file à un thread de fond qui la vide
+                        en distribuant le maillage aux threads de travail du Job System d'Unity.
+                        Le thread principal ne fait plus que récupérer les chunks terminés et
                         les afficher &mdash; ce qui lui laisse le temps qu'il faut pour continuer à dessiner
                         des images.
                     </p>
@@ -135,7 +153,7 @@
                         <div class="compare-row">
                             <span class="compare-name">avant</span>
                             <div class="compare-track"><div class="compare-fill compare-fill--before" style="width: 100%"></div></div>
-                            <span class="compare-value">10.7 s</span>
+                            <span class="compare-value">10,7 s</span>
                         </div>
                         <div class="compare-row">
                             <span class="compare-name">après</span>
@@ -229,10 +247,13 @@
 
                 <div class="step-evidence">
                     <div class="evidence-panel evidence-panel--full">
+                        @* data-src, not src: this clip is ~6 screens down on a phone, so
+                           wwwroot/js/lazy-video.js holds the download until the reader is
+                           near it. The poster carries the frame until then. *@
                         <video class="asset-media"
-                               src="video/geomorphing.mp4"
+                               data-src="video/geomorphing.mp4"
                                poster="video/geomorphing.jpg"
-                               autoplay muted loop playsinline preload="metadata"
+                               autoplay muted loop playsinline preload="none"
                                aria-label="Le maillage grossier du terrain, teinté en rouge, remontant à travers le maillage détaillé jusqu'à ce que les deux coïncident">
                         </video>
                         <div class="panel-label">
@@ -306,10 +327,11 @@
 
                 <div class="step-evidence">
                     <div class="evidence-panel evidence-panel--wide">
+                        @* Deferred too — this one sits ~8 screens down. *@
                         <video class="asset-media"
-                               src="video/hexmap-shadows.mp4"
+                               data-src="video/hexmap-shadows.mp4"
                                poster="video/hexmap-shadows.jpg"
-                               autoplay muted loop playsinline preload="metadata"
+                               autoplay muted loop playsinline preload="none"
                                aria-label="Les ombres balayant la carte terminée à mesure que le soleil se déplace, caméra fixe">
                         </video>
                         <div class="panel-label">
@@ -344,14 +366,17 @@
 
         <div class="outro">
             <div class="outro-title">Ce site est aussi un projet</div>
-            <div class="outro-stack">Blazor, ASP.NET, CI/CD, CSS</div>
+            <div class="outro-stack">Développé en C#, sans framework JavaScript, et déployé en continu.</div>
         </div>
 
+        @* These tags describe this site, matching the heading above and the repo
+           the link points at — not the game's Unity stack. *@
         <div class="tech-row">
-            <span class="tech-tag">Unity</span>
+            <span class="tech-tag">Blazor WebAssembly</span>
             <span class="tech-tag">C#</span>
-            <span class="tech-tag">Burst / Jobs</span>
-            <a href="https://github.com/fredo71/Portfolio" target="_blank" class="tech-link">
+            <span class="tech-tag">GitHub Actions</span>
+            <span class="tech-tag">Azure</span>
+            <a href="https://github.com/fredo71/Portfolio" target="_blank" rel="noopener noreferrer" class="tech-link">
                 <i class="bi bi-github"></i> voir le code
             </a>
         </div>
@@ -398,7 +423,9 @@
 
                     <div class="kpi-row kpi-row--compact">
                         <StatTile Value="@DrawDistanceHexes" Label="hexagones visibles avant élimination des éléments" />
-                        <StatTile Value="@BiggestTrianglePctOfScreen" Unit="%" Label="de l'écran &mdash; le plus grand triangle, dans le pire cas" />
+                        @* Entity references are not decoded inside a component parameter —
+                           the em dash has to be the literal character. *@
+                        <StatTile Value="@BiggestTrianglePctOfScreen" Unit="%" Label="de l'écran — le plus grand triangle, dans le pire cas" />
                     </div>
 
                     <figure class="media-frame">
@@ -433,13 +460,14 @@
                             <p>
                                 La construction du maillage de la carte se fait entièrement hors du thread
                                 principal, pour que le jeu ne se fige jamais pendant la génération. Le thread
-                                principal confie chaque chunk à un <span class="code-inline">thread pool</span>
-                                de workers, dont chacun lance trois Unity Jobs
-                                <span class="code-inline">Burst-compiled</span> en parallèle : un pour les
-                                positions des sommets, un pour les coordonnées de texture, un pour les normales
-                                d'éclairage. Les données de maillage vivent dans des
-                                <span class="code-inline">NativeArrays</span> non managés plutôt que sur le tas
-                                managé.
+                                principal confie les chunks à un unique thread de fond, qui planifie les Unity
+                                Jobs <span class="code-inline">Burst-compiled</span> : pour chaque hexagone, un
+                                premier job calcule les positions des sommets, puis deux autres en dépendent et
+                                s'exécutent en parallèle &mdash; les coordonnées de texture et les normales
+                                d'éclairage. Les hexagones d'un même chunk s'enchaînent les uns après les
+                                autres, mais plusieurs chunks avancent en parallèle. Les données de maillage
+                                vivent dans des <span class="code-inline">NativeArrays</span> non managés
+                                plutôt que sur le tas managé.
                             </p>
                         </div>
 
@@ -464,4 +492,4 @@
         </details>
     </section>
 
-</main>
+</div>

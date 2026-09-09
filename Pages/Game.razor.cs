@@ -10,10 +10,10 @@ namespace Portfolio.Pages;
 public partial class Game
 {
     // §1 — What is this?
-    const string TotalHexTiles = "9,450";
-    const string PctFramesBelow30Overview = "0.3";
+    const string TotalHexTiles = "9 450";
+    const string PctFramesBelow30Overview = "0,3";
     const string AvgFpsOverview = "60";
-    const string TimeToFirstHex = "7.1";
+    const string TimeToFirstHex = "7,1";
     const string TreeCountWorld = "187k";
 
     static readonly double[] RunTimelineElapsedS =
@@ -28,16 +28,16 @@ public partial class Game
     ];
 
     // §2 — Building the world
-    const string BuildTime = "10.9";
-    const string PctFramesBelow30Build = "4.6";
+    const string BuildTime = "10,9";
+    const string PctFramesBelow30Build = "4,6";
 
     static readonly double[] HexesFinishedOverTime =
     [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 294, 1120.875, 2245.091, 3429.243, 4900.875, 6825, 8610 ];
     static readonly double[] FpsOverTimeBuild =
     [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.203, 0.203, 0.203, 0.203, 42.972, 70.019, 84.14, 77.961, 88.306, 81.434, 75.464 ];
 
-    const string AvgRamPctBudget = "17.0";
-    const string MaxRamPctBudget = "17.9";
+    const string AvgRamPctBudget = "17,0";
+    const string MaxRamPctBudget = "17,9";
 
     static readonly double[] RamPctOverTime =
     [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14.545, 15.898, 16.541, 17.106, 17.528, 17.684, 17.822 ];
@@ -57,9 +57,9 @@ public partial class Game
     // §3 — Once it is built
     const string MaxGpuPctBudget = "14";
     const string AvgGpuPctBudget = "12";
-    const string DrawDistanceHexes = "1,726";
-    const string BiggestTrianglePctOfScreen = "0.05";
-    const string ShadowsOnScreen = "9,450";
+    const string DrawDistanceHexes = "1 726";
+    const string BiggestTrianglePctOfScreen = "0,05";
+    const string ShadowsOnScreen = "9 450";
     const string AvgFpsBuilt = "69";
 
     static readonly double[] FpsOverTimeBuilt =

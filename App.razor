@@ -4,9 +4,16 @@
         <FocusOnNavigate RouteData="@routeData" Selector="h1" />
     </Found>
     <NotFound>
-        <PageTitle>Not found</PageTitle>
+        <PageTitle>Frédéric Larue — Page introuvable</PageTitle>
         <LayoutView Layout="@typeof(MainLayout)">
-            <p role="alert">Sorry, there's nothing at this address.</p>
+            <div class="not-found">
+                <h1>Page introuvable</h1>
+                <p role="alert">Cette adresse ne correspond à aucune page du site.</p>
+                <div class="not-found-actions">
+                    <a href="/" class="btn-styled">Retour à l'accueil</a>
+                    <a href="/Cv" class="btn-styled">Voir le CV</a>
+                </div>
+            </div>
         </LayoutView>
     </NotFound>
 </Router>

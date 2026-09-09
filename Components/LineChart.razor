@@ -133,7 +133,7 @@
         var value = XEnd is null
             ? XStart + Math.Min(bucketEdge, Values.Length - 1)
             : XStart + (XEnd.Value - XStart) * bucketEdge / Values.Length;
-        return value.ToString("0.#", CultureInfo.InvariantCulture);
+        return FrenchNumbers.Format(value, "0.#");
     }
 
     const double VbW = 760, VbH = 200;
@@ -147,8 +147,8 @@
         (Math.Clamp(frac, 0, 1) * 100).ToString("0.###", CultureInfo.InvariantCulture);
 
     static string N(double v) => v.ToString("0.##", CultureInfo.InvariantCulture);
-    static string N0(double v) => v.ToString("0", CultureInfo.InvariantCulture);
-    static string N1(double v) => v.ToString("0.0", CultureInfo.InvariantCulture);
+    static string N0(double v) => FrenchNumbers.Format(v, "0");
+    static string N1(double v) => FrenchNumbers.Format(v, "0.0");
 
     double AxisMax()
     {
