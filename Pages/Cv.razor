@@ -7,13 +7,15 @@
    reads as one uninterrupted vertical block rather than a bent shape. Main
    comes first in source order so the profile is what gets read first.
 
-   cv-page is the surface the sheet sits on (screen only, stripped in print). *@
-<div class="cv-page">
+   cv-page is the surface the sheet sits on (screen only, stripped in print).
+   With ?ats=true it also carries cv-ats: the single-column version for
+   application portals — see the ATS block at the end of Cv.razor.css. *@
+<div class="cv-page @(Ats ? "cv-ats" : null)">
 
 @* Screen only — the PDF is what a recruiter actually keeps. Hidden in print,
    where the page being looked at is already the document. *@
 <div class="cv-toolbar">
-    <a href="/cv-frederic-larue.pdf" download class="btn-styled">
+    <a href="@(Ats ? "/cv-frederic-larue-ats.pdf" : "/cv-frederic-larue.pdf")" download class="btn-styled">
         <i class="bi bi-download" aria-hidden="true"></i>
         Télécharger le CV en PDF
     </a>
@@ -27,31 +29,32 @@
             <h1>Frédéric Larue</h1>
             <p class="cv-role">Développeur C# / .NET</p>
 
+            @* Phone first, not after the email: a PDF extractor puts nothing
+               but a space between two items, and a number followed by the
+               postcode reads as one long number "07 88 32 01 48 10150". *@
             <ul class="cv-contact">
-                <li><i class="bi bi-envelope-fill" aria-hidden="true"></i>
-                    <a href="mailto:frederic.larue17@gmail.com">frederic.larue17@gmail.com</a></li>
-                <li><i class="bi bi-telephone-fill" aria-hidden="true"></i>
+                <li><SvgIcon Name="telephone-fill" />
                     07 88 32 01 48</li>
-                <li><i class="bi bi-geo-alt-fill" aria-hidden="true"></i>
+                <li><SvgIcon Name="envelope-fill" />
+                    <a href="mailto:frederic.larue17@gmail.com">frederic.larue17@gmail.com</a></li>
+                <li><SvgIcon Name="geo-alt-fill" />
                     10150 Pont-Sainte-Marie</li>
-                <li><i class="bi bi-car-front-fill" aria-hidden="true"></i>
+                <li><SvgIcon Name="car-front-fill" />
                     Permis B + véhicule</li>
             </ul>
 
             <ul class="cv-links">
                 <li>
                     <a href="https://fredericlarue.com/AboutMe">
-                        <i class="bi bi-globe2" aria-hidden="true"></i>fredericlarue.com/AboutMe</a>
+                        <SvgIcon Name="globe2" />fredericlarue.com/AboutMe</a>
                 </li>
                 <li>
                     <a href="https://github.com/fredo71" target="_blank" rel="noopener noreferrer">
-                        <i class="bi bi-github" aria-hidden="true"></i>github.com/fredo71</a>
+                        <SvgIcon Name="github" />github.com/fredo71</a>
                 </li>
-                @* Le libellé reste « LinkedIn » : le slug réel se termine par un
-                   identifiant machine, illisible et sans intérêt sur un CV. *@
                 <li>
-                    <a href="https://www.linkedin.com/in/fr%C3%A9d%C3%A9ric-larue-55a41428b" target="_blank" rel="noopener noreferrer">
-                        <i class="bi bi-linkedin" aria-hidden="true"></i>LinkedIn</a>
+                    <a href="https://www.linkedin.com/in/FredericLarueFr" target="_blank" rel="noopener noreferrer">
+                        <SvgIcon Name="linkedin" />linkedin.com/in/FredericLarueFr</a>
                 </li>
             </ul>
         </header>
@@ -60,7 +63,7 @@
             <h2>Profil</h2>
             <p class="profile">
                 Développeur C# / .NET, diplômé d'un master en informatique après deux ans
-                d'alternance et quatre ans de cycle ingénieur. À l'aise sur le logiciel qui doit tenir
+                d'alternance et deux ans de cycle ingénieur. À l'aise sur le logiciel qui doit tenir
                 dans un budget de temps, de mémoire ou de calcul. Je l'ai appris en profilant mon
                 propre moteur de rendu plutôt qu'en devinant. Je recherche un poste de
                 développeur C# en CDI, mobile dans toute la France métropolitaine.
@@ -97,9 +100,9 @@
                 <p class="entry-meta">Projet à temps plein · Unity / C#</p>
                 <p class="entry-links">
                     <a class="entry-link" href="/Game">
-                        <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>fredericlarue.com/Game</a>
+                        <SvgIcon Name="box-arrow-up-right" />fredericlarue.com/Game</a>
                     <a class="entry-link" href="https://github.com/fredo71/unity-hex-terrain-renderer" target="_blank" rel="noopener noreferrer">
-                        <i class="bi bi-github" aria-hidden="true"></i>Code source</a>
+                        <SvgIcon Name="github" />Code source</a>
                 </p>
                 <ul>
                     <li>Monde généré procéduralement à la taille voulue, et construit à la demande : le terrain proche s'affiche d'abord, le reste se remplit en arrière-plan.</li>
@@ -116,9 +119,9 @@
                 <p class="entry-meta">Blazor WebAssembly / C#</p>
                 <p class="entry-links">
                     <a class="entry-link" href="/AboutMe">
-                        <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>fredericlarue.com/AboutMe</a>
+                        <SvgIcon Name="box-arrow-up-right" />fredericlarue.com/AboutMe</a>
                     <a class="entry-link" href="https://github.com/fredo71/Portfolio" target="_blank" rel="noopener noreferrer">
-                        <i class="bi bi-github" aria-hidden="true"></i>Code source</a>
+                        <SvgIcon Name="github" />Code source</a>
                 </p>
                 <ul>
                     <li>Application web développée en C# avec Blazor WebAssembly, sans framework JavaScript.</li>
@@ -137,7 +140,7 @@
 
     <aside class="cv-rail">
 
-        <section>
+        <section class="skills">
             <h2>Compétences</h2>
 
             <p class="rail-label">Langages</p>
@@ -205,3 +208,9 @@
     </aside>
 </div>
 </div>
+
+@code {
+    // /Cv?ats=true — what tools/CvPdf renders to cv-frederic-larue-ats.pdf.
+    [Parameter, SupplyParameterFromQuery]
+    public bool Ats { get; set; }
+}

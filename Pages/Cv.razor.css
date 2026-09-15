@@ -136,7 +136,7 @@
     font-size: calc(var(--base) * 0.9);
 }
 
-.cv-contact i {
+.cv-contact ::deep .svg-icon {
     color: var(--accent);
     font-size: calc(var(--base) * 0.88);
 }
@@ -169,7 +169,7 @@
     text-decoration: none;
 }
 
-.cv-links i {
+.cv-links ::deep .svg-icon {
     font-size: calc(var(--base) * 0.9);
 }
 
@@ -334,7 +334,7 @@ h2 {
     text-decoration-thickness: 1.5px;
 }
 
-.entry-link i {
+.entry-link ::deep .svg-icon {
     font-size: calc(var(--base) * 0.85);
     text-decoration: none;
 }
@@ -421,5 +421,149 @@ h2 {
     h2,
     h3 {
         break-after: avoid;
+    }
+
+    /* Tracking is written into the PDF glyph by glyph, and most extractors
+       then read the heading back as "P R O F I L" — an ATS can no longer find
+       a single section by name. Screen keeps it; paper can't afford it. */
+    h2,
+    .rail-label {
+        letter-spacing: normal;
+    }
+}
+
+/* ATS version ----------------------------------------------------------- */
+
+/* /Cv?ats=true, rendered to cv-frederic-larue-ats.pdf for application portals.
+   Same content, one column. Extractors that order text by position read the
+   two-column sheet straight across, so the rail gets spliced into the
+   experience section; with one column there is nothing to splice. It is still
+   the file a recruiter opens inside the ATS, so it stays a designed page. */
+.cv-ats .cv-layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: none;
+    /* Spare page height goes below the last section, not between the rows. */
+    align-content: start;
+}
+
+.cv-ats .cv-main,
+.cv-ats .cv-rail {
+    grid-column: auto;
+    grid-row: auto;
+}
+
+.cv-ats .cv-photo-cell {
+    display: none;
+}
+
+.cv-ats .cv-rail {
+    padding: 0 var(--gap) calc(var(--base) * 1.2);
+    background: none;
+    color: var(--ink);
+}
+
+.cv-ats .cv-rail h2 {
+    color: var(--navy);
+    border-bottom-color: var(--accent);
+}
+
+.cv-ats .cv-rail strong,
+.cv-ats .rail-title {
+    color: var(--ink);
+}
+
+.cv-ats .rail-meta {
+    color: var(--ink-soft);
+}
+
+/* Date right after the title rather than hard right: across a full-width
+   column the gap is wide enough for some extractors to lift the date out
+   into a block of its own, away from the job it belongs to. */
+.cv-ats .entry-head {
+    justify-content: flex-start;
+}
+
+/* Degrees get the same title-then-date line as the entries above them. */
+.cv-ats .rail-entry {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: calc(var(--base) * 0.8);
+}
+
+.cv-ats .rail-title {
+    order: -1;
+}
+
+.cv-ats .rail-date {
+    color: var(--accent-ink);
+}
+
+.cv-ats .rail-meta {
+    flex-basis: 100%;
+}
+
+/* Skills as "Langages : C#, Python, …". Pills come out as one run of words
+   ("Git Tests automatisés Azure") with no boundaries left, and bold-caps
+   sub-labels get taken for section headings. */
+.cv-ats .skills {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: calc(var(--base) * 0.5);
+    row-gap: calc(var(--base) * 0.25);
+}
+
+.cv-ats .skills h2 {
+    grid-column: 1 / -1;
+}
+
+.cv-ats .rail-label {
+    font-size: inherit;
+    text-transform: none;
+    letter-spacing: normal;
+    color: var(--ink);
+}
+
+.cv-ats .rail-label::after {
+    content: "\00a0:";
+}
+
+.cv-ats .tags {
+    display: block;
+    margin: 0;
+}
+
+.cv-ats .tag {
+    display: inline;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    font-size: inherit;
+    color: inherit;
+    white-space: normal;
+}
+
+/* The markup's own whitespace between items supplies the space. */
+.cv-ats .tag:not(:last-child)::after {
+    content: ",";
+}
+
+@media print {
+    /* The rail's content now stacks under the main column. Tighter leading
+       and vertical gaps keep it to one A4 page, so the type only has to come
+       down a little. --gap is left alone: it is also the side margin. */
+    .cv-ats .cv-layout {
+        --base: 11.5px;
+        line-height: 1.35;
+    }
+
+    .cv-ats section + section {
+        margin-top: calc(var(--base) * 1.2);
+    }
+
+    .cv-ats .cv-identity {
+        margin-bottom: calc(var(--base) * 1.2);
+        padding-bottom: calc(var(--base) * 0.8);
     }
 }
