@@ -1,12 +1,13 @@
-// Renders the portfolio's /Cv page to a static A4 PDF.
+// Renders the portfolio's /Cv page to static A4 PDFs: the designed CV, and the
+// single-column ATS version (/Cv?ats=true) next to it with "-ats" in the name.
 //
-//   node generate.mjs                      publish, serve, render, write the PDF
-//   node generate.mjs --url http://...     render a URL that is already running
-//   node generate.mjs --out ../../foo.pdf  write somewhere else
-//   node generate.mjs --png shot.png       also save an A4 preview image
+//   node generate.mjs                      publish, serve, render, write both PDFs
+//   node generate.mjs --url http://...     render a /Cv URL that is already running
+//   node generate.mjs --out ../../foo.pdf  write somewhere else (and foo-ats.pdf)
+//   node generate.mjs --png shot.png       also save A4 preview images
 //   node generate.mjs --site https://...   public origin for in-site links
 //
-// The PDF is produced through the print stylesheet, so what you get here is
+// The PDFs are produced through the print stylesheet, so what you get here is
 // exactly what Ctrl+P on the page gives — Pages/Cv.razor.css owns the A4 layout.
 
 import { chromium } from 'playwright';
@@ -152,6 +153,26 @@ async function render(url, out, png, site) {
             console.log(`Rewrote ${rewritten.length} in-site link(s) to ${site}`);
         }
 
+        // Both of these look fine on paper and wreck what an ATS extracts:
+        // tracking splits headings into "P R O F I L", and icon-font glyphs
+        // are private-use characters wedged between the contact details.
+        const textLayerIssues = await page.evaluate(() => {
+            const issues = [];
+            for (const el of document.querySelectorAll('.cv-layout *')) {
+                const style = getComputedStyle(el);
+                const hasOwnText = [...el.childNodes].some((n) => n.nodeType === Node.TEXT_NODE && n.textContent.trim());
+                if (hasOwnText && style.letterSpacing !== 'normal' && parseFloat(style.letterSpacing) !== 0) {
+                    issues.push(`letter-spacing ${style.letterSpacing} on "${el.textContent.trim().slice(0, 40)}"`);
+                }
+                for (const pseudo of ['::before', '::after']) {
+                    if (/[-]/.test(getComputedStyle(el, pseudo).content)) {
+                        issues.push(`icon-font glyph in ${pseudo} of <${el.tagName.toLowerCase()} class="${el.className}">`);
+                    }
+                }
+            }
+            return issues;
+        });
+
         await page.pdf({
             path: out,
             format: 'A4',
@@ -168,6 +189,11 @@ async function render(url, out, png, site) {
             console.warn(`\nWarning: ${failures.length} request(s) failed while rendering:`);
             for (const f of failures.slice(0, 10)) console.warn(`  ${f}`);
         }
+
+        if (textLayerIssues.length) {
+            console.warn(`\nWarning: ${textLayerIssues.length} thing(s) that garble the PDF's text for ATS parsers:`);
+            for (const issue of textLayerIssues.slice(0, 10)) console.warn(`  ${issue}`);
+        }
     } finally {
         await browser.close();
     }
@@ -176,12 +202,13 @@ async function render(url, out, png, site) {
 async function main() {
     const args = parseArgs(process.argv.slice(2));
     if (args.help) {
-        console.log(readFileSync(fileURLToPath(import.meta.url), 'utf8').split('\n').slice(0, 9).join('\n'));
+        console.log(readFileSync(fileURLToPath(import.meta.url), 'utf8').split('\n').slice(0, 8).join('\n'));
         return;
     }
 
     let published = null;
     let server = null;
+    const outputs = [args.out, withSuffix(args.out, '-ats')];
 
     try {
         let url = args.url;
@@ -192,19 +219,31 @@ async function main() {
             url = `http://127.0.0.1:${started.port}/Cv`;
         }
 
-        await render(url, args.out, args.png, args.site);
+        const atsUrl = new URL(url);
+        atsUrl.searchParams.set('ats', 'true');
+
+        await render(url, outputs[0], args.png, args.site);
+        await render(atsUrl.href, outputs[1], args.png && withSuffix(args.png, '-ats'), args.site);
     } finally {
         if (server) server.close();
         if (published) rmSync(published, { recursive: true, force: true });
     }
 
-    const bytes = statSync(args.out).size;
-    // Rough, but enough to catch the CV spilling onto a second page.
-    const pages = (readFileSync(args.out).toString('latin1').match(/\/Type\s*\/Page[^s]/g) ?? []).length;
+    for (const out of outputs) {
+        const bytes = statSync(out).size;
+        // Rough, but enough to catch the CV spilling onto a second page.
+        const pages = (readFileSync(out).toString('latin1').match(/\/Type\s*\/Page[^s]/g) ?? []).length;
 
-    console.log(`\nWrote ${args.out}`);
-    console.log(`  ${(bytes / 1024).toFixed(0)} KB, ~${pages} page(s)`);
-    if (pages > 1) console.log('  Note: a CV that spills past one page usually means the print type scale in Pages/Cv.razor.css needs trimming.');
+        console.log(`\nWrote ${out}`);
+        console.log(`  ${(bytes / 1024).toFixed(0)} KB, ~${pages} page(s)`);
+        if (pages > 1) console.log('  Note: a CV that spills past one page usually means the print type scale in Pages/Cv.razor.css needs trimming.');
+    }
+}
+
+// foo.pdf -> foo-ats.pdf
+function withSuffix(file, suffix) {
+    const ext = path.extname(file);
+    return path.join(path.dirname(file), path.basename(file, ext) + suffix + ext);
 }
 
 main().catch((err) => {
