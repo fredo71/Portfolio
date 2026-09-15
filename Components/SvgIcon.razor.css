@@ -1,0 +1,10 @@
+/* Sits like the icon font it replaces: one em square in the current text
+   colour, dropped onto the baseline the way .bi::before is. Size and colour
+   come from the parent's font-size and color. */
+.svg-icon {
+    display: inline-block;
+    flex: none;
+    width: 1em;
+    height: 1em;
+    vertical-align: -0.125em;
+}
